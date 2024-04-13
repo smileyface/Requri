@@ -9,8 +9,8 @@ class RequirementsDisplayMain(ttk.Treeview):
     def __init__(self, master, **kwargs):
         super().__init__(master, columns=("ID", "Text"), **kwargs)
 
-        self.heading("#0", text="Requirement ID")
-        self.heading("#1", text="Requirement Text")
+        self.heading("#0", text="ID")
+        self.heading("#1", text="Text")
 
         self.entries = {}
         self.update()

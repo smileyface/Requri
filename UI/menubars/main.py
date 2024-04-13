@@ -91,4 +91,5 @@ class MainMenuBar(tk.Menu):
         print("Paste")
 
     def add_requirement(self):
-        print("Add Requirement")
+        print("Main Menu - Add Requirement")
+        self.master.show_add_requirement();

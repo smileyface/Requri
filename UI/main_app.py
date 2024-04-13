@@ -11,25 +11,37 @@ class MainApplication(tk.Tk):
         self.title("Requirement Tracker")
         self.geometry("600x400")
 
-        self.main_page = MainPage(self)
-        self.add_requirement_page = AddRequirementPage(self, self.main_page)
+        self.page_container = tk.Frame(self)
+        self.page_container.pack(fill=tk.BOTH, expand=True)
 
-        self.current_page = self.main_page
-        self.main_page.pack()
+        self.main_page_frame = tk.Frame(self.page_container)
+        self.main_page = MainPage(self.main_page_frame)
+        self.main_page.pack(fill=tk.BOTH, expand=True)
 
-        self.create_menu()
+        self.add_requirement_page_frame = tk.Frame(self.page_container)
+        self.add_requirement_page = AddRequirementPage(self.add_requirement_page_frame)
+        self.add_requirement_page.pack(fill=tk.BOTH, expand=True)
 
-    def create_menu(self):
-        menu_bar = MainMenuBar(self)
-        menu_bar.register_callback(Callback_Functions.NEW_FILE, self.main_page.update)
+        self.current_page = None
+        self.show_main_page()
+
+        self.create_menu(self)
+
+    def create_menu(self, main_application):
+        menu_bar = MainMenuBar(main_application)
+        menu_bar.register_callback(Callback_Functions.NEW_FILE, main_application.main_page.update)
         self.config(menu=menu_bar)
 
     def show_add_requirement(self):
-        self.current_page.pack_forget()
-        self.add_requirement_page.pack()
-        self.current_page = self.add_requirement_page
+        print("Showing add requirement page")
+        if self.current_page:
+            self.current_page.grid_forget()
+        self.add_requirement_page_frame.grid(row=0, column=0, sticky="nsew")
+        self.current_page = self.add_requirement_page_frame
 
     def show_main_page(self):
-        self.add_requirement_page.pack_forget()
-        self.main_page.pack()
-        self.current_page = self.main_page
+        print("Showing main page")
+        if self.current_page:
+            self.current_page.grid_forget()
+        self.main_page_frame.grid(row=0, column=0, sticky="nsew")
+        self.current_page = self.main_page_frame
