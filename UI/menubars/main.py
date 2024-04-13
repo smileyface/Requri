@@ -1,6 +1,7 @@
 import tkinter as tk
 from enum import Enum
 
+from UI.pages.paging_handle import show_page, PagesEnum
 from structures.requirement import RequirementList
 
 
@@ -92,4 +93,4 @@ class MainMenuBar(tk.Menu):
 
     def add_requirement(self):
         print("Main Menu - Add Requirement")
-        self.master.show_add_requirement();
+        show_page(PagesEnum.ADD_REQUIREMENTS)

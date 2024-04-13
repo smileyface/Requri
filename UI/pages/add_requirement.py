@@ -2,13 +2,14 @@ import tkinter as tk
 from UI.pages.viewpage import ViewPage
 from UI.components.dropdown_with_add import ComboboxWithAdd
 from structures.requirement import RequirementList
+from UI.pages.paging_handle import show_page
 
 
 def get_variable(var):
     return var.variable.get().replace('\'', '')
 
 
-class AddRequirementPage(tk.Frame):
+class AddRequirementPage(ViewPage):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
@@ -67,7 +68,8 @@ class AddRequirementPage(tk.Frame):
                 self.subsection.variable.set(b_values[0])
 
     def add(self):
-        self.master.show_main_page()
+        self.container.show_main_page()
 
     def cancel(self):
-        self.master.show_main_page()
+        self.container.show_main_page()
+

@@ -6,11 +6,5 @@ class ViewPage(tk.Frame):
         super().__init__(master, *args, **kwargs)
         self.master = master
 
-    def show(self):
-        if self.master.current_page:
-            self.master.current_page.pack_forget()
-        self.pack(in_=self.master.page_container)
-        self.master.current_page = self
-
-    def hide(self):
-        self.pack_forget()
+    def to_string(self):
+        return f"{type(self)}"

@@ -3,6 +3,7 @@ import tkinter as tk
 from UI.menubars.main import Callback_Functions, MainMenuBar
 from UI.pages.add_requirement import AddRequirementPage
 from UI.pages.main import MainPage
+from UI.pages.paging_handle import show_page, create_and_register_frame, PagesEnum
 
 
 class MainApplication(tk.Tk):
@@ -14,34 +15,16 @@ class MainApplication(tk.Tk):
         self.page_container = tk.Frame(self)
         self.page_container.pack(fill=tk.BOTH, expand=True)
 
-        self.main_page_frame = tk.Frame(self.page_container)
-        self.main_page = MainPage(self.main_page_frame)
-        self.main_page.pack(fill=tk.BOTH, expand=True)
+        self.main_page = create_and_register_frame(self.page_container, PagesEnum.MAIN, MainPage)
+        self.add_requirement_page = create_and_register_frame(self.page_container, PagesEnum.ADD_REQUIREMENTS,
+                                                              AddRequirementPage)
+        print("Main page:", self.main_page)  # Add this line to check the main page frame
+        print("Add requirement page:", self.add_requirement_page)  # Add this line to check the add requirement page frame
 
-        self.add_requirement_page_frame = tk.Frame(self.page_container)
-        self.add_requirement_page = AddRequirementPage(self.add_requirement_page_frame)
-        self.add_requirement_page.pack(fill=tk.BOTH, expand=True)
-
-        self.current_page = None
-        self.show_main_page()
-
+        show_page(PagesEnum.MAIN)
         self.create_menu(self)
 
     def create_menu(self, main_application):
         menu_bar = MainMenuBar(main_application)
         menu_bar.register_callback(Callback_Functions.NEW_FILE, main_application.main_page.update)
         self.config(menu=menu_bar)
-
-    def show_add_requirement(self):
-        print("Showing add requirement page")
-        if self.current_page:
-            self.current_page.grid_forget()
-        self.add_requirement_page_frame.grid(row=0, column=0, sticky="nsew")
-        self.current_page = self.add_requirement_page_frame
-
-    def show_main_page(self):
-        print("Showing main page")
-        if self.current_page:
-            self.current_page.grid_forget()
-        self.main_page_frame.grid(row=0, column=0, sticky="nsew")
-        self.current_page = self.main_page_frame
