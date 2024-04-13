@@ -9,7 +9,7 @@ class MainApplication(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Requirement Tracker")
-        self.geometry("600x400")
+        self.geometry("800x600")
 
         self.page_container = tk.Frame(self)
         self.page_container.pack(fill=tk.BOTH, expand=True)
