@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-from structures.requirement import RequirementList
+from structures import requirement_list
 
 
 class RequirementsDisplayMain(ttk.Treeview):
@@ -33,7 +33,7 @@ class RequirementsDisplayMain(ttk.Treeview):
 
         self.entries.clear()
 
-        requirement_map = RequirementList.get_requirement_map()
+        requirement_map = requirement_list.get_requirement_map()
         sorted_keys = sorted(requirement_map.keys(), key=lambda x: (x[0], x[1]))
         # Iterate over the sorted keys and access the corresponding requirement maps
         for requirement_section in sorted_keys:

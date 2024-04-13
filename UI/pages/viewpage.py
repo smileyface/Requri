@@ -8,3 +8,6 @@ class ViewPage(tk.Frame):
 
     def to_string(self):
         return f"{type(self)}"
+
+    def update(self):
+        pass

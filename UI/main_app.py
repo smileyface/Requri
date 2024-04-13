@@ -3,7 +3,7 @@ import tkinter as tk
 from UI.menubars.main import Callback_Functions, MainMenuBar
 from UI.pages.add_requirement import AddRequirementPage
 from UI.pages.main import MainPage
-from UI.pages.paging_handle import show_page, create_and_register_frame, PagesEnum
+from UI.pages.paging_handle import show_page, create_and_register_frame, PagesEnum, get_page
 
 
 class MainApplication(tk.Tk):
@@ -26,5 +26,5 @@ class MainApplication(tk.Tk):
 
     def create_menu(self, main_application):
         menu_bar = MainMenuBar(main_application)
-        menu_bar.register_callback(Callback_Functions.NEW_FILE, main_application.main_page.update)
+        menu_bar.register_callback(Callback_Functions.NEW_FILE, get_page(PagesEnum.MAIN).update)
         self.config(menu=menu_bar)

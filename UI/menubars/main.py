@@ -2,7 +2,7 @@ import tkinter as tk
 from enum import Enum
 
 from UI.pages.paging_handle import show_page, PagesEnum
-from structures.requirement import RequirementList
+from structures import requirement_list
 
 
 class Callback_Functions(Enum):
@@ -58,7 +58,7 @@ class MainMenuBar(tk.Menu):
 
     def new_file(self):
         print("New file")
-        RequirementList.clear_list()
+        requirement_list.clear_list()
         self.new_file_callback()
 
     def save_file(self):

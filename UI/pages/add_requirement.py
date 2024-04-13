@@ -1,8 +1,9 @@
 import tkinter as tk
 from UI.pages.viewpage import ViewPage
 from UI.components.dropdown_with_add import ComboboxWithAdd
-from structures.requirement import RequirementList
-from UI.pages.paging_handle import show_page
+from structures.requirement import Requirement
+from structures import requirement_list
+from UI.pages.paging_handle import show_page, PagesEnum
 
 
 def get_variable(var):
@@ -35,14 +36,14 @@ class AddRequirementPage(ViewPage):
         # Section
         self.section_label = tk.Label(self.left_panel, text="Section:")
         self.section_label.pack()
-        self.section = ComboboxWithAdd(self.left_panel, RequirementList.get_section_lists(),
+        self.section = ComboboxWithAdd(self.left_panel, requirement_list.get_section_lists(),
                                        selected_callback=self.update_combobox_b)
         self.section.pack()
 
         # Subsection
         self.subsection_label = tk.Label(self.left_panel, text="Subsection:")
         self.subsection_label.pack()
-        self.subsection = ComboboxWithAdd(self.left_panel, RequirementList.get_subsection_lists(self.section))
+        self.subsection = ComboboxWithAdd(self.left_panel, requirement_list.get_subsection_lists(self.section))
         self.subsection.pack()
 
         # Requirement
@@ -61,15 +62,18 @@ class AddRequirementPage(ViewPage):
 
     def update_combobox_b(self, event=None):
         section = get_variable(self.section)
-        if section in RequirementList.get_section_lists():
-            b_values = RequirementList.get_subsection_lists(section)
+        if section in requirement_list.get_section_lists():
+            b_values = requirement_list.get_subsection_lists(section)
             self.subsection.set_values(b_values)
             if b_values:
                 self.subsection.variable.set(b_values[0])
 
     def add(self):
-        self.container.show_main_page()
+        req = Requirement(get_variable(self.section), get_variable(self.subsection), self.title_entry.get(),
+                          self.requirement_text.get("1.0", tk.END), [])
+        requirement_list.append(req)
+        show_page(PagesEnum.MAIN)
 
     def cancel(self):
-        self.container.show_main_page()
+        show_page(PagesEnum.MAIN)
 
