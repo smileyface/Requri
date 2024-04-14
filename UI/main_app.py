@@ -15,11 +15,8 @@ class MainApplication(tk.Tk):
         self.page_container = tk.Frame(self)
         self.page_container.pack(fill=tk.BOTH, expand=True)
 
-        self.main_page = create_and_register_frame(self.page_container, PagesEnum.MAIN, MainPage)
-        self.add_requirement_page = create_and_register_frame(self.page_container, PagesEnum.ADD_REQUIREMENTS,
-                                                              AddRequirementPage)
-        print("Main page:", self.main_page)  # Add this line to check the main page frame
-        print("Add requirement page:", self.add_requirement_page)  # Add this line to check the add requirement page frame
+        create_and_register_frame(self.page_container, PagesEnum.MAIN, MainPage)
+        create_and_register_frame(self.page_container, PagesEnum.ADD_REQUIREMENTS, AddRequirementPage)
 
         show_page(PagesEnum.MAIN)
         self.create_menu(self)

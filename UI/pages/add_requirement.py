@@ -64,9 +64,8 @@ class AddRequirementPage(ViewPage):
         section = get_variable(self.section)
         if section in requirement_list.get_section_lists():
             b_values = requirement_list.get_subsection_lists(section)
-            self.subsection.set_values(b_values)
             if b_values:
-                self.subsection.variable.set(b_values[0])
+                self.subsection.update(b_values)
 
     def add(self):
         req = Requirement(get_variable(self.section), get_variable(self.subsection), self.title_entry.get(),
@@ -76,4 +75,14 @@ class AddRequirementPage(ViewPage):
 
     def cancel(self):
         show_page(PagesEnum.MAIN)
+
+    def on_show(self):
+        # Reset title entry
+        self.title_entry.delete(0, tk.END)
+        # Reset section combobox
+        self.section.update(requirement_list.get_section_lists())
+        # Reset subsection combobox
+        self.subsection.clear()
+        # Reset requirement text
+        self.requirement_text.delete("1.0", tk.END)
 

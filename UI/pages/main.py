@@ -15,5 +15,5 @@ class MainPage(ViewPage):
         self.label.pack()
         self.requirement_listbox.pack()
 
-    def update(self):
+    def on_show(self):
         self.requirement_listbox.update()
