@@ -2,7 +2,6 @@ import os
 
 from parser.source_cpp import cpp_parser
 
-
 def generate_test_cpp_file(file_path):
     with open(file_path, 'w') as file:
         file.write("#include <iostream>\n\n")

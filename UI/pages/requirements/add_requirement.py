@@ -3,7 +3,7 @@ from UI.pages.viewpage import ViewPage
 from UI.components.dropdown_with_add import ComboboxWithAdd
 from structures.requirement import Requirement
 from structures import requirement_list
-from UI.pages.paging_handle import show_page, PagesEnum
+from UI.pages.paging_handle import show_page, PagesEnum, page_return
 
 
 def get_variable(var):
@@ -71,10 +71,10 @@ class AddRequirementPage(ViewPage):
         req = Requirement(get_variable(self.section), get_variable(self.subsection), self.title_entry.get(),
                           self.requirement_text.get("1.0", tk.END), [])
         requirement_list.append(req)
-        show_page(PagesEnum.MAIN)
+        page_return()
 
     def cancel(self):
-        show_page(PagesEnum.MAIN)
+        page_return()
 
     def on_show(self):
         # Reset title entry

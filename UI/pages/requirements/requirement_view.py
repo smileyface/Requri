@@ -4,7 +4,7 @@ import tkinter as tk
 from UI.components.requirements_main_display import RequirementsDisplayMain
 
 
-class MainPage(ViewPage):
+class RequirementView(ViewPage):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
