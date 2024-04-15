@@ -61,6 +61,7 @@ def test_find_functions():
         functions = parser.find_functions(file_path)
         assert len(functions) > 0  # Assert that at least one function was found
 
+
 def test_cpp_parser():
     # Create an instance of the cpp_parser class
     parser = cpp_parser()
@@ -91,4 +92,3 @@ def test_cpp_parser():
     for function_def in all_functions:
         print(f"{function_def[0]:<40}{function_def[1]}\n")
     print(f"{len(function_def)} functions found.")
-
