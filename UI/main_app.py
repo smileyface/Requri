@@ -1,8 +1,8 @@
 import tkinter as tk
 
 from UI.menubars.main import Callback_Functions, MainMenuBar
-from UI.pages.add_requirement import AddRequirementPage
-from UI.pages.main import MainPage
+from UI.pages.requirements.add_requirement import AddRequirementPage
+from UI.pages.requirements.requirement_view import RequirementView
 from UI.pages.paging_handle import show_page, create_and_register_frame, PagesEnum, get_page
 
 
@@ -15,13 +15,13 @@ class MainApplication(tk.Tk):
         self.page_container = tk.Frame(self)
         self.page_container.pack(fill=tk.BOTH, expand=True)
 
-        create_and_register_frame(self.page_container, PagesEnum.MAIN, MainPage)
+        create_and_register_frame(self.page_container, PagesEnum.REQUIREMENT_VIEW, RequirementView)
         create_and_register_frame(self.page_container, PagesEnum.ADD_REQUIREMENTS, AddRequirementPage)
 
-        show_page(PagesEnum.MAIN)
+        show_page(PagesEnum.REQUIREMENT_VIEW)
         self.create_menu(self)
 
     def create_menu(self, main_application):
         menu_bar = MainMenuBar(main_application)
-        menu_bar.register_callback(Callback_Functions.NEW_FILE, get_page(PagesEnum.MAIN).update)
+        menu_bar.register_callback(Callback_Functions.NEW_FILE, get_page(PagesEnum.REQUIREMENT_VIEW).update)
         self.config(menu=menu_bar)

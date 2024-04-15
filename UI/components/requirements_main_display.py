@@ -12,26 +12,29 @@ class RequirementsDisplayMain(ttk.Treeview):
         self.heading("#0", text="ID")
         self.heading("#1", text="Text")
 
-        self.entries = {}
         self.update()
+
+        self.bind("<Delete>", self.remove_selected)
 
     def add(self, requirement):
         requirement_str = requirement.unique_id.to_string()
         self.insert("", tk.END, text=requirement_str, values=(requirement.text,))
-        self.entries[requirement_str] = requirement
 
     def remove(self, index):
-        requirement_str = requirement.unique_id.to_string()
-        if requirement_str in self.entries:
-            removed_requirement = self.entries.pop(requirement_str)
-            self.delete(requirement_str)
+        requirement_list.remove(requirement_list.get_requirement_from_index_string(index))
+
+    def remove_selected(self, event):
+        selection = self.selection()
+        if selection:
+            selected_item = self.item(selection[0])
+            requirement_key = selected_item['text']  # Assuming the key is in the first column
+            self.remove(requirement_key)
+        self.update()
 
     def update(self):
-        # Clear the Treeview
+        # Clear the Tree View
         for item in self.get_children():
             self.delete(item)
-
-        self.entries.clear()
 
         requirement_map = requirement_list.get_requirement_map()
         sorted_keys = sorted(requirement_map.keys(), key=lambda x: (x[0], x[1]))
