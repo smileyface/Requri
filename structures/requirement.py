@@ -4,7 +4,7 @@ from structures.requirement_id import RequirementId
 class Requirement:
     def __init__(self, section, sub, title, text, tags):
         self._unique_id = RequirementId(section, sub)
-        self.text = text
+        self.text = text.strip()
         self.tags = tags
         self.title = title
 

@@ -31,6 +31,7 @@ def show_page(page_enum, forgo_stack=False):
             if not forgo_stack:
                 _page_back_stack.append(get_enum_from_frame(_current_page))
             _current_page.pack_forget()
+            _page_map[get_enum_from_frame(_current_page)].on_hide()
         frame.pack(fill=tk.BOTH, expand=True)
         _page_map[page_enum].on_show()
         _current_page = frame
