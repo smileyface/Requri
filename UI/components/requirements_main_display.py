@@ -1,44 +1,58 @@
 import tkinter as tk
-from tkinter import ttk
 
+from UI.components.requirement_line_frame import RequirementFrame
+from UI.components.scrollable_frame import ScrollableFrame
 from structures import requirement_list
+from UI.pages.paging_handle import show_page, PagesEnum, get_page
 
 
-class RequirementsDisplayMain(ttk.Treeview):
 
+
+class RequirementsDisplayMain(ScrollableFrame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, columns=("ID", "Text"), **kwargs)
+        super().__init__(master, **kwargs)
 
-        self.heading("#0", text="ID")
-        self.heading("#1", text="Text")
+        self.requirement_frames = []
 
         self.update()
 
         self.bind("<Delete>", self.remove_selected)
 
-    def add(self, requirement):
-        requirement_str = requirement.unique_id.to_string()
-        self.insert("", tk.END, text=requirement_str, values=(requirement.text,))
+    def add_requirement_frame(self, requirement):
+        frame = RequirementFrame(self.scrollable_frame, requirement)
+        frame.pack(fill=tk.X)
+        self.requirement_frames.append(frame)
 
-    def remove(self, index):
-        requirement_list.remove(requirement_list.get_requirement_from_index_string(index))
+    def remove_requirement_frame(self, frame):
+        frame.destroy()
+        self.requirement_frames.remove(frame)
 
     def remove_selected(self, event):
-        selection = self.selection()
-        if selection:
-            selected_item = self.item(selection[0])
-            requirement_key = selected_item['text']  # Assuming the key is in the first column
-            self.remove(requirement_key)
-        self.update()
+        for frame in self.requirement_frames.copy():
+            if frame.focus_get() is not None:
+                index = self.requirement_frames.index(frame)
+                requirement = requirement_list.get_requirement_from_index(index)
+                requirement_list.remove(requirement)
+                self.remove_requirement_frame(frame)
+                break
+
+    def edit_selected(self, event):
+        for frame in self.requirement_frames:
+            if frame.focus_get() is not None:
+                index = self.requirement_frames.index(frame)
+                requirement = requirement_list.get_requirement_from_index(index)
+                if requirement:
+                    get_page(PagesEnum.EDIT_REQUIREMENT).requirement = requirement
+                    show_page(PagesEnum.EDIT_REQUIREMENT)
+                    break
 
     def update(self):
-        # Clear the Tree View
-        for item in self.get_children():
-            self.delete(item)
+        for frame in self.requirement_frames:
+            frame.destroy()
+        self.requirement_frames.clear()
 
         requirement_map = requirement_list.get_requirement_map()
         sorted_keys = sorted(requirement_map.keys(), key=lambda x: (x[0], x[1]))
-        # Iterate over the sorted keys and access the corresponding requirement maps
         for requirement_section in sorted_keys:
             for requirement in requirement_map[requirement_section].values():
-                self.add(requirement)
+                self.add_requirement_frame(requirement)

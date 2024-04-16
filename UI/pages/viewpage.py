@@ -12,5 +12,8 @@ class ViewPage(tk.Frame):
     def on_show(self):
         pass
 
+    def on_hide(self):
+        pass
+
     def update(self):
         pass

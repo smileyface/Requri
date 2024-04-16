@@ -1,6 +1,8 @@
 _req_map = {}
 
-
+def update(unique_id, updated):
+    _req_map[(unique_id.section, unique_id.sub)][
+        unique_id.unique_id] = updated
 
 def append(requirement):
     if (requirement.unique_id.section, requirement.unique_id.sub) not in _req_map:
@@ -42,4 +44,4 @@ def get_requirement_map():
 
 
 def clear_list():
-    _req_map.map.clear()
+    _req_map.clear()

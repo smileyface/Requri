@@ -76,13 +76,14 @@ class AddRequirementPage(ViewPage):
     def cancel(self):
         page_return()
 
-    def on_show(self):
+    def on_hide(self):
         # Reset title entry
         self.title_entry.delete(0, tk.END)
-        # Reset section combobox
-        self.section.update(requirement_list.get_section_lists())
         # Reset subsection combobox
         self.subsection.clear()
         # Reset requirement text
         self.requirement_text.delete("1.0", tk.END)
 
+    def on_show(self):
+        # Reset section combobox
+        self.section.update(requirement_list.get_section_lists())
