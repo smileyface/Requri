@@ -18,5 +18,12 @@ class Requirement:
             string += "#" + x + ", "
         return string
 
+    def to_json(self):
+        return {"id": self.unique_id.to_json(), "text": self.text, "tags": self.tags, "title": self.title}
 
+    def from_json(self, json):
+        self.unique_id.from_json(json["id"])
+        self.text = json["text"]
+        self.tags = json["tags"]
+        self.title = json["title"]
 

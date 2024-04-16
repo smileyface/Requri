@@ -6,8 +6,6 @@ from structures import requirement_list
 from UI.pages.paging_handle import show_page, PagesEnum, get_page
 
 
-
-
 class RequirementsDisplayMain(ScrollableFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
