@@ -85,4 +85,3 @@ class AddRequirementPage(ViewPage):
         self.subsection.clear()
         # Reset requirement text
         self.requirement_text.delete("1.0", tk.END)
-

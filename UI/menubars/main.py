@@ -93,4 +93,4 @@ class MainMenuBar(tk.Menu):
 
     def add_requirement(self):
         print("Main Menu - Add Requirement")
-        show_page(PagesEnum.ADD_REQUIREMENTS)
+        show_page(PagesEnum.ADD_REQUIREMENT)

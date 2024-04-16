@@ -5,17 +5,22 @@ _current_page = None
 _frame_map = dict()
 _page_map = dict()
 _pages = []
-_page_back_stack = [] #For now, Requirement_View is the home page. That will change later.
+_page_back_stack = []  #For now, Requirement_View is the home page. That will change later.
+
 
 class PagesEnum(Enum):
     REQUIREMENT_VIEW = 1
-    ADD_REQUIREMENTS = 2
+    ADD_REQUIREMENT = 2
+    EDIT_REQUIREMENT = 3
+
 
 def get_enum_from_frame(frame):
     if frame is _frame_map[PagesEnum.REQUIREMENT_VIEW]:
         return PagesEnum.REQUIREMENT_VIEW
-    elif frame is _frame_map[PagesEnum.ADD_REQUIREMENTS]:
-        return PagesEnum.ADD_REQUIREMENTS
+    elif frame is _frame_map[PagesEnum.ADD_REQUIREMENT]:
+        return PagesEnum.ADD_REQUIREMENT
+    elif frame is _frame_map[PagesEnum.EDIT_REQUIREMENT]:
+        return PagesEnum.EDIT_REQUIREMENT
 
 
 def show_page(page_enum, forgo_stack=False):
@@ -41,6 +46,7 @@ def page_return():
     page_to_show = _page_back_stack[-1]
     _page_back_stack = _page_back_stack[:-1]
     show_page(page_to_show, forgo_stack=True)
+
 
 def get_page(page_enum):
     return _page_map[page_enum]

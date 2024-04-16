@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from structures import requirement_list
+from UI.pages.paging_handle import show_page, PagesEnum, get_page
 
 
 class RequirementsDisplayMain(ttk.Treeview):
@@ -15,6 +16,7 @@ class RequirementsDisplayMain(ttk.Treeview):
         self.update()
 
         self.bind("<Delete>", self.remove_selected)
+        self.bind("<Double-1>", self.edit_selected)
 
     def add(self, requirement):
         requirement_str = requirement.unique_id.to_string()
@@ -30,6 +32,17 @@ class RequirementsDisplayMain(ttk.Treeview):
             requirement_key = selected_item['text']  # Assuming the key is in the first column
             self.remove(requirement_key)
         self.update()
+
+    def edit_selected(self, event):
+        selection = self.selection()
+        if selection:
+            selected_item = self.item(selection[0])
+            requirement_key = selected_item['text']
+            requirement = requirement_list.get_requirement_from_index_string(requirement_key)
+            if requirement:
+                get_page(PagesEnum.EDIT_REQUIREMENT).requirement = requirement
+                show_page(PagesEnum.EDIT_REQUIREMENT)
+
 
     def update(self):
         # Clear the Tree View
