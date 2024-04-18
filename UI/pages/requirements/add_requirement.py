@@ -1,6 +1,7 @@
 import tkinter as tk
 from UI.pages.viewpage import ViewPage
 from UI.components.dropdown_with_add import ComboboxWithAdd
+from UI.components.autocomplete_entry import AutoCompleteEntry
 from structures.requirement import Requirement
 from structures import requirement_list
 from UI.pages.paging_handle import show_page, PagesEnum, page_return
@@ -46,6 +47,11 @@ class AddRequirementPage(ViewPage):
         self.subsection = ComboboxWithAdd(self.left_panel, requirement_list.get_subsection_lists(self.section))
         self.subsection.pack()
 
+        #Tags
+        self.tagging_label = tk.Label(self.left_panel, text="Tags:")
+        self.tagging_text = AutoCompleteEntry(self.left_panel, [])
+        self.tagging_text.pack()
+
         # Requirement
         self.requirement_label = tk.Label(self.right_panel, text="Requirement:")
         self.requirement_label.pack()
@@ -69,7 +75,7 @@ class AddRequirementPage(ViewPage):
 
     def add(self):
         req = Requirement(get_variable(self.section), get_variable(self.subsection), self.title_entry.get(),
-                          self.requirement_text.get("1.0", tk.END), [])
+                          self.requirement_text.get("1.0", tk.END), self.tagging_text.list)
         requirement_list.append(req)
         page_return()
 

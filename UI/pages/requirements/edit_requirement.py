@@ -17,7 +17,7 @@ class EditRequirementPage(AddRequirementPage):
         requirement_list.update(self.requirement.unique_id, Requirement(get_variable(self.section),
                                                                         get_variable(self.subsection),
                                                                         self.title_entry.get(),
-                                                                        self.requirement_text.get("1.0", tk.END), []))
+                                                                        self.requirement_text.get("1.0", tk.END), self.tagging_text.list))
         page_return()
 
     def on_hide(self):
@@ -31,3 +31,4 @@ class EditRequirementPage(AddRequirementPage):
         self.update_combobox_b()  # Update subsection combobox based on section
         self.subsection.variable.set(self.requirement.unique_id.sub)
         self.requirement_text.insert("1.0", self.requirement.text)  # Insert new text
+        self.tagging_text.list = self.requirement.tags
