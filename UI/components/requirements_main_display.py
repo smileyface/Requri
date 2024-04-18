@@ -6,13 +6,12 @@ from structures import requirement_list
 from UI.pages.paging_handle import show_page, PagesEnum, get_page
 
 
-
-
 class RequirementsDisplayMain(ScrollableFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
         self.requirement_frames = []
+        self.selected_frame = None  # Track the currently selected frame
 
         self.update()
 
@@ -20,31 +19,29 @@ class RequirementsDisplayMain(ScrollableFrame):
 
     def add_requirement_frame(self, requirement):
         frame = RequirementFrame(self.scrollable_frame, requirement)
-        frame.pack(fill=tk.X)
+        frame.pack(side=tk.TOP, fill=tk.X)
         self.requirement_frames.append(frame)
+        frame.bind("<Button-1>", lambda event, frame=frame: self.toggle_selection(event, frame))
 
     def remove_requirement_frame(self, frame):
         frame.destroy()
         self.requirement_frames.remove(frame)
 
     def remove_selected(self, event):
-        for frame in self.requirement_frames.copy():
-            if frame.focus_get() is not None:
-                index = self.requirement_frames.index(frame)
-                requirement = requirement_list.get_requirement_from_index(index)
-                requirement_list.remove(requirement)
-                self.remove_requirement_frame(frame)
-                break
+        if self.selected_frame:
+            index = self.requirement_frames.index(self.selected_frame)
+            requirement = requirement_list.get_requirement_from_index(index)
+            requirement_list.remove(requirement)
+            self.remove_requirement_frame(self.selected_frame)
+            self.selected_frame = None  # Reset selected frame after removal
 
     def edit_selected(self, event):
-        for frame in self.requirement_frames:
-            if frame.focus_get() is not None:
-                index = self.requirement_frames.index(frame)
-                requirement = requirement_list.get_requirement_from_index(index)
-                if requirement:
-                    get_page(PagesEnum.EDIT_REQUIREMENT).requirement = requirement
-                    show_page(PagesEnum.EDIT_REQUIREMENT)
-                    break
+        if self.selected_frame:
+            index = self.requirement_frames.index(self.selected_frame)
+            requirement = requirement_list.get_requirement_from_index(index)
+            if requirement:
+                get_page(PagesEnum.EDIT_REQUIREMENT).requirement = requirement
+                show_page(PagesEnum.EDIT_REQUIREMENT)
 
     def update(self):
         for frame in self.requirement_frames:
@@ -56,3 +53,18 @@ class RequirementsDisplayMain(ScrollableFrame):
         for requirement_section in sorted_keys:
             for requirement in requirement_map[requirement_section].values():
                 self.add_requirement_frame(requirement)
+
+    def toggle_selection(self, event, frame):
+        print("Toggle selection called")
+        # Deselect previously selected frame (if any)
+        if self.selected_frame and self.selected_frame in self.requirement_frames:
+            print("Deselecting previous frame")
+            self.selected_frame.config(borderwidth=1, relief=tk.SOLID)
+        # Toggle selection for the clicked frame
+        if frame == self.selected_frame:
+            print("Frame is already selected, deselecting")
+            self.selected_frame = None
+        else:
+            print("Selecting new frame")
+            self.selected_frame = frame
+            frame.config(borderwidth=2, relief=tk.SOLID, highlightbackground="blue")

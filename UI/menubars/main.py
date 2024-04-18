@@ -1,8 +1,11 @@
+import json
 import tkinter as tk
 from enum import Enum
+from tkinter import filedialog
 
-from UI.pages.paging_handle import show_page, PagesEnum
-from structures import requirement_list
+from UI.dialog.new_project import NewProjectDialog
+from UI.pages.paging_handle import show_page, PagesEnum, get_page
+from structures import requirement_list, project
 
 
 class Callback_Functions(Enum):
@@ -17,6 +20,7 @@ class MainMenuBar(tk.Menu):
         file_menu = tk.Menu(self, tearoff=False)
         file_menu.add_command(label="New", command=self.new_file)
         file_menu.add_command(label="Save", command=self.save_file)
+        file_menu.add_command(label="Save As", command=self.save_as_file)
         file_menu.add_command(label="Open", command=self.open_file)
 
         file_menu.add_separator()
@@ -45,9 +49,9 @@ class MainMenuBar(tk.Menu):
         project_menu = tk.Menu(self, tearoff=False)
         add_project_menu = tk.Menu(project_menu, tearoff=0)
         add_project_menu.add_command(label="Requirement", command=self.add_requirement)
+        add_project_menu.add_command(label="Requirement (Mass)", command=self.mass_add_requirement)
         project_menu.add_cascade(label="Add", menu=add_project_menu)
         self.add_cascade(label="Project", menu=project_menu)
-
 
         # callbacks
         self.new_file_callback = lambda: {}
@@ -60,12 +64,30 @@ class MainMenuBar(tk.Menu):
         print("New file")
         requirement_list.clear_list()
         self.new_file_callback()
+        dialog = NewProjectDialog(self.master, title="New Project")
+        project.set_name(dialog)
 
     def save_file(self):
-        print("Save File")
+        if project.get_save_file():
+            with open(project.get_save_file(), "w") as file:
+                json.dump(project.generate_save_file(), file, indent=4)
+        else:
+            self.save_as_file()
+
+    def save_as_file(self):
+        project.set_save_file(filedialog.asksaveasfilename(initialdir="/", title="Select Save File",
+                                                           filetypes=(("JSON files", "*.json"), ("All files", "*.*")),
+                                                           defaultextension=".json"))
+        self.save_file()
 
     def open_file(self):
-        print("Open file")
+        requirement_list.clear_list()
+        project.set_save_file(filedialog.askopenfilename(initialdir="/", title="Select Open File",
+                                                         filetypes=(("JSON files", "*.json"), ("All files", "*.*"))))
+        if project.get_save_file():
+            with open(project.get_save_file(), "r") as file:
+                project.expand_save_file(json.load(file))
+        get_page(PagesEnum.REQUIREMENT_VIEW).on_show()
 
     def import_code(self):
         print("Importing Code")
@@ -94,3 +116,7 @@ class MainMenuBar(tk.Menu):
     def add_requirement(self):
         print("Main Menu - Add Requirement")
         show_page(PagesEnum.ADD_REQUIREMENT)
+
+    def mass_add_requirement(self):
+        print("Main Menu - Mass Add Requirement")
+        show_page(PagesEnum.MASS_ADD_REQUIREMENT)
