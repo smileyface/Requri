@@ -16,5 +16,6 @@ class MassAddRequirementPage(AddRequirementPage):
         for text in texts:
             req = Requirement(get_variable(self.section), get_variable(self.subsection), self.title_entry.get(),
                               text, self.tagging_text.list)
+
             requirement_list.append(req)
         page_return()
