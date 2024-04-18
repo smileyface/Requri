@@ -2,7 +2,7 @@ import tkinter as tk
 from UI.pages.viewpage import ViewPage
 from UI.components.dropdown_with_add import ComboboxWithAdd
 from UI.components.autocomplete_entry import AutoCompleteEntry
-from structures.requirement import Requirement
+from structures.requirement import Requirement, get_known_tags
 from structures import requirement_list
 from UI.pages.paging_handle import show_page, PagesEnum, page_return
 
@@ -49,7 +49,7 @@ class AddRequirementPage(ViewPage):
 
         #Tags
         self.tagging_label = tk.Label(self.left_panel, text="Tags:")
-        self.tagging_text = AutoCompleteEntry(self.left_panel, [])
+        self.tagging_text = AutoCompleteEntry(self.left_panel, get_known_tags())
         self.tagging_text.pack()
 
         # Requirement

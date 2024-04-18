@@ -45,3 +45,4 @@ def get_requirement_map():
 
 def clear_list():
     _req_map.clear()
+

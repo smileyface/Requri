@@ -1,5 +1,14 @@
 from structures.requirement_id import RequirementId
 
+_known_tags = set()
+
+def get_known_tags():
+    return _known_tags
+
+def add_known_tags(tags):
+    global _known_tags
+    for x in tags:
+        _known_tags.add(x)
 
 class Requirement:
     def __init__(self, section, sub, title, text, tags):
@@ -7,6 +16,7 @@ class Requirement:
         self.text = text.strip()
         self.tags = tags
         self.title = title
+        add_known_tags(tags)
 
     @property
     def unique_id(self):

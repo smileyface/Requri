@@ -24,10 +24,13 @@ class AutoCompleteEntry(tk.Frame):
     def list(self):
         return self.entry.get().replace("#", "").split(",")
 
-    @set(property)
+    @list.setter
     def set_list(self, value):
         if isinstance(value, list):
             self.entry.insert(0, "#" + ", #".join(value) + ",")
+        else:
+            raise ValueError
+
     def check_trigger(self, event):
         if event.keysym == 'numbersign' and self.in_state is False:
             self.show_popup()
