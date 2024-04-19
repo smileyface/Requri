@@ -23,10 +23,15 @@ class AutoCompleteEntry(tk.Frame):
 
     @property
     def list(self):
-        return self.entry.get().replace("#", "").split(",")
+        entries = self.entry.get().split(",")
+        for x in range(len(entries)):
+            entries[x] = entries[x].strip().strip("#")
+        if '' in entries:
+            entries.remove('')
+        return entries
 
     @list.setter
-    def set_list(self, value):
+    def list(self, value):
         if isinstance(value, list):
             self.entry.insert(0, "#" + ", #".join(value) + ",")
         else:
@@ -94,3 +99,6 @@ class AutoCompleteEntry(tk.Frame):
         else:
             options = self.choices[:5]
         return options
+
+    def update_choices(self, choices):
+        self.choices = choices

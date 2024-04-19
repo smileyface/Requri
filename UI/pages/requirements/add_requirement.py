@@ -93,3 +93,4 @@ class AddRequirementPage(ViewPage):
     def on_show(self):
         # Reset section combobox
         self.section.update(requirement_list.get_section_lists())
+        self.tagging_text.update_choices(get_known_tags())

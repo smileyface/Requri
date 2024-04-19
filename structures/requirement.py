@@ -3,7 +3,7 @@ from structures.requirement_id import RequirementId
 _known_tags = set()
 
 def get_known_tags():
-    return _known_tags
+    return list(_known_tags)
 
 def add_known_tags(tags):
     global _known_tags
@@ -16,6 +16,8 @@ class Requirement:
         self.text = text.strip()
         self.tags = tags
         self.title = title
+        if(self.title == ""):
+            self.title = self.text[0:20]
         add_known_tags(tags)
 
     @property
@@ -28,5 +30,7 @@ class Requirement:
             string += "#" + x + ", "
         return string
 
-
+    def to_json(self):
+        json = {"id": self._unique_id.to_json(), "title": self.title, "text": self.text, "tags": self.tags}
+        return json
 
