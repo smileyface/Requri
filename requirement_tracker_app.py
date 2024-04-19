@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
-from UI.components.autocomplete_entry import AutocompleteEntry
+from UI.components.autocomplete_entry import AutoCompleteEntry
 from UI.dialog.search_dialog import SearchDialog
 from UI.components.tooltip import Tooltip
 from structures.requirement import Requirement, requirements_list
@@ -32,7 +32,7 @@ class RequirementTrackerApp:
         # Entry field for tags with autocomplete suggestions
         self.tags_label = tk.Label(self.master, text="Tags:")
         self.tags_label.grid(row=3, column=0, padx=5, sticky=tk.E)
-        self.autocomplete_tags_entry = AutocompleteEntry(self.master, width=40)
+        self.autocomplete_tags_entry = AutoCompleteEntry(self.master, width=40)
         self.autocomplete_tags_entry.grid(row=3, column=1, columnspan=2, padx=5, sticky=tk.W)
         self.autocomplete_tags_entry.set_autocomplete_list([])  # Populate this list with known tags
         # Adding tooltip for Tags label
