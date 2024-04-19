@@ -1,19 +1,44 @@
 class RequirementId:
     id_map = dict()
+    id_range_max = 1000
 
-    def __init__(self, section, sub):
+    def __init__(self, section, sub, unique_id=None):
         self.section = section
         self.sub = sub
-        self.unique_id = self._get_unique_id();
+        self._unique_id = None
+        if unique_id is not None:
+            self.unique_id = unique_id
 
-    def _get_unique_id(self):
+    @property
+    def unique_id(self):
+        if self._unique_id is None:
+            self._unique_id = self._create_unique_id()
+        return self._unique_id
+
+    @unique_id.setter
+    def unique_id(self, id):
         location = (self.section, self.sub)
         if location not in self.id_map.keys():
-            RequirementId.id_map[location] = 0
+            RequirementId.id_map[location] = [id]
+            self._unique_id = id
+        elif id < 0 or id > self.id_range_max:
+            raise ValueError("ID out of range")
+        elif id in RequirementId.id_map[location]:
+            raise ValueError("Non Unique ID")
+        else:
+            RequirementId.id_map[location].append(id)
+            self._unique_id = id
 
-        unique_id = RequirementId.id_map[location]
-        RequirementId.id_map[location] += 1
-        return unique_id
+    def _create_unique_id(self):
+        location = (self.section, self.sub)
+        if location not in self.id_map.keys():
+            RequirementId.id_map[location] = [0]
+            return 0
+        else:
+            for x in range(0, self.id_range_max):
+                if x not in RequirementId.id_map[location]:
+                    RequirementId.id_map[location].append(x)
+                    return x
 
     def to_string(self):
         return self.section + "-" + self.sub + "-" + str(self.unique_id)

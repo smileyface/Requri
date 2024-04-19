@@ -11,8 +11,8 @@ def add_known_tags(tags):
         _known_tags.add(x)
 
 class Requirement:
-    def __init__(self, section, sub, title, text, tags):
-        self._unique_id = RequirementId(section, sub)
+    def __init__(self, section, sub, title, text, tags, unique_id=None):
+        self._unique_id = RequirementId(section, sub, unique_id)
         self.text = text.strip()
         self.tags = tags
         self.title = title

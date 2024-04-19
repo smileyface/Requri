@@ -1,3 +1,5 @@
+from structures.requirement import Requirement
+
 _req_map = {}
 
 def update(unique_id, updated):
@@ -46,3 +48,11 @@ def get_requirement_map():
 def clear_list():
     _req_map.clear()
 
+
+def expand_from_json(all_the_things):
+    for x in all_the_things:
+        req = Requirement(x["id"]['section'], x["id"]["subsection"], x["title"], x["text"], x["tags"], x["id"]["unique_id"])
+        append(req)
+    #    _req_map[(x["id"]['section'], x["id"]["subsection"]
+    #_req_map = all_the_things
+    pass

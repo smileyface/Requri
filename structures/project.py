@@ -34,4 +34,4 @@ def generate_save_file():
 def expand_save_file(all_the_things):
     global _name
     _name = all_the_things["filename"]
-    requirement_list.expand_from_json(all_the_things)
+    requirement_list.expand_from_json(all_the_things["req"])

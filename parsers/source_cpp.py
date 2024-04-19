@@ -5,7 +5,7 @@ import clang.cindex
 class cpp_parser:
     def __init__(self):
         # Set the library path for clang
-        clang.cindex.Config.set_library_path("C:\\Program Files (x86)\\LLVM\\bin")
+        clang.cindex.Config.set_library_path("C:\\Program Files\\LLVM\\bin")
 
     def find_functions(self, file_path):
         # Initialize Clang index
