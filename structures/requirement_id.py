@@ -9,6 +9,9 @@ class RequirementId:
         if unique_id is not None:
             self.unique_id = unique_id
 
+    def __del__(self):
+        self.reset_unique_id()
+
     @property
     def unique_id(self):
         if self._unique_id is None:
@@ -29,6 +32,12 @@ class RequirementId:
             RequirementId.id_map[location].append(id)
             self._unique_id = id
 
+    def reset_unique_id(self):
+        location = (self.section, self.sub)
+        if location in self.id_map:
+            RequirementId.id_map.pop(location)
+        self._unique_id = None
+
     def _create_unique_id(self):
         location = (self.section, self.sub)
         if location not in self.id_map.keys():
@@ -42,3 +51,6 @@ class RequirementId:
 
     def to_string(self):
         return self.section + "-" + self.sub + "-" + str(self.unique_id)
+
+    def to_json(self):
+        return {"section": self.section, "sub": self.sub, "id": self._unique_id}

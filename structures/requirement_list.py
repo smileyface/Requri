@@ -2,9 +2,17 @@ from structures.requirement import Requirement
 
 _req_map = {}
 
-def update(unique_id, updated):
+def update(unique_id, section, sub, title, text, tags):
+    #Update section and subsection
+    if not unique_id.section == section or not unique_id.sub == sub:
+        append(Requirement(section, sub,title, text, tags))
+        _req_map.pop((unique_id.section, unique_id.sub))
     _req_map[(unique_id.section, unique_id.sub)][
-        unique_id.unique_id] = updated
+        unique_id.unique_id].title = title
+    _req_map[(unique_id.section, unique_id.sub)][
+        unique_id.unique_id].text = text
+    _req_map[(unique_id.section, unique_id.sub)][
+        unique_id.unique_id].tags = tags
 
 def append(requirement):
     if (requirement.unique_id.section, requirement.unique_id.sub) not in _req_map:
@@ -51,7 +59,7 @@ def clear_list():
 
 def expand_from_json(all_the_things):
     for x in all_the_things:
-        req = Requirement(x["id"]['section'], x["id"]["subsection"], x["title"], x["text"], x["tags"], x["id"]["unique_id"])
+        req = Requirement(x["id"]['section'], x["id"]["sub"], x["title"], x["text"], x["tags"], x["id"]["id"])
         append(req)
     #    _req_map[(x["id"]['section'], x["id"]["subsection"]
     #_req_map = all_the_things

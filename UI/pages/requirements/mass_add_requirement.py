@@ -10,7 +10,6 @@ class MassAddRequirementPage(AddRequirementPage):
     def __init__(self, master):
         super().__init__(master)
 
-
     def add(self):
         texts = self.requirement_text.get("1.0", tk.END).strip().split("\n")
         for text in texts:
@@ -19,3 +18,4 @@ class MassAddRequirementPage(AddRequirementPage):
 
             requirement_list.append(req)
         page_return()
+  

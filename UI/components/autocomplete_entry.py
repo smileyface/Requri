@@ -76,7 +76,7 @@ class AutoCompleteEntry(tk.Frame):
         if index:
             selected_text = self.option_list.get(index)
             autocompleted_entry = self.list
-            autocompleted_entry[-1] = selected_text
+            autocompleted_entry.append(selected_text)
             strong = "#" + ", #".join(autocompleted_entry) + ","
             self.entry.delete(0, tk.END)  # Clear existing text
             self.entry.insert(0, strong)  # Insert new text
