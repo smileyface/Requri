@@ -2,13 +2,16 @@ from structures.requirement_id import RequirementId
 
 _known_tags = set()
 
+
 def get_known_tags():
     return list(_known_tags)
+
 
 def add_known_tags(tags):
     global _known_tags
     for x in tags:
         _known_tags.add(x)
+
 
 class Requirement:
     def __init__(self, section, sub, title, text, tags, unique_id=None):
@@ -16,7 +19,7 @@ class Requirement:
         self.text = text.strip()
         self.tags = tags
         self.title = title
-        if(self.title == ""):
+        if self.title == "":
             self.title = self.text[0:20]
         add_known_tags(tags)
 
@@ -25,7 +28,7 @@ class Requirement:
         return self._unique_id
 
     def to_string(self):
-        string = self.unique_id.to_string() + ": " + self.title + "\n" + self.text +"\n\t"
+        string = self.unique_id.to_string() + ": " + self.title + "\n" + self.text + "\n\t"
         for x in self.tags:
             string += "#" + x + ", "
         return string
@@ -33,4 +36,3 @@ class Requirement:
     def to_json(self):
         json = {"id": self._unique_id.to_json(), "title": self.title, "text": self.text, "tags": self.tags}
         return json
-

@@ -3,9 +3,11 @@ import tkinter as tk
 from enum import Enum
 from tkinter import filedialog
 
+import parsers.source_cpp
 from UI.dialog.new_project import NewProjectDialog
 from UI.pages.paging_handle import show_page, PagesEnum, get_page
 from structures import requirement_list, project
+from structures import code
 
 
 class Callback_Functions(Enum):
@@ -13,6 +15,7 @@ class Callback_Functions(Enum):
 
 
 class MainMenuBar(tk.Menu):
+    parser = parsers.source_cpp.cpp_parser()
     def __init__(self, master):
         super().__init__(master)
 
@@ -90,7 +93,13 @@ class MainMenuBar(tk.Menu):
         get_page(PagesEnum.REQUIREMENT_VIEW).on_show()
 
     def import_code(self):
-        print("Importing Code")
+        project.set_code_location(filedialog.askdirectory(initialdir="/", title="Select Code Directory"))
+        cpp_code_files = self.parser.scan_cpp_files(project.get_code_location())
+        functions = []
+        for file_path in cpp_code_files:
+            functions.extend(self.parser.find_functions(file_path))
+        for x in functions:
+            code.append(code.Code(x[0], x[1]))
 
     def import_test(self):
         print("Importing Test")
@@ -114,9 +123,7 @@ class MainMenuBar(tk.Menu):
         print("Paste")
 
     def add_requirement(self):
-        print("Main Menu - Add Requirement")
         show_page(PagesEnum.ADD_REQUIREMENT)
 
     def mass_add_requirement(self):
-        print("Main Menu - Mass Add Requirement")
         show_page(PagesEnum.MASS_ADD_REQUIREMENT)

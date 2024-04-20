@@ -22,6 +22,7 @@ class EditRequirementPage(AddRequirementPage):
     def on_hide(self):
         self.requirement_text.delete("1.0", tk.END)  # Clear existing text
         self.title_entry.delete(0, tk.END)  # Clear existing text
+        self.tagging_text.clear()
 
     def on_show(self):
         # Populate fields with data from the provided Requirement instance

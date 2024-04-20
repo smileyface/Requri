@@ -102,3 +102,6 @@ class AutoCompleteEntry(tk.Frame):
 
     def update_choices(self, choices):
         self.choices = choices
+
+    def clear(self):
+        self.entry.delete(0, tk.END)

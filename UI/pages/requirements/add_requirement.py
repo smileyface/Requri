@@ -89,6 +89,8 @@ class AddRequirementPage(ViewPage):
         self.subsection.clear()
         # Reset requirement text
         self.requirement_text.delete("1.0", tk.END)
+        # Reset the tags
+        self.tagging_text.clear()
 
     def on_show(self):
         # Reset section combobox
