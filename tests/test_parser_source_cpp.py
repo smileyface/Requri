@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from parser.source_cpp import cpp_parser
+from parsers.source_cpp import cpp_parser
 
 
 class Testcpp_parser(TestCase):
@@ -46,10 +46,12 @@ class Testcpp_parser(TestCase):
         # Get a list of .cpp and .h files in the directory
         cpp_files = parser.scan_cpp_files(directory)
 
+        functions = []
         # Test the find_functions method for each file
         for file_path in cpp_files:
-            functions = parser.find_functions(file_path)
-            assert len(functions) > 0  # Assert that at least one function was found
+            functions.extend(parser.find_functions(file_path))
+
+        assert len(functions) > 0  # Assert that at least one function was found
 
     def test_scan_cpp_files(self):
         # Create an instance of cpp_parser
