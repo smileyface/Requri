@@ -50,7 +50,13 @@ class RequirementId:
                     return x
 
     def to_string(self):
-        return self.section + "-" + self.sub + "-" + str(self.unique_id)
+        string_to_return = ""
+        if self.section != '':
+            string_to_return += f"{self.section}-"
+        if self.sub != '':
+            string_to_return += f"{self.sub}-"
+
+        return string_to_return + str(self.unique_id)
 
     def to_json(self):
         return {"section": self.section, "sub": self.sub, "id": self._unique_id}
