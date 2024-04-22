@@ -1,7 +1,7 @@
 from UI.pages.viewpage import ViewPage
 import tkinter as tk
 
-from UI.components.requirements_main_display import RequirementsDisplayMain
+from UI.components.tile_display import TileView
 
 
 class RequirementView(ViewPage):
@@ -9,7 +9,7 @@ class RequirementView(ViewPage):
         super().__init__(master)
         self.master = master
 
-        self.requirement_listbox = RequirementsDisplayMain(self.master)
+        self.requirement_listbox = TileView(self.master)
         self.label = tk.Label(self.master, text="Requirements:")
 
         self.label.pack(fill=tk.X)
