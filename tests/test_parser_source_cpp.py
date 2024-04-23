@@ -39,14 +39,12 @@ class Testcpp_parser(unittest.TestCase):
             print(f"Generated test file: {file_path}")
 
     def test_find_functions(self):
-        # Create an instance of cpp_parser
         parser = cpp_parser()
-
         # Directory to scan for .cpp and .h files
-        directory = "C:\\Users\\kason\\source\\repos\\ContraControl\\dev"
+        project.set_code_location("C:\\Users\\kason\\source\\repos\\ContraControl\\dev")
 
         # Get a list of .cpp and .h files in the directory
-        cpp_files = parser.scan_cpp_files(directory)
+        cpp_files = parser.cpp_files
 
         functions = []
         # Test the find_functions method for each file
@@ -62,13 +60,11 @@ class Testcpp_parser(unittest.TestCase):
         parser = cpp_parser()
 
         # Directory to scan for .cpp and .h files
-        directory = "C:\\Users\\kason\\source\\repos\\ContraControl\\dev"
+        project.set_code_location("C:\\Users\\kason\\source\\repos\\ContraControl\\dev")
 
         # Test the scan_cpp_files method
-        cpp_files = parser.scan_cpp_files(directory)
+        cpp_files = parser.cpp_files
         self.assertTrue(len(cpp_files) > 0)  # Assert that at least one file was found
-
-        self.cpp_files = cpp_files
 
     def test_find_callers_of_function(self):
 
@@ -78,9 +74,12 @@ class Testcpp_parser(unittest.TestCase):
             print(f"{current}/{final} files scanned")
         generate_code_list(print_results)
 
+        called = []
+        for x in list(code_list.values()):
+            called.extend(x.call_list)
 
-        # Print the results
-        print("Callers of function", code_list[68].name, ":")
+
+        self.assertTrue(len(called) > 0)  # Assert that at least 1 call was found.
 
     def test_get_functions_from_source(self):
 

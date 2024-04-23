@@ -1,9 +1,12 @@
 code_list = dict()
+signature_to_id_map = dict()
 
 
 def append(code):
     global code_list
     code_list[code.unique_id] = code
+    signature_to_id_map[code.signature] = code.unique_id
+
 
 class Code:
     id_map = []
@@ -49,4 +52,6 @@ class Code:
                 return x
 
     def to_json(self):
-        return {"id": self._unique_id, "url": self.location, "signature": self.name}
+        return {"id": self._unique_id, "location": self.location, "access": self.access_level, "class": self.class_name,
+                "name": self.name, "arguments": self.argument, "begin": self.func_begin, "end": self.func_end,
+                "call_list": self.call_list}

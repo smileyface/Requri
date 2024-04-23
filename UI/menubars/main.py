@@ -1,5 +1,4 @@
 import json
-import os.path
 import tkinter as tk
 from enum import Enum
 from tkinter import filedialog
@@ -8,7 +7,6 @@ import parsers.source_cpp
 from UI.dialog.new_project import NewProjectDialog
 from UI.pages.paging_handle import show_page, PagesEnum, get_page, get_current_page
 from structures import requirement_list, project
-from structures import code
 
 
 class Callback_Functions(Enum):
@@ -17,6 +15,7 @@ class Callback_Functions(Enum):
 
 class MainMenuBar(tk.Menu):
     parser = parsers.source_cpp.cpp_parser()
+
     def __init__(self, master):
         super().__init__(master)
 
@@ -72,8 +71,6 @@ class MainMenuBar(tk.Menu):
         project.set_name(dialog)
         get_page(get_current_page()).update()
 
-
-
     def save_file(self):
         if project.get_save_file():
             with open(project.get_save_file(), "w") as file:
@@ -98,12 +95,11 @@ class MainMenuBar(tk.Menu):
 
     def import_code(self):
         project.set_code_location(filedialog.askdirectory(initialdir="/", title="Select Code Directory"))
-        cpp_code_files = self.parser.scan_cpp_files(project.get_code_location())
-        functions = []
-        for file_path in cpp_code_files:
-            functions.extend(self.parser.find_functions(file_path))
-        for x in functions:
-            code.append(code.Code(os.path.relpath(x[0], project.get_code_location()), x[1]))
+
+        def print_results(current, final):
+            print(f"{current}/{final} files scanned")
+
+        parsers.generate_code_list(print_results)
         get_page(get_current_page()).update()
 
     def import_test(self):
