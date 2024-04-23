@@ -24,5 +24,4 @@ class MainApplication(tk.Tk):
 
     def create_menu(self, main_application):
         menu_bar = MainMenuBar(main_application)
-        menu_bar.register_callback(Callback_Functions.NEW_FILE, get_page(PagesEnum.REQUIREMENT_VIEW).update)
         self.config(menu=menu_bar)

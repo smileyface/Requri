@@ -66,6 +66,8 @@ class AddRequirementPage(ViewPage):
         self.cancel_button = tk.Button(self.button_frame, text="Cancel", command=self.cancel)
         self.cancel_button.pack(side=tk.LEFT)
 
+        #self.bind("<Enter>", self.on_enter)
+
     def update_combobox_b(self, event=None):
         section = get_variable(self.section)
         if section in requirement_list.get_section_lists():
@@ -96,3 +98,6 @@ class AddRequirementPage(ViewPage):
         # Reset section combobox
         self.section.update(requirement_list.get_section_lists())
         self.tagging_text.update_choices(get_known_tags())
+
+    def on_enter(self, event):
+        self.add()

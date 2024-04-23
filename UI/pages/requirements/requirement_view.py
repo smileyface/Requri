@@ -16,4 +16,7 @@ class RequirementView(ViewPage):
         self.requirement_listbox.pack(fill=tk.BOTH, expand=True)
 
     def on_show(self):
+        self.update()
+
+    def update(self):
         self.requirement_listbox.update()

@@ -56,6 +56,9 @@ def page_return():
 def get_page(page_enum):
     return _page_map[page_enum]
 
+def get_current_page():
+    return get_enum_from_frame(_current_page)
+
 
 def create_and_register_frame(parent, page_enum, page_type):
     frame = tk.Frame(parent)

@@ -1,11 +1,12 @@
 import json
+import os.path
 import tkinter as tk
 from enum import Enum
 from tkinter import filedialog
 
 import parsers.source_cpp
 from UI.dialog.new_project import NewProjectDialog
-from UI.pages.paging_handle import show_page, PagesEnum, get_page
+from UI.pages.paging_handle import show_page, PagesEnum, get_page, get_current_page
 from structures import requirement_list, project
 from structures import code
 
@@ -69,6 +70,9 @@ class MainMenuBar(tk.Menu):
         self.new_file_callback()
         dialog = NewProjectDialog(self.master, title="New Project")
         project.set_name(dialog)
+        get_page(get_current_page()).update()
+
+
 
     def save_file(self):
         if project.get_save_file():
@@ -99,7 +103,8 @@ class MainMenuBar(tk.Menu):
         for file_path in cpp_code_files:
             functions.extend(self.parser.find_functions(file_path))
         for x in functions:
-            code.append(code.Code(x[0], x[1]))
+            code.append(code.Code(os.path.relpath(x[0], project.get_code_location()), x[1]))
+        get_page(get_current_page()).update()
 
     def import_test(self):
         print("Importing Test")
