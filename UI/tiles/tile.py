@@ -5,10 +5,13 @@ from structures.requirement import Requirement
 
 
 class Tile(tk.Frame):
+    default_width = 25
+    default_height = 300
     def __init__(self, master, data, **kwargs):
         super().__init__(master, bd=1, relief=tk.SOLID, **kwargs)
         self.selected = False
         self.data = data
+        self.config(width=self.default_width, height=self.default_height)  # Set default width and height
 
     def _selection_bind(self):
         self.bind("<Button-1>", self.toggle_selection)  # Bind click event to toggle selection
