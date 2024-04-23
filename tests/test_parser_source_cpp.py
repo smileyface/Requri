@@ -1,10 +1,12 @@
 import os
-from unittest import TestCase
+import unittest
 
-from parsers.source_cpp import cpp_parser
+from parsers.source_cpp import cpp_parser, generate_code_list
+from structures import project
+from structures.code import code_list
 
 
-class Testcpp_parser(TestCase):
+class Testcpp_parser(unittest.TestCase):
 
     def generate_test_cpp_file(self, file_path):
         with open(file_path, 'w') as file:
@@ -51,7 +53,9 @@ class Testcpp_parser(TestCase):
         for file_path in cpp_files:
             functions.extend(parser.find_functions(file_path))
 
-        assert len(functions) > 0  # Assert that at least one function was found
+        self.assertTrue(len(functions) > 0)  # Assert that at least one function was found
+
+        self.functions = functions
 
     def test_scan_cpp_files(self):
         # Create an instance of cpp_parser
@@ -62,7 +66,30 @@ class Testcpp_parser(TestCase):
 
         # Test the scan_cpp_files method
         cpp_files = parser.scan_cpp_files(directory)
-        assert len(cpp_files) > 0  # Assert that at least one file was found
+        self.assertTrue(len(cpp_files) > 0)  # Assert that at least one file was found
+
+        self.cpp_files = cpp_files
+
+    def test_find_callers_of_function(self):
+
+        project.set_code_location("C:\\Users\\kason\\source\\repos\\ContraControl\\dev")
+
+        def print_results(current, final):
+            print(f"{current}/{final} files scanned")
+        generate_code_list(print_results)
+
+
+        # Print the results
+        print("Callers of function", code_list[68].name, ":")
 
     def test_get_functions_from_source(self):
-        self.fail()
+
+        project.set_code_location("C:\\Users\\kason\\source\\repos\\ContraControl\\dev")
+
+        def print_results(current, final):
+            print(f"{current}/{final} files scanned")
+        generate_code_list(print_results)
+
+# Run the tests
+if __name__ == '__main__':
+    unittest.main()
