@@ -1,4 +1,7 @@
+import concurrent
 import os
+import threading
+
 import clang.cindex
 
 from structures import project
@@ -7,24 +10,25 @@ from structures.code import Code, code_list, append, signature_to_id_map
 # Set the library path for clang
 clang.cindex.Config.set_library_path("C:\\Program Files\\LLVM\\bin")
 
-def generate_code_list(callback):
-    parser = cpp_parser()
-    functions = parser.get_functions_from_source(project.get_code_location(), callback)
-    for x in functions:
-        append(x)
-    print(f"{len(code_list)} functions found.")
-    for y in parser.cpp_files:
-        print(f"Searching in {y}")
-        calls = parser.find_function_calls(y)
-        for z in calls.keys():
-            print(f"\tCall to {z} found")
-            code_list[signature_to_id_map[z]].call_list.extend(calls[z])
+mutex = threading.Lock()
 
+def generate_code_list():
+    parser = cpp_parser()
+    for x in parser.functions:
+        append(x)
+    calls = parser.function_calls
+    for z in calls.keys():
+        print(f"\tCall to {z} found")
+        code_list[signature_to_id_map[z]].call_list.extend(calls[z])
 
 
 class cpp_parser:
+    _function_calls = dict()
+    _cpp_files = []
+    _functions = []
+
     def __init__(self):
-        self._cpp_files = []
+        pass
 
     @property
     def cpp_files(self):
@@ -32,7 +36,26 @@ class cpp_parser:
             self.scan_cpp_files(project.get_code_location())
         return self._cpp_files
 
+    @property
+    def functions(self):
+        if self._functions == []:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                futures = [executor.submit(self.find_functions, file_path) for file_path in self.cpp_files]
+                concurrent.futures.wait(futures)
+            print(f"{len(self._functions)} functions found")
+        return self._functions
+
+    @property
+    def function_calls(self):
+        self.functions
+        if self._function_calls == {}:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                futures = [executor.submit(self.find_function_calls, file_path) for file_path in self.cpp_files]
+                concurrent.futures.wait(futures)
+        return self._function_calls
+
     def find_functions(self, file_path):
+        print(f"Searching for functions in: {file_path}")
         # Initialize Clang index
         index = clang.cindex.Index.create()
 
@@ -76,29 +99,35 @@ class cpp_parser:
 
         # Extract functions from the translation unit's cursor
         functions = extract_functions(translation_unit.cursor)
-
-        return functions
+        mutex.acquire()
+        self._functions.extend(functions)
+        mutex.release()
 
     def find_function_calls(self, file_path):
         index = clang.cindex.Index.create()
         translation_unit = index.parse(file_path)
         calls = dict()
+        print(f"Finding calls in {file_path}")
 
         def traverse(cursor, parent_cursor=None):
             if cursor.location.file and project.get_code_location() in cursor.location.file.name:
                 if cursor.kind == clang.cindex.CursorKind.CALL_EXPR:
                     called_function = cursor.referenced
                     if called_function:
-                        for target_func in list(code_list.values()):
+                        functions = self.functions
+                        for target_func in functions:
                             if (called_function.spelling == target_func.name and
                                     called_function.semantic_parent.spelling == target_func.class_name):
                                 parent_function = find_parent_function(cursor)
                                 if parent_function:
+                                    print(f"Call to {target_func.signature} found")
+                                    mutex.acquire()
                                     if target_func.signature in calls.keys():
                                         # Extract function signature and append to calls
-                                        calls[target_func.signature].append(parent_function.signature)
+                                        self._function_calls[target_func.signature].append(parent_function.signature)
                                     else:
-                                        calls[target_func.signature] = [parent_function.signature]
+                                        self._function_calls[target_func.signature] = [parent_function.signature]
+                                    mutex.release()
             for child in cursor.get_children():
                 try:
                     traverse(child, cursor)
@@ -106,23 +135,13 @@ class cpp_parser:
                     continue
 
         def find_parent_function(cursor):
-            for x in code_list.keys():
-                if (os.path.normpath(code_list[x].location) == cursor.location.file.name and
-                        (code_list[x].func_begin < cursor.location.line < code_list[x].func_end)):
-                    return code_list[x]
+            for x in self.functions:
+                if (os.path.normpath(x.location) == cursor.location.file.name and
+                        (x.func_begin < cursor.location.line < x.func_end)):
+                    return x
             return None
 
-        def get_function_signature(cursor):
-            # Extract function signature from the cursor
-            function_name = cursor.spelling
-            result_type = cursor.result_type.spelling
-            parameters = [param.type.spelling for param in cursor.get_children() if
-                          param.kind == clang.cindex.CursorKind.PARM_DECL]
-            signature = f"{result_type} {function_name}({', '.join(parameters)})"
-            return signature
-
         traverse(translation_unit.cursor)
-        return calls
 
     def scan_cpp_files(self, directory):
         self._cpp_files = []
@@ -131,19 +150,18 @@ class cpp_parser:
                 if file.endswith(".cpp") or file.endswith(".h"):
                     self._cpp_files.append(os.path.join(root, file))
 
-    def get_functions_from_source(self, directory, callback):
+    def get_functions_from_source(self, callback):
         # Get a list of .cpp and .h files in the directory
         functions = []
         for x in range(len(self.cpp_files)):
             functions.extend(self.find_functions(self.cpp_files[x]))
-            callback(x, len(self.cpp_files))
+            print(f"{x}/{len(self.cpp_files)} files scanned")
         return functions
 
     def get_callers_of_function(self, directory):
         cpp_files = self.scan_cpp_files(directory)
         callers = []
         for file_path in cpp_files:
-            print(f"Scanning: {file_path}")
             calls = self.find_function_calls(file_path)
             if calls:
                 callers.extend(calls)

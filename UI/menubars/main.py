@@ -3,7 +3,8 @@ import tkinter as tk
 from enum import Enum
 from tkinter import filedialog
 
-import parsers.source_cpp
+import parsers
+from parsers.source_cpp import generate_code_list
 from UI.dialog.new_project import NewProjectDialog
 from UI.pages.paging_handle import show_page, PagesEnum, get_page, get_current_page
 from structures import requirement_list, project
@@ -96,10 +97,7 @@ class MainMenuBar(tk.Menu):
     def import_code(self):
         project.set_code_location(filedialog.askdirectory(initialdir="/", title="Select Code Directory"))
 
-        def print_results(current, final):
-            print(f"{current}/{final} files scanned")
-
-        parsers.generate_code_list(print_results)
+        parsers.source_cpp.generate_code_list()
         get_page(get_current_page()).update()
 
     def import_test(self):

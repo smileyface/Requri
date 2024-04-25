@@ -1,6 +1,6 @@
 import os.path
 
-from structures import requirement_list
+from structures import requirement_list, code
 from structures.code import code_list
 
 _name = ""
@@ -50,3 +50,4 @@ def expand_save_file(all_the_things):
     global _name
     _name = all_the_things["filename"]
     requirement_list.expand_from_json(all_the_things["req"])
+    code.expand_from_json(all_the_things["code"])

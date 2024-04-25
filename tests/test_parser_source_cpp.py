@@ -5,6 +5,7 @@ from parsers.source_cpp import cpp_parser, generate_code_list
 from structures import project
 from structures.code import code_list
 
+project.set_code_location("C:\\Users\\kason\\source\\repos\\ContraControl\\dev")
 
 class Testcpp_parser(unittest.TestCase):
 
@@ -40,54 +41,33 @@ class Testcpp_parser(unittest.TestCase):
 
     def test_find_functions(self):
         parser = cpp_parser()
-        # Directory to scan for .cpp and .h files
-        project.set_code_location("C:\\Users\\kason\\source\\repos\\ContraControl\\dev")
 
-        # Get a list of .cpp and .h files in the directory
-        cpp_files = parser.cpp_files
-
-        functions = []
-        # Test the find_functions method for each file
-        for file_path in cpp_files:
-            functions.extend(parser.find_functions(file_path))
-
-        self.assertTrue(len(functions) > 0)  # Assert that at least one function was found
-
-        self.functions = functions
+        self.assertTrue(len(parser.functions) > 0)  # Assert that at least one function was found
 
     def test_scan_cpp_files(self):
         # Create an instance of cpp_parser
         parser = cpp_parser()
 
         # Directory to scan for .cpp and .h files
-        project.set_code_location("C:\\Users\\kason\\source\\repos\\ContraControl\\dev")
 
-        # Test the scan_cpp_files method
-        cpp_files = parser.cpp_files
-        self.assertTrue(len(cpp_files) > 0)  # Assert that at least one file was found
+        self.assertTrue(len(parser.cpp_files) > 0)  # Assert that at least one file was found
 
     def test_find_callers_of_function(self):
-
-        project.set_code_location("C:\\Users\\kason\\source\\repos\\ContraControl\\dev")
-
-        def print_results(current, final):
-            print(f"{current}/{final} files scanned")
-        generate_code_list(print_results)
-
+        parser = cpp_parser()
+        function_calls = parser.function_calls
         called = []
-        for x in list(code_list.values()):
-            called.extend(x.call_list)
+        for x in list(function_calls.values()):
+            called.extend(x)
 
 
         self.assertTrue(len(called) > 0)  # Assert that at least 1 call was found.
 
     def test_get_functions_from_source(self):
-
-        project.set_code_location("C:\\Users\\kason\\source\\repos\\ContraControl\\dev")
-
+        parser = cpp_parser()
         def print_results(current, final):
             print(f"{current}/{final} files scanned")
         generate_code_list(print_results)
+
 
 # Run the tests
 if __name__ == '__main__':

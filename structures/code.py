@@ -55,3 +55,7 @@ class Code:
         return {"id": self._unique_id, "location": self.location, "access": self.access_level, "class": self.class_name,
                 "name": self.name, "arguments": self.argument, "begin": self.func_begin, "end": self.func_end,
                 "call_list": self.call_list}
+def expand_from_json(param):
+    for x in param:
+        code_list[x["id"]] = Code(x["location"], x["access"], x["class"], x["name"], x["arguments"], x["begin"], x["end"], x["id"])
+        signature_to_id_map[code_list[x["id"]].signature] = code_list[x["id"]].unique_id
