@@ -3,11 +3,10 @@ import tkinter as tk
 from enum import Enum
 from tkinter import filedialog
 
-import parsers
-from parsers.source_cpp import generate_code_list
+from parsers import source_cpp
 from UI.dialog.new_project import NewProjectDialog
 from UI.pages.paging_handle import show_page, PagesEnum, get_page, get_current_page
-from structures import requirement_list, project
+from structures import requirement_list, project, code_list
 
 
 class Callback_Functions(Enum):
@@ -15,7 +14,6 @@ class Callback_Functions(Enum):
 
 
 class MainMenuBar(tk.Menu):
-    parser = parsers.source_cpp.cpp_parser()
 
     def __init__(self, master):
         super().__init__(master)
@@ -96,8 +94,7 @@ class MainMenuBar(tk.Menu):
 
     def import_code(self):
         project.set_code_location(filedialog.askdirectory(initialdir="/", title="Select Code Directory"))
-
-        parsers.source_cpp.generate_code_list()
+        code_list.generate_code_list(source_cpp.parse())
         get_page(get_current_page()).update()
 
     def import_test(self):

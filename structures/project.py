@@ -1,18 +1,21 @@
 import os.path
 
 from structures import requirement_list, code
-from structures.code import code_list
+from structures.code_list import code_list
 
 _name = ""
 _save_file = ""
 _code_url = ""
 
+
 def get_code_location():
     return _code_url
+
 
 def set_code_location(location):
     global _code_url
     _code_url = os.path.normpath(location)
+
 
 def get_name():
     return _name

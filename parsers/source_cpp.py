@@ -5,25 +5,23 @@ import threading
 import clang.cindex
 
 from structures import project
-from structures.code import Code, code_list, append, signature_to_id_map
+from structures.code import Code
+from structures.source_file import File
 
 # Set the library path for clang
 clang.cindex.Config.set_library_path("C:\\Program Files\\LLVM\\bin")
 
 mutex = threading.Lock()
 
-def generate_code_list():
-    parser = cpp_parser()
-    for x in parser.functions:
-        append(x)
-    calls = parser.function_calls
-    for z in calls.keys():
-        print(f"\tCall to {z} found")
-        code_list[signature_to_id_map[z]].call_list.extend(calls[z])
 
+def parse():
+    parser = cpp_parser()
+    parser.parse_code_base()
+    return (parser.cpp_files, parser.functions, parser.function_calls)
 
 class cpp_parser:
-    _function_calls = dict()
+    _function_calls = []
+    _file_function_map = dict()
     _cpp_files = []
     _functions = []
 
@@ -32,13 +30,13 @@ class cpp_parser:
 
     @property
     def cpp_files(self):
-        if self._cpp_files == []:
+        if not self._cpp_files:
             self.scan_cpp_files(project.get_code_location())
         return self._cpp_files
 
     @property
     def functions(self):
-        if self._functions == []:
+        if not self._functions:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 futures = [executor.submit(self.find_functions, file_path) for file_path in self.cpp_files]
                 concurrent.futures.wait(futures)
@@ -54,6 +52,126 @@ class cpp_parser:
                 concurrent.futures.wait(futures)
         return self._function_calls
 
+    def map_functions_to_files(self):
+        if self._file_function_map == {}:
+            for x in self._functions:
+                if x.location in self._file_function_map:
+                    self._file_function_map[x.location] = [x.unique_id]
+                else:
+                    self._file_function_map[x.location].append(x.unique_id)
+
+    # Helper function to extract functions from the translation unit's cursor
+    def extract_functions(self, cursor, file_path, class_names=None):
+        if class_names is None:
+            class_names = []
+        functions = []
+        calls = []
+        for child in cursor.get_children():
+            if child.location.file and child.location.file.name == file_path.full_path:
+                if child.kind == clang.cindex.CursorKind.FUNCTION_DECL:
+                    # Extract function name
+                    function_name = child.spelling
+                    # Extract function arguments
+                    arguments = [arg.type.spelling for arg in child.get_arguments()]
+                    signature = f"{child.semantic_parent.spelling}::{function_name}({', '.join(arguments)})"
+                    # Append function signature to functions list
+                    existing_function = next((func for func in self._functions if func.signature == signature), None)
+                    if existing_function:
+                        if child.is_definition():
+                            # Update the existing function with the definition status
+                            existing_function.definition = file_path
+                        else:
+                            existing_function.declaration = file_path
+                    else:
+                        functions.append(Code(file_path, "global", child.semantic_parent.spelling, function_name,
+                                              arguments, child.extent.start.line, child.extent.end.line,
+                                              child.is_definition()))
+                        print(f"{functions[-1].signature} found")
+                elif child.kind == clang.cindex.CursorKind.CXX_METHOD:
+                    # Extract method name
+                    method_name = child.spelling
+                    # Extract class name
+                    class_name = child.semantic_parent.spelling
+                    # Extract method arguments' types
+                    arguments = [arg.type.spelling for arg in child.get_arguments()]
+                    # Append method signature to functions list
+                    access_level = "public"
+                    if child.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
+                        access_level = "protected"
+                    elif child.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
+                        access_level = "private"
+                    signature = f"{class_name}::{method_name}({', '.join(arguments)})"
+                    existing_function = next((func for func in self._functions if func.signature == signature), None)
+                    if existing_function:
+                        if child.is_definition():
+                            # Update the existing function with the definition status
+                            existing_function.definition = file_path
+                            print(f"{existing_function.signature} definition found")
+                        else:
+                            existing_function.declaration = file_path
+                            print(f"{existing_function.signature} declaration found")
+                    else:
+                        functions.append((Code(file_path, access_level, class_name, method_name, arguments,
+                                                child.extent.start.line, child.extent.end.line, child.is_definition())))
+                        print(f"{functions[-1].signature} found")
+                if cursor.kind == clang.cindex.CursorKind.CALL_EXPR:
+                    called_function = cursor.referenced
+                    if called_function:
+                        calls.append(
+                            (cursor.location.file.name, cursor.location.line, called_function.semantic_parent.spelling,
+                             called_function.spelling, [arg.type.spelling for arg in called_function.get_arguments()]))
+                        print(
+                            f"\tCall to {called_function.semantic_parent.spelling}::{called_function.spelling}({', '.join(calls[-1][4])})")
+                elif cursor.kind == clang.cindex.CursorKind.MEMBER_REF_EXPR:
+                    # Check if the cursor's children include the member access operator (->)
+                    pointed_to_function = cursor.referenced
+                    if pointed_to_function and pointed_to_function.kind in [clang.cindex.CursorKind.FUNCTION_DECL,
+                                                                            clang.cindex.CursorKind.CXX_METHOD]:
+                        calls.append(
+                            (cursor.location.file.name, cursor.location.line,
+                             pointed_to_function.semantic_parent.spelling,
+                             pointed_to_function.spelling,
+                             [arg.type.spelling for arg in pointed_to_function.get_arguments()]))
+                _calls, _functions = self.extract_functions(child, file_path, class_names)
+                calls.extend(_calls)
+                functions.extend(_functions)
+
+        # Convert each element of the calls list to a tuple before adding to the set
+        # Convert each element of the calls list to a tuple before adding to the set
+        unique_calls = set()
+        for call in calls:
+            try:
+                # Convert the list of arguments to a tuple
+                arguments_tuple = tuple(call[4])
+                # Create a new tuple for the call with the arguments tuple included
+                call_tuple = tuple(call[:4]) + (arguments_tuple,)
+                # Add the call tuple to the set
+                unique_calls.add(call_tuple)
+            except TypeError:
+                # If conversion to tuple fails, handle the unhashable type differently
+                print(f"Ignoring unhashable call: {call}")
+
+        # Convert set back to list if necessary
+        calls = list(unique_calls)
+        return calls, functions
+
+    def extract_function_calls(self, cursor, file_name):
+        calls = []
+        if cursor.location.file and cursor.location.file.name == file_name.full_path:
+            line_number = ""
+            if cursor.extent.start.line == cursor.extent.end.line:
+                line_number = f"{cursor.extent.start.line}"
+            else:
+                line_number = f"{cursor.extent.start.line}-{cursor.extent.end.line}"
+
+        for child in cursor.get_children():
+            try:
+                if child.location.file and child.location.file.name == file_name.full_path:
+                    calls.extend(self.extract_function_calls(child, file_name))
+            except ValueError as e:
+                continue
+        return calls
+
     def find_functions(self, file_path):
         print(f"Searching for functions in: {file_path}")
         # Initialize Clang index
@@ -62,43 +180,8 @@ class cpp_parser:
         # Parse the file
         translation_unit = index.parse(file_path)
 
-        # Helper function to extract functions from the translation unit's cursor
-        def extract_functions(cursor, class_names=None):
-            if class_names is None:
-                class_names = []
-            functions = []
-            for child in cursor.get_children():
-                spelling = None
-                if child.location.file and child.location.file.name == file_path:
-                    if child.kind == clang.cindex.CursorKind.FUNCTION_DECL:
-                        # Extract function name
-                        function_name = child.spelling
-                        # Extract function arguments
-                        arguments = [arg.type.spelling for arg in child.get_arguments()]
-                        # Append function signature to functions list
-                        functions.append(Code(file_path, "global", child.semantic_parent.spelling, function_name,
-                                              arguments, child.extent.start.line, child.extent.end.line))
-                    elif child.kind == clang.cindex.CursorKind.CXX_METHOD:
-                        # Extract method name
-                        method_name = child.spelling
-                        # Extract class name
-                        class_name = child.semantic_parent.spelling
-                        # Extract method arguments' types
-                        arguments = [arg.type.spelling for arg in child.get_arguments()]
-                        # Append method signature to functions list
-                        access_level = "public"
-                        if child.access_specifier == clang.cindex.AccessSpecifier.PROTECTED:
-                            access_level = "protected"
-                        elif child.access_specifier == clang.cindex.AccessSpecifier.PRIVATE:
-                            access_level = "private"
-                        functions.append(Code(file_path, access_level, class_name, method_name, arguments,
-                                              child.extent.start.line, child.extent.end.line))
-                    functions.extend(extract_functions(child, class_names))
-
-            return functions
-
         # Extract functions from the translation unit's cursor
-        functions = extract_functions(translation_unit.cursor)
+        functions = self.extract_functions(translation_unit.cursor, file_path)
         mutex.acquire()
         self._functions.extend(functions)
         mutex.release()
@@ -109,46 +192,14 @@ class cpp_parser:
         calls = dict()
         print(f"Finding calls in {file_path}")
 
-        def traverse(cursor, parent_cursor=None):
-            if cursor.location.file and project.get_code_location() in cursor.location.file.name:
-                if cursor.kind == clang.cindex.CursorKind.CALL_EXPR:
-                    called_function = cursor.referenced
-                    if called_function:
-                        functions = self.functions
-                        for target_func in functions:
-                            if (called_function.spelling == target_func.name and
-                                    called_function.semantic_parent.spelling == target_func.class_name):
-                                parent_function = find_parent_function(cursor)
-                                if parent_function:
-                                    print(f"Call to {target_func.signature} found")
-                                    mutex.acquire()
-                                    if target_func.signature in calls.keys():
-                                        # Extract function signature and append to calls
-                                        self._function_calls[target_func.signature].append(parent_function.signature)
-                                    else:
-                                        self._function_calls[target_func.signature] = [parent_function.signature]
-                                    mutex.release()
-            for child in cursor.get_children():
-                try:
-                    traverse(child, cursor)
-                except ValueError as e:
-                    continue
-
-        def find_parent_function(cursor):
-            for x in self.functions:
-                if (os.path.normpath(x.location) == cursor.location.file.name and
-                        (x.func_begin < cursor.location.line < x.func_end)):
-                    return x
-            return None
-
-        traverse(translation_unit.cursor)
+        self.extract_function_calls(translation_unit.cursor)
 
     def scan_cpp_files(self, directory):
         self._cpp_files = []
         for root, _, files in os.walk(directory):
             for file in files:
                 if file.endswith(".cpp") or file.endswith(".h"):
-                    self._cpp_files.append(os.path.join(root, file))
+                    self._cpp_files.append(File(os.path.join(root, file)))
 
     def get_functions_from_source(self, callback):
         # Get a list of .cpp and .h files in the directory
@@ -158,11 +209,23 @@ class cpp_parser:
             print(f"{x}/{len(self.cpp_files)} files scanned")
         return functions
 
-    def get_callers_of_function(self, directory):
-        cpp_files = self.scan_cpp_files(directory)
-        callers = []
-        for file_path in cpp_files:
-            calls = self.find_function_calls(file_path)
-            if calls:
-                callers.extend(calls)
-        return callers
+    def parse(self, file):
+        print(f"Searching for functions in: {file.path}")
+        # Initialize Clang index
+        index = clang.cindex.Index.create()
+        translation_unit = None
+        if (file.full_path[-2:] == ".h"):
+            translation_unit = index.parse(file.full_path, ['-x', 'c++-header'])
+        else:
+            translation_unit = index.parse(file.full_path)
+
+        # Extract functions from the translation unit's cursor
+        function_calls, functions = self.extract_functions(translation_unit.cursor, file)
+        mutex.acquire()
+        self._functions.extend(functions)
+        self._function_calls.extend(function_calls)
+        mutex.release()
+
+    def parse_code_base(self):
+        for x in self.cpp_files:
+            self.parse(x)
