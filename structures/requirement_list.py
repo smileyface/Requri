@@ -21,6 +21,9 @@ def append(requirement):
         requirement.unique_id.unique_id] = requirement
 
 
+def map_is_empty():
+    return _req_map == {}
+
 def remove(requirement):
     del _req_map[(requirement.unique_id.section, requirement.unique_id.sub)][requirement.unique_id.unique_id]
 
@@ -52,6 +55,12 @@ def add_requirement(requirement):
 def get_requirement_map():
     return _req_map
 
+def get_requirement_list():
+    list_of_map = []
+    for x in _req_map.keys():
+        list_of_map.extend(_req_map[x].values())
+    return list_of_map
+
 
 def clear_list():
     _req_map.clear()
@@ -61,6 +70,7 @@ def expand_from_json(all_the_things):
     for x in all_the_things:
         req = Requirement(x["id"]['section'], x["id"]["sub"], x["title"], x["text"], x["tags"], x["id"]["id"])
         append(req)
-    #    _req_map[(x["id"]['section'], x["id"]["subsection"]
-    #_req_map = all_the_things
-    pass
+
+
+def clear():
+    return None

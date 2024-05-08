@@ -1,6 +1,6 @@
 class RequirementId:
     id_map = dict()
-    id_range_max = 1000
+    id_range_max = 99999
 
     def __init__(self, section, sub, unique_id=None):
         self.section = section
@@ -35,7 +35,7 @@ class RequirementId:
     def reset_unique_id(self):
         location = (self.section, self.sub)
         if location in self.id_map:
-            RequirementId.id_map.pop(location)
+            RequirementId.id_map.clear()
         self._unique_id = None
 
     def _create_unique_id(self):

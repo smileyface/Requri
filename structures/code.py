@@ -1,4 +1,4 @@
-from structures.code_list import code_list, signature_to_id_map
+from structures.code_list import _code_list, signature_to_id_map
 
 
 class Code:
@@ -59,7 +59,7 @@ class Code:
 
 def expand_from_json(param):
     for x in param:
-        code_list[x["id"]] = Code(x["location"], x["access"], x["class"], x["name"], x["arguments"], x["begin"],
-                                  x["end"], x["id"], False)
-        code_list[x["id"]].definition = x["definition"]
-        signature_to_id_map[code_list[x["id"]].signature] = code_list[x["id"]].unique_id
+        _code_list[x["id"]] = Code(x["location"], x["access"], x["class"], x["name"], x["arguments"], x["begin"],
+                                   x["end"], x["id"], False)
+        _code_list[x["id"]].definition = x["definition"]
+        signature_to_id_map[_code_list[x["id"]].signature] = _code_list[x["id"]].unique_id

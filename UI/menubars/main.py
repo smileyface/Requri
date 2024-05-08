@@ -3,7 +3,7 @@ import tkinter as tk
 from enum import Enum
 from tkinter import filedialog
 
-from parsers import source_cpp
+from parsers.code import source_cpp
 from UI.dialog.new_project import NewProjectDialog
 from UI.pages.paging_handle import show_page, PagesEnum, get_page, get_current_page
 from structures import requirement_list, project, code_list

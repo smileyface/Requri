@@ -3,7 +3,7 @@ from UI.tiles.requirement_tile import RequirementTile
 from UI.components.scrollable_frame import ScrollableFrame
 from structures import requirement_list
 from structures.code import Code
-from structures.code_list import code_list
+from structures.code_list import _code_list
 from structures.requirement import Requirement
 
 
@@ -72,8 +72,8 @@ class TileView(ScrollableFrame):
             for requirement in requirement_map[requirement_section].values():
                 self.add_tile(requirement)
 
-        for code_section in code_list.keys():
-            self.add_tile(code_list[code_section])
+        for code_section in _code_list.keys():
+            self.add_tile(_code_list[code_section])
 
     def get_selected(self):
         selected = []

@@ -1,7 +1,7 @@
 import os.path
 
 from structures import requirement_list, code
-from structures.code_list import code_list
+from structures.code_list import _code_list
 
 _name = ""
 _save_file = ""
@@ -42,8 +42,8 @@ def generate_save_file():
         for requirement in req_map[map_key].values():
             req.append(requirement.to_json())
     code = []
-    for code_key in code_list.keys():
-        code.append(code_list[code_key].to_json())
+    for code_key in _code_list.keys():
+        code.append(_code_list[code_key].to_json())
     save_file["req"] = req
     save_file["code"] = code
     return save_file
