@@ -114,7 +114,29 @@ class cpp_parser:
                         functions.append((Code(file_path, access_level, class_name, method_name, arguments,
                                                 child.extent.start.line, child.extent.end.line, child.is_definition())))
                         print(f"{functions[-1].signature} found")
-                if cursor.kind == clang.cindex.CursorKind.CALL_EXPR:
+                elif child.kind == clang.cindex.CursorKind.CONSTRUCTOR:
+                    # Extract class name
+                    class_name = child.semantic_parent.spelling
+                    # Extract method arguments' types
+                    arguments = [arg.type.spelling for arg in child.get_arguments()]
+                    # Append constructor signature to functions list
+                    signature = f"{class_name}::{class_name}({', '.join(arguments)})"
+                    existing_function = next((func for func in self._functions if func.signature == signature),
+                                             None)
+                    if existing_function:
+                        if child.is_definition():
+                            # Update the existing function with the definition status
+                            existing_function.definition = file_path
+                            print(f"{existing_function.signature} definition found")
+                        else:
+                            existing_function.declaration = file_path
+                            print(f"{existing_function.signature} declaration found")
+                    else:
+                        functions.append((Code(file_path, "public", class_name, class_name, arguments,
+                                               child.extent.start.line, child.extent.end.line,
+                                               child.is_definition())))
+                        print(f"{functions[-1].signature} found")
+                elif cursor.kind == clang.cindex.CursorKind.CALL_EXPR:
                     called_function = cursor.referenced
                     if called_function:
                         calls.append(
@@ -173,7 +195,7 @@ class cpp_parser:
         return calls
 
     def find_functions(self, file_path):
-        print(f"Searching for functions in: {file_path}")
+        print(f"Searching for functions in: {file_path.full_path}")
         # Initialize Clang index
         index = clang.cindex.Index.create()
 
