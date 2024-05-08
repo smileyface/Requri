@@ -1,93 +1,65 @@
+import unittest
 import os
 
-from parsers.source_cpp import cpp_parser
-
-def generate_test_cpp_file(file_path):
-    with open(file_path, 'w') as file:
-        file.write("#include <iostream>\n\n")
-        file.write("void global_function() {\n")
-        file.write("\tstd::cout << \"This is a global function.\" << std::endl;\n")
-        file.write("}\n\n")
-        file.write("class MyClass {\n")
-        file.write("public:\n")
-        file.write("\tvoid member_function1() {\n")
-        file.write("\t\tstd::cout << \"This is member function 1.\" << std::endl;\n")
-        file.write("\t}\n\n")
-        file.write("\tvoid member_function2() const {\n")
-        file.write("\t\tstd::cout << \"This is member function 2.\" << std::endl;\n")
-        file.write("\t}\n\n")
-        file.write("};\n\n")
-
-    # Directory to save the test files
-    test_directory = "test_files"
-
-    # Create the test directory if it doesn't exist
-    if not os.path.exists(test_directory):
-        os.makedirs(test_directory)
-
-    # Generate test files
-    for i in range(3):
-        file_name = f"test_file_{i}.cpp"
-        file_path = os.path.join(test_directory, file_name)
-        generate_test_cpp_file(file_path)
-        print(f"Generated test file: {file_path}")
+from parsers.code.source_cpp import cpp_parser
+from structures import project
+from tests.harness import Requiri_Harness
 
 
-def test_scan_cpp_files():
-    # Create an instance of cpp_parser
-    parser = cpp_parser()
+class TestHarness(Requiri_Harness):
+    def setUp(self):
+        super.setUp()
+        self.parser = cpp_parser()  # Directory to save the test files
 
-    # Directory to scan for .cpp and .h files
-    directory = "C:\\Users\\kason\\source\\repos\\ContraControl\\dev"
+    def tearDown(self):
+        # Clean up test files after each test
+        test_directory = "test_files"
+        for file_name in os.listdir(test_directory):
+            file_path = os.path.join(test_directory, file_name)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+        os.rmdir(test_directory)
 
-    # Test the scan_cpp_files method
-    cpp_files = parser.scan_cpp_files(directory)
-    assert len(cpp_files) > 0  # Assert that at least one file was found
+    def test_scan_cpp_files(self):
+        # Directory to scan for .cpp and .h files
+        directory = "test_files"
 
+        # Test the scan_cpp_files method
+        self.parser.scan_cpp_files(directory)
+        self.assertGreater(len(self.parser.cpp_files), 0)
 
-def test_find_functions():
-    # Create an instance of cpp_parser
-    parser = cpp_parser()
+    def test_find_functions(self):
+        # Directory to scan for .cpp and .h files
+        directory = "test_files"
 
-    # Directory to scan for .cpp and .h files
-    directory = "C:\\Users\\kason\\source\\repos\\ContraControl\\dev"
+        # Get a list of .cpp and .h files in the directory
+        self.parser.scan_cpp_files(directory)
 
-    # Get a list of .cpp and .h files in the directory
-    cpp_files = parser.scan_cpp_files(directory)
+        # Test the find_functions method for each file
+        for file_path in self.parser.cpp_files:
+            self.parser.parse(file_path)
+            self.assertGreater(len(self.parser.functions), 0)
 
-    # Test the find_functions method for each file
-    for file_path in cpp_files:
-        functions = parser.find_functions(file_path)
-        assert len(functions) > 0  # Assert that at least one function was found
+        for x in self.parser.functions:
+            x = x.signature
+            if x not in list_of_function_signatures:
+                self.fail(f"Unknown function found {x}")
+            list_of_function_signatures.remove(x)
+        self.assertEqual(len(list_of_function_signatures), 0,
+                         f"Functions not discovered {', '.join(list_of_function_signatures)}")
 
+    def test_find_callers_of_function(self):
+        # Directory to scan for .cpp and .h files
+        directory = "test_files"
 
-def test_cpp_parser():
-    # Create an instance of the cpp_parser class
-    parser = cpp_parser()
+        # Get a list of .cpp and .h files in the directory
+        self.parser.scan_cpp_files(directory)
 
-    # Directory to scan for .cpp and .h files
-    directory = "C:\\Users\\kason\\source\\repos\\ContraControl\\dev"
+        # Test the find_functions method for each file
+        for file_path in self.parser.cpp_files:
+            self.parser.parse(file_path)
+            self.assertGreater(len(self.parser.functions), 0)
 
-    # Get a list of .cpp and .h files in the directory
-    cpp_files = parser.scan_cpp_files(directory)
+        function_calls = self.parser.function_calls
 
-    # Print the list of files found
-    print("Found .cpp and .h files:")
-    for file in cpp_files:
-        print(file)
-
-    # Test find_functions method for each file
-    for file_path in cpp_files:
-        print("\nFunctions in file:", file_path)
-        functions = parser.find_functions(file_path)
-        for function in functions:
-            print("-", function)
-
-    def parser_callback(completed, total):
-        print(f"{completed} of {total} files parsed")
-
-    # Test both together.
-    all_functions = parser.get_functions_from_source(directory, parser_callback)
-    for function_def in all_functions:
-        print(f"{function_def[0]:<40}{function_def[1]}\n")
-    print(f"{len(function_def)} functions found.")
+        self.assertTrue(len(function_calls) > 0)  # Assert that at least 1 call was found.
