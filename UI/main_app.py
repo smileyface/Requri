@@ -18,6 +18,7 @@ class MainApplication(tk.Tk):
         create_and_register_frame(self.page_container, PagesEnum.ADD_REQUIREMENT, requirements.AddRequirementPage)
         create_and_register_frame(self.page_container, PagesEnum.EDIT_REQUIREMENT, requirements.EditRequirementPage)
         create_and_register_frame(self.page_container, PagesEnum.MASS_ADD_REQUIREMENT, requirements.MassAddRequirementPage)
+        create_and_register_frame(self.page_container, PagesEnum.REQUIREMENT_EXTENDED, requirements.RequirementExtendedView)
 
         show_page(PagesEnum.REQUIREMENT_VIEW)
         self.create_menu(self)

@@ -24,4 +24,6 @@ class RequirementTile(Tile):
         self.tags_label.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
 
         self.label.bind("<Double-1>", self.on_double_click)  # Edit requirement when double clicking the title
-        self._selection_bind()
+
+        # Bind events for the label
+        self.bind_child_events()

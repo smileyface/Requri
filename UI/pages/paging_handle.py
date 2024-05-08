@@ -13,6 +13,7 @@ class PagesEnum(Enum):
     ADD_REQUIREMENT = 2
     EDIT_REQUIREMENT = 3
     MASS_ADD_REQUIREMENT = 4
+    REQUIREMENT_EXTENDED = 5
 
 
 def get_enum_from_frame(frame):
@@ -24,6 +25,8 @@ def get_enum_from_frame(frame):
         return PagesEnum.EDIT_REQUIREMENT
     elif frame is _frame_map[PagesEnum.MASS_ADD_REQUIREMENT]:
         return PagesEnum.MASS_ADD_REQUIREMENT
+    elif frame is _frame_map[PagesEnum.REQUIREMENT_EXTENDED]:
+        return PagesEnum.REQUIREMENT_EXTENDED
     else:
         raise ValueError("Unknown frame: {}".format(frame))
 
