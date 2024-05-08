@@ -14,6 +14,7 @@ class Code:
         self.func_begin = func_begin
         self.func_end = func_end
         self.call_list = []
+        self.connections = dict()
         if definition:
             self.definition = file
             self.declaration = None
@@ -56,6 +57,11 @@ class Code:
                 "name": self.name, "arguments": self.arguments, "begin": self.func_begin, "end": self.func_end,
                 "call_list": self.call_list}
 
+    def connect(self, type, connect):
+        if not type in self.connections.keys():
+            self.connections[type] = [connect]
+        else:
+            self.connections[type].append(connect)
 
 def expand_from_json(param):
     for x in param:

@@ -19,11 +19,18 @@ class Requirement:
         self.text = text.strip()
         self.tags = tags
         self.title = title
+        self.connections = dict()
         add_known_tags(tags)
 
     @property
     def unique_id(self):
         return self._unique_id
+
+    def connect(self, type, connect):
+        if not type in self.connections.keys():
+            self.connections[type] = [connect]
+        else:
+            self.connections[type].append(connect)
 
     def to_string(self):
         string = self.unique_id.to_string() + ": " + self.title + "\n" + self.text + "\n\t"
