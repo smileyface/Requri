@@ -19,8 +19,6 @@ class Requirement:
         self.text = text.strip()
         self.tags = tags
         self.title = title
-        if self.title == "":
-            self.title = self.text[0:20]
         add_known_tags(tags)
 
     @property

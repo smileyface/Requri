@@ -62,9 +62,9 @@ class AddRequirementPage(ViewPage):
         self.button_frame = tk.Frame(self)
         self.button_frame.pack(side=tk.BOTTOM, fill=tk.X)
         self.add_button = tk.Button(self.button_frame, text="Add", command=self.add)
-        self.add_button.pack(side=tk.LEFT)
+        self.add_button.pack(anchor="s")
         self.cancel_button = tk.Button(self.button_frame, text="Cancel", command=self.cancel)
-        self.cancel_button.pack(side=tk.LEFT)
+        self.cancel_button.pack(anchor="s")
 
         #self.bind("<Enter>", self.on_enter)
 
