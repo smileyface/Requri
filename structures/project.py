@@ -1,6 +1,7 @@
 import os.path
 
-from structures import requirement_list, code
+from structures import requirement_list
+from structures.records import code
 from structures.code_list import _code_list
 
 _name = ""

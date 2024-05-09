@@ -1,8 +1,6 @@
-import unittest
 import os
 
 from parsers.code.source_cpp import cpp_parser
-from structures import project
 from tests.harness import Requiri_Harness
 
 

@@ -1,12 +1,25 @@
 from structures.code_list import _code_list, signature_to_id_map
+from structures.records.record import Record
 
 
-class Code:
+class Code_Location:
+    DEFINITION = 0
+    DECLARATION = 1
+
+    def __init__(self, type, file, begin, end):
+        self.type = type
+        self.file = file
+        self.begin = begin
+        self.end = end
+
+
+class Code(Record):
     id_map = []
     id_range_max = 1000
 
     def __init__(self, file, access_level, class_name, name, arguments, func_begin, func_end, definition,
                  unique_id=None):
+        super()
         self.access_level = access_level
         self.class_name = class_name
         self.name = name
@@ -65,6 +78,7 @@ class Code:
 
     def __str__(self):
         return self.signature
+
 
 def expand_from_json(param):
     for x in param:

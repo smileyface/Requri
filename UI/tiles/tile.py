@@ -2,7 +2,7 @@ import tkinter as tk
 
 from UI.pages.paging_handle import get_page, show_page, PagesEnum
 from structures.connector import connect
-from structures.requirement import Requirement
+from structures.records.requirement import Requirement
 
 
 class Tile(tk.Frame):

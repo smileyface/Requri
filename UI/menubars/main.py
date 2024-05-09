@@ -6,7 +6,7 @@ from tkinter import filedialog
 from parsers.code import source_cpp
 from UI.dialog.new_project import NewProjectDialog
 from UI.pages.paging_handle import show_page, PagesEnum, get_page, get_current_page
-from structures import requirement_list, project, code_list
+from structures import requirement_list, code_list, project
 
 
 class Callback_Functions(Enum):

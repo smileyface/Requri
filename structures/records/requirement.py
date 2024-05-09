@@ -1,36 +1,25 @@
+from structures.records.record import Record
 from structures.requirement_id import RequirementId
 
-_known_tags = set()
 
-
-def get_known_tags():
-    return list(_known_tags)
-
-
-def add_known_tags(tags):
-    global _known_tags
-    for x in tags:
-        _known_tags.add(x)
-
-
-class Requirement:
+class Requirement(Record):
     def __init__(self, section, sub, title, text, tags, unique_id=None):
+        super().__init__(tags)
         self._unique_id = RequirementId(section, sub, unique_id)
         self.text = text.strip()
-        self.tags = tags
         self.title = title
-        self.connections = dict()
-        add_known_tags(tags)
+
+    def connect(self, connection):
+        if type(connection).__name__() == "Requirement":
+            self.connections["Supporting Requirement"] = connection
+        elif type(connection).__name__() == "Code":
+            self.connections["Implementation"] = connection
+        else:
+            super().connect(connection)
 
     @property
     def unique_id(self):
         return self._unique_id
-
-    def connect(self, type, connect):
-        if not type in self.connections.keys():
-            self.connections[type] = [connect]
-        else:
-            self.connections[type].append(connect)
 
     def __str__(self):
         if self.title != "":

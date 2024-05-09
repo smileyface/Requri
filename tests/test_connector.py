@@ -1,8 +1,8 @@
 import unittest
 
-from structures.code import Code
+from structures.records.code import Code
 from structures.connector import connect
-from structures.requirement import Requirement
+from structures.records.requirement import Requirement
 
 
 code = Code("", "global", "asdf", "qwer", "zxvc", [], 1, 3, )

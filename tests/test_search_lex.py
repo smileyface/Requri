@@ -2,8 +2,7 @@ import unittest
 
 from lexical.search import interpret
 from structures import requirement_list
-from structures.code import Code
-from structures.requirement import Requirement
+from structures.records.requirement import Requirement
 
 
 class TestHarness(unittest.TestCase):

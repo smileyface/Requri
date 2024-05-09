@@ -3,6 +3,7 @@ import unittest
 
 from structures import project
 
+
 def generate_test_cpp_file(directory):
     # Create the test directory if it doesn't exist
     if not os.path.exists(directory):

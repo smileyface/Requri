@@ -1,4 +1,4 @@
-from structures.requirement import Requirement
+from structures.records.requirement import Requirement
 
 _req_map = {}
 

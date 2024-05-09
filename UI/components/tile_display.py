@@ -2,9 +2,9 @@ from UI.tiles.code_tile import CodeTile
 from UI.tiles.requirement_tile import RequirementTile
 from UI.components.scrollable_frame import ScrollableFrame
 from structures import requirement_list
-from structures.code import Code
+from structures.records.code import Code
 from structures.code_list import _code_list
-from structures.requirement import Requirement
+from structures.records.requirement import Requirement
 
 
 class TileView(ScrollableFrame):

@@ -2,7 +2,6 @@ import os
 import tkinter as tk
 
 from UI.tiles.tile import Tile
-from structures import project
 
 
 class CodeTile(Tile):

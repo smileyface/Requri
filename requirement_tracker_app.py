@@ -4,7 +4,7 @@ from tkinter import filedialog, messagebox
 from UI.components.autocomplete_entry import AutoCompleteEntry
 from UI.dialog.search_dialog import SearchDialog
 from UI.components.tooltip import Tooltip
-from structures.requirement import Requirement, requirements_list
+from structures.records.requirement import Requirement, requirements_list
 from file_io import import_from_json, export_to_json, import_from_txt, export_to_txt
 
 
