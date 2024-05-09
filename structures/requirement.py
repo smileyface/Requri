@@ -32,6 +32,12 @@ class Requirement:
         else:
             self.connections[type].append(connect)
 
+    def __str__(self):
+        if self.title != "":
+            return self.title
+        else:
+            self.text[:20]
+
     def to_string(self):
         string = self.unique_id.to_string() + ": " + self.title + "\n" + self.text + "\n\t"
         for x in self.tags:

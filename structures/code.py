@@ -63,6 +63,9 @@ class Code:
         else:
             self.connections[type].append(connect)
 
+    def __str__(self):
+        return self.signature
+
 def expand_from_json(param):
     for x in param:
         _code_list[x["id"]] = Code(x["location"], x["access"], x["class"], x["name"], x["arguments"], x["begin"],
