@@ -5,6 +5,7 @@ from structures import requirement_list
 from structures.records.code import Code
 from structures.code_list import _code_list
 from structures.records.requirement import Requirement
+from lexical.search import interpret
 
 
 class TileView(ScrollableFrame):
@@ -14,6 +15,7 @@ class TileView(ScrollableFrame):
         self.tiles = []
         self.selected_frame = None  # Track the currently selected frame
         self._last_width = 0
+        self.known_records = []
 
         self.update()
 
@@ -25,10 +27,12 @@ class TileView(ScrollableFrame):
         self.grid_columnconfigure(0, weight=1)
 
     def add_tile(self, data):
+        self.known_records.append(str(data))
         if isinstance(data, Requirement):
             frame = RequirementTile(self.scrollable_frame, data)
         elif isinstance(data, Code):
             frame = CodeTile(self.scrollable_frame, data)
+
         num_frames = len(self.tiles)
 
         tile_width = 1
@@ -54,7 +58,7 @@ class TileView(ScrollableFrame):
             self.remove_tile(self.selected_frame)
             self.selected_frame = None  # Reset selected frame after removal
 
-    def update(self):
+    def update(self, query="all"):
         # Check if the size of the widget has changed
         current_width = self.winfo_width()
 
@@ -64,16 +68,10 @@ class TileView(ScrollableFrame):
         self.tiles.clear()
 
         # Get the requirement map and calculate the number of columns
-        requirement_map = requirement_list.get_requirement_map()
-        sorted_keys = sorted(requirement_map.keys(), key=lambda x: (x[0], x[1]))
+        record_map = interpret(query)
 
-        # Add tiles based on the requirement map
-        for requirement_section in sorted_keys:
-            for requirement in requirement_map[requirement_section].values():
-                self.add_tile(requirement)
-
-        for code_section in _code_list.keys():
-            self.add_tile(_code_list[code_section])
+        for record in record_map:
+            self.add_tile(record)
 
     def get_selected(self):
         selected = []

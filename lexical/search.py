@@ -7,13 +7,9 @@ def interpret(input_string):
     # Tokenize input string
     lexer.input(input_string)
 
-    # Parse tokens
-    for token in lexer:
-        print(token)
-
     # Parse input string
     result = parser.parse(input_string)
-    print(result)
+    print(f"Found {len(result)} records")
     return result
 
 

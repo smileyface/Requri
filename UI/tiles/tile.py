@@ -37,13 +37,11 @@ class Tile(tk.Frame):
         self.clicked = True  # Flag to indicate click
         self.after(100, self.check_drag)  # Check for drag after 100ms
 
-
     def on_release(self, event):
         self.clicked = False
         if self.dragging:
             self.dragging = False
             self.on_drop(event)
-
 
     def on_child_click(self, event):
         # Handle click event for child components

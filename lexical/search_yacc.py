@@ -12,14 +12,20 @@ def p_expression(p):
                | title_list
                | title_list APPEND title_list
                | title_list APPEND tag_list
+               | ALL
 
     '''
-    if len(p) == 4:
+    if len(p) == 2:
+        print("Parsing expression:", p[1])
+        if p[1] == "all":
+            p[0] = search_operations.get_all()
+        else:
+            p[0] = p[1]
+    elif len(p) == 4:
         if p[2] == "+":
             p[0] = list(set(p[1] + p[3]))
-    else:
-        print("Parsing expression:", p[1])
-        p[0] = p[1]
+
+
 
 
 def p_title_list(p):

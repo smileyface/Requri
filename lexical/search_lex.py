@@ -4,6 +4,7 @@ import ply.lex as lex
 tokens = (
     'TAG',
     'TITLE',
+    'ALL',
     'ARG_VALUE',
     'EMPTY_ARG',
     'APPEND'
@@ -12,6 +13,7 @@ tokens = (
 # Define regex for tokens
 t_TAG = r'tag'
 t_TITLE = r'title'
+t_ALL = r'all'
 t_APPEND = r'\+'
 t_EMPTY_ARG = r'\[\]'
 

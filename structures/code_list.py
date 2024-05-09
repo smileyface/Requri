@@ -15,7 +15,7 @@ def get_files(parser):
 
 
 def get_code_list():
-    return _code_list
+    return list(_code_list.values())
 
 
 def add_code_to_list(functions):
