@@ -10,7 +10,6 @@ class EditRequirementPage(AddRequirementPage):
         super().__init__(master)
         self.master = master
         self.requirement = None
-        self.add_button.configure(text="Edit", command=self.edit)
 
     def edit(self):
         requirement_list.update(self.requirement.unique_id, get_variable(self.section), get_variable(self.subsection),
@@ -18,12 +17,18 @@ class EditRequirementPage(AddRequirementPage):
                                 self.tagging_text.list)
         page_return()
 
+    def create_context_nav(self):
+        super().create_context_nav()
+        self.add_button.configure(text="Edit", command=self.edit)
+
     def on_hide(self):
+        super().on_hide()
         self.requirement_text.delete("1.0", tk.END)  # Clear existing text
         self.title_entry.delete(0, tk.END)  # Clear existing text
         self.tagging_text.clear()
 
     def on_show(self):
+        super().on_show()
         # Populate fields with data from the provided Requirement instance
         self.title_entry.insert(0, self.requirement.title)  # Insert new text
         self.section.variable.set(self.requirement.unique_id.section)

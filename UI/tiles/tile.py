@@ -22,14 +22,13 @@ class Tile(tk.Frame):
         self.bind("<Button1-Motion>", self.on_drag)
         self.bind("<ButtonRelease-1>", self.on_release)
         self.bind("<Double-1>", self.on_double_click)
-        self.bind_child_events()
 
     def bind_child_events(self):
         for child in self.winfo_children():
             child.bind("<Button-1>", self.on_child_click)
             child.bind("<Button1-Motion>", self.on_drag)
             child.bind("<ButtonRelease-1>", self.on_release)
-            child.bind("<Double-1>", self.on_double_click)
+            child.bind("<Double-1>", self.on_child_double_click)
 
     def on_click(self, event):
         self.start_x = event.x
@@ -51,6 +50,12 @@ class Tile(tk.Frame):
         self.clicked = True
         self.after(100, self.check_drag)
 
+    def on_child_double_click(self, event):
+        print(f"{self.data} double clicked")
+        if isinstance(self.data, Requirement):
+            get_page(PagesEnum.REQUIREMENT_EXTENDED).requirement = self.data
+            show_page(PagesEnum.REQUIREMENT_EXTENDED)
+
     def check_drag(self):
         if not self.clicked:
             print("It's clicked")
@@ -63,10 +68,10 @@ class Tile(tk.Frame):
     def on_drag(self, event):
         x = self.winfo_x() + event.x - self.start_x
         y = self.winfo_y() + event.y - self.start_y
-        self.clone.place(x=x, y=y)
+        #self.clone.place(x=x, y=y)
 
     def on_drop(self, event):
-        self.clone.place_forget()  # Remove clone
+        #self.clone.place_forget()  # Remove clone
         self.master.update_idletasks()
         x, y = event.x_root, event.y_root  # Event coordinates
         target = self.find_tile_under_coordinates(x, y)
@@ -94,6 +99,7 @@ class Tile(tk.Frame):
         return self.data
 
     def on_double_click(self, event):
+        print(f"{self.data} double clicked")
         if isinstance(self.data, Requirement):
             get_page(PagesEnum.REQUIREMENT_EXTENDED).requirement = self.data
             show_page(PagesEnum.REQUIREMENT_EXTENDED)

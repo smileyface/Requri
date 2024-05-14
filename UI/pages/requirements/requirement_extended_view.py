@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+from UI.pages import paging_handle
 from UI.pages.viewpage import ViewPage
 
 
@@ -10,6 +11,7 @@ class RequirementExtendedView(ViewPage):
         self.master = master
         self.requirement = None
 
+    def create_body(self):
         # Create a Notebook widget (tabbed frame)
         notebook = ttk.Notebook(self)
         notebook.pack(fill='both', expand=True)
@@ -62,7 +64,16 @@ class RequirementExtendedView(ViewPage):
         label2.pack(padx=10, pady=10)
         return tab
 
+    def create_context_nav(self):
+        edit_button = tk.Button(self.context_action_box, text="Edit", command=self.go_to_edit)
+        edit_button.pack()
+
+    def go_to_edit(self):
+        paging_handle.get_page(paging_handle.PagesEnum.EDIT_REQUIREMENT).requirement = self.requirement
+        paging_handle.show_page(paging_handle.PagesEnum.EDIT_REQUIREMENT)
+
     def on_show(self):
+        super().on_show()
         if self.requirement:
             self.unique_id.config(text=self.requirement.unique_id.to_string())
             self.title_label.config(text=self.requirement.title)

@@ -25,7 +25,7 @@ class Requirement(Record):
         if self.title != "":
             return self.title
         else:
-            self.text[:20]
+            return self.text[:20]
 
     def to_string(self):
         string = self.unique_id.to_string() + ": " + self.title + "\n" + self.text + "\n\t"

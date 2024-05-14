@@ -59,14 +59,6 @@ class AddRequirementPage(ViewPage):
         self.requirement_text = tk.Text(self.right_panel)
         self.requirement_text.pack(fill=tk.BOTH, expand=True)
 
-        # Buttons
-        self.button_frame = tk.Frame(self)
-        self.button_frame.pack(side=tk.BOTTOM, fill=tk.X)
-        self.add_button = tk.Button(self.button_frame, text="Add", command=self.add)
-        self.add_button.pack(anchor="s")
-        self.cancel_button = tk.Button(self.button_frame, text="Cancel", command=self.cancel)
-        self.cancel_button.pack(anchor="s")
-
         #self.bind("<Enter>", self.on_enter)
 
     def update_combobox_b(self, event=None):
@@ -75,6 +67,13 @@ class AddRequirementPage(ViewPage):
             b_values = requirement_list.get_subsection_lists(section)
             if b_values:
                 self.subsection.update(b_values)
+
+    def create_context_nav(self):
+        super().create_context_nav()
+        self.add_button = tk.Button(self.context_action_box, text="Add", command=self.add)
+        self.add_button.pack(side=tk.LEFT)
+        self.cancel_button = tk.Button(self.context_action_box, text="Cancel", command=self.cancel)
+        self.cancel_button.pack(side=tk.LEFT)
 
     def add(self):
         req = Requirement(get_variable(self.section), get_variable(self.subsection), self.title_entry.get(),
@@ -86,6 +85,7 @@ class AddRequirementPage(ViewPage):
         page_return()
 
     def on_hide(self):
+        super().on_hide()
         # Reset title entry
         self.title_entry.delete(0, tk.END)
         # Reset subsection combobox
@@ -96,6 +96,7 @@ class AddRequirementPage(ViewPage):
         self.tagging_text.clear()
 
     def on_show(self):
+        super().on_show()
         # Reset section combobox
         self.section.update(requirement_list.get_section_lists())
         self.tagging_text.update_choices(Record.get_known_tags())

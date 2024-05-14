@@ -15,7 +15,6 @@ class TileView(ScrollableFrame):
         self.tiles = []
         self.selected_frame = None  # Track the currently selected frame
         self._last_width = 0
-        self.known_records = []
 
         self.update()
 
@@ -26,25 +25,37 @@ class TileView(ScrollableFrame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
+
+    def create_tile_from_record(self, record):
+        if isinstance(record, Requirement):
+            frame = RequirementTile(self.scrollable_frame, record)
+        elif isinstance(record, Code):
+            frame = CodeTile(self.scrollable_frame, record)
+        return frame
+
+
     def add_tile(self, data):
-        self.known_records.append(str(data))
-        if isinstance(data, Requirement):
-            frame = RequirementTile(self.scrollable_frame, data)
-        elif isinstance(data, Code):
-            frame = CodeTile(self.scrollable_frame, data)
+        frame = self.create_tile_from_record(data)
+        self.tiles.append(frame)
 
-        num_frames = len(self.tiles)
+    def place_tiles(self):
+        # Remove existing tiles without destroying other children
+        for tile in self.tiles:
+            tile.grid_forget()  # Remove the tile from the grid layout
 
-        tile_width = 1
-        if len(self.tiles) > 0:
-            tile_width = self.tiles[0].winfo_width()
+        # Calculate the number of columns based on frame width
         frame_width = self.winfo_width()
         num_columns = max(1, (frame_width // 256) - 1)
 
-        row = num_frames // num_columns  # Distribute frames evenly across rows
-        column = num_frames % num_columns  # Alternate between columns
-        frame.grid(row=row, column=column, sticky="nsew")  # Use grid layout and expand in all directions
-        self.tiles.append(frame)
+        # Place tiles using grid layout
+        for i, tile in enumerate(self.tiles):
+            row = i // num_columns
+            column = i % num_columns
+            tile.grid(row=row, column=column, sticky="nsew")
+
+        # Update the scrollable region
+        self.scrollable_frame.update_idletasks()
+        self.canvas.config(scrollregion=self.canvas.bbox("all"))
 
     def remove_tile(self, frame):
         frame.destroy()
@@ -58,20 +69,32 @@ class TileView(ScrollableFrame):
             self.remove_tile(self.selected_frame)
             self.selected_frame = None  # Reset selected frame after removal
 
+    def update_content(self, index, record):
+        if self.tiles[index].data.unique_id is not record.unique_id:
+            self.tiles[index].data = record
+
+
     def update(self, query="all"):
-        # Check if the size of the widget has changed
-        current_width = self.winfo_width()
-
-        # Clear existing tiles
-        for frame in self.tiles:
-            frame.destroy()
-        self.tiles.clear()
-
         # Get the requirement map and calculate the number of columns
         record_map = interpret(query)
 
-        for record in record_map:
-            self.add_tile(record)
+        num_frames = len(record_map)
+
+        for i, record in enumerate(record_map):
+            if i < len(self.tiles):
+                # If the tile exists, update its content
+                self.update_content(i, record)
+            else:
+                # If the tile doesn't exist, create a new one
+                self.add_tile(record)
+
+        # Remove any extra tiles if the number of records decreased
+        if len(self.tiles) > num_frames:
+            for frame in self.tiles[num_frames:]:
+                self.remove_tile(frame)
+        self.place_tiles()
+        # Reset selected frame after updating tiles
+        self.selected_frame = None
 
     def get_selected(self):
         selected = []
