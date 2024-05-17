@@ -30,6 +30,7 @@ def get_enum_from_frame(frame):
     else:
         raise ValueError("Unknown frame: {}".format(frame))
 
+
 def show_page(page_enum, forgo_stack=False):
     global _current_page, _page_back_stack
     frame = _frame_map[page_enum]
@@ -58,6 +59,7 @@ def page_return():
 
 def get_page(page_enum):
     return _page_map[page_enum]
+
 
 def get_current_page():
     return get_enum_from_frame(_current_page)

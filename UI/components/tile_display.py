@@ -41,7 +41,9 @@ class TileView(ScrollableFrame):
     def place_tiles(self):
         # Remove existing tiles without destroying other children
         for tile in self.tiles:
+            tile.update()
             tile.grid_forget()  # Remove the tile from the grid layout
+
 
         # Calculate the number of columns based on frame width
         frame_width = self.winfo_width()
@@ -70,8 +72,7 @@ class TileView(ScrollableFrame):
             self.selected_frame = None  # Reset selected frame after removal
 
     def update_content(self, index, record):
-        if self.tiles[index].data.unique_id is not record.unique_id:
-            self.tiles[index].data = record
+        self.tiles[index].data = record
 
 
     def update(self, query="all"):

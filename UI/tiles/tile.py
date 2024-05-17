@@ -52,6 +52,7 @@ class Tile(tk.Frame):
 
     def on_child_double_click(self, event):
         print(f"{self.data} double clicked")
+        self.deselect()
         if isinstance(self.data, Requirement):
             get_page(PagesEnum.REQUIREMENT_EXTENDED).requirement = self.data
             show_page(PagesEnum.REQUIREMENT_EXTENDED)
@@ -68,10 +69,10 @@ class Tile(tk.Frame):
     def on_drag(self, event):
         x = self.winfo_x() + event.x - self.start_x
         y = self.winfo_y() + event.y - self.start_y
-        #self.clone.place(x=x, y=y)
+        self.clone.place(x=x, y=y)
 
     def on_drop(self, event):
-        #self.clone.place_forget()  # Remove clone
+        self.clone.place_forget()  # Remove clone
         self.master.update_idletasks()
         x, y = event.x_root, event.y_root  # Event coordinates
         target = self.find_tile_under_coordinates(x, y)
@@ -100,6 +101,7 @@ class Tile(tk.Frame):
 
     def on_double_click(self, event):
         print(f"{self.data} double clicked")
+        self.deselect()
         if isinstance(self.data, Requirement):
             get_page(PagesEnum.REQUIREMENT_EXTENDED).requirement = self.data
             show_page(PagesEnum.REQUIREMENT_EXTENDED)
@@ -117,3 +119,6 @@ class Tile(tk.Frame):
     def deselect(self):
         self.selected = False
         self.config(borderwidth=1, relief=tk.SOLID)
+
+    def update(self):
+        pass

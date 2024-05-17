@@ -10,7 +10,7 @@ class MainApplication(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Requirement Tracker")
-        self.geometry("800x600")
+        self.geometry("900x765")
 
         self.full_frame = tk.Frame(self)
         self.page_container = tk.Frame(self.full_frame)

@@ -10,9 +10,9 @@ class Requirement(Record):
         self.title = title
 
     def connect(self, connection):
-        if type(connection).__name__() == "Requirement":
+        if type(connection).__name__ == "Requirement":
             self.connections["Supporting Requirement"] = connection
-        elif type(connection).__name__() == "Code":
+        elif type(connection).__name__ == "Code":
             self.connections["Implementation"] = connection
         else:
             super().connect(connection)
