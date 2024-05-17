@@ -19,7 +19,7 @@ class AddRequirementPage(ViewPage):
 
     def create_body(self):
         # Create main frame for the page
-        self.main_frame = tk.Frame(self)
+        self.main_frame = tk.Frame(self.master)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Create left panel for inputs

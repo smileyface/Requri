@@ -14,7 +14,7 @@ class RequirementExtendedView(ViewPage):
     def create_body(self):
         print("RequrementExtendedView body created")
         # Create a Notebook widget (tabbed frame)
-        notebook = ttk.Notebook(self)
+        notebook = ttk.Notebook(self.master)
         notebook.pack(fill='both', expand=True)
 
         requirement_tab = self.make_requirement_tab(notebook)
