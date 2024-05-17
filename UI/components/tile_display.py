@@ -15,6 +15,7 @@ class TileView(ScrollableFrame):
         self.tiles = []
         self.selected_frame = None  # Track the currently selected frame
         self._last_width = 0
+        self.query = "all"
 
         self.update()
 
@@ -25,14 +26,12 @@ class TileView(ScrollableFrame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-
     def create_tile_from_record(self, record):
         if isinstance(record, Requirement):
             frame = RequirementTile(self.scrollable_frame, record)
         elif isinstance(record, Code):
             frame = CodeTile(self.scrollable_frame, record)
         return frame
-
 
     def add_tile(self, data):
         frame = self.create_tile_from_record(data)
@@ -43,7 +42,6 @@ class TileView(ScrollableFrame):
         for tile in self.tiles:
             tile.update()
             tile.grid_forget()  # Remove the tile from the grid layout
-
 
         # Calculate the number of columns based on frame width
         frame_width = self.winfo_width()
@@ -74,10 +72,9 @@ class TileView(ScrollableFrame):
     def update_content(self, index, record):
         self.tiles[index].data = record
 
-
-    def update(self, query="all"):
+    def update(self):
         # Get the requirement map and calculate the number of columns
-        record_map = interpret(query)
+        record_map = interpret(self.query)
 
         num_frames = len(record_map)
 

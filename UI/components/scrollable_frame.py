@@ -16,6 +16,13 @@ class ScrollableFrame(tk.Frame):
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
 
+        # Bind mouse wheel scrolling event to the canvas
+        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+
     def clear(self):
         for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
+
+
+    def _on_mousewheel(self, event):
+        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")

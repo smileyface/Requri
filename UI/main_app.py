@@ -21,7 +21,7 @@ class MainApplication(tk.Tk):
 
         self.full_frame.pack(fill=tk.BOTH, expand=True)
 
-        create_and_register_frame(self.page_container, PagesEnum.REQUIREMENT_VIEW, requirements.RequirementView)
+        create_and_register_frame(self.page_container, PagesEnum.RECORD_VIEW, requirements.RecordsView)
         create_and_register_frame(self.page_container, PagesEnum.ADD_REQUIREMENT, requirements.AddRequirementPage)
         create_and_register_frame(self.page_container, PagesEnum.EDIT_REQUIREMENT, requirements.EditRequirementPage)
         create_and_register_frame(self.page_container, PagesEnum.MASS_ADD_REQUIREMENT,
@@ -29,7 +29,7 @@ class MainApplication(tk.Tk):
         create_and_register_frame(self.page_container, PagesEnum.REQUIREMENT_EXTENDED,
                                   requirements.RequirementExtendedView)
 
-        show_page(PagesEnum.REQUIREMENT_VIEW)
+        show_page(PagesEnum.RECORD_VIEW)
         self.create_menu(self)
 
     def create_navigation_bar(self):

@@ -10,10 +10,9 @@ class ViewPage(tk.Frame):
         self.master = master
         self.main_app_body = ttk.Frame(self.master)
         self.context_action_box = self.master.master.master.master.context_action_box
-        self.create_body()
 
     def create_body(self):
-        pass
+        raise NotImplementedError("Subclasses should implement this!")
 
     def create_context_nav(self):
         pass

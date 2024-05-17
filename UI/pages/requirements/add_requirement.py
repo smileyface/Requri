@@ -17,6 +17,7 @@ class AddRequirementPage(ViewPage):
         super().__init__(master)
         self.master = master
 
+    def create_body(self):
         # Create main frame for the page
         self.main_frame = tk.Frame(self)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
@@ -58,8 +59,6 @@ class AddRequirementPage(ViewPage):
         self.requirement_label.pack()
         self.requirement_text = tk.Text(self.right_panel)
         self.requirement_text.pack(fill=tk.BOTH, expand=True)
-
-        #self.bind("<Enter>", self.on_enter)
 
     def update_combobox_b(self, event=None):
         section = get_variable(self.section)

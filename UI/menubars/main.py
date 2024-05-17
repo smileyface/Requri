@@ -90,7 +90,7 @@ class MainMenuBar(tk.Menu):
         if project.get_save_file():
             with open(project.get_save_file(), "r") as file:
                 project.expand_save_file(json.load(file))
-        get_page(PagesEnum.REQUIREMENT_VIEW).on_show()
+        get_page(PagesEnum.RECORD_VIEW).on_show()
 
     def import_code(self):
         project.set_code_location(filedialog.askdirectory(initialdir="/", title="Select Code Directory"))
