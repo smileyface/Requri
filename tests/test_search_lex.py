@@ -1,7 +1,7 @@
 import unittest
 
 from lexical.search import interpret
-from structures import requirement_list
+from structures.lists import requirement_list
 from structures.records.requirement import Requirement
 
 

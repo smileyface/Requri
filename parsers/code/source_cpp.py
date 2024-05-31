@@ -5,6 +5,7 @@ import threading
 import clang.cindex
 
 from structures import project
+from structures.lists import file_list
 from structures.records.code import Code
 from structures.source_file import File
 
@@ -22,7 +23,6 @@ def parse():
 class cpp_parser:
     _function_calls = []
     _file_function_map = dict()
-    _cpp_files = []
     _functions = []
 
     def __init__(self):
@@ -217,11 +217,10 @@ class cpp_parser:
         self.extract_function_calls(translation_unit.cursor)
 
     def scan_cpp_files(self, directory):
-        self._cpp_files = []
         for root, _, files in os.walk(directory):
             for file in files:
                 if file.endswith(".cpp") or file.endswith(".h"):
-                    self._cpp_files.append(File(os.path.join(root, file)))
+                    file_list.add_file(File(os.path.join(root, file)))
 
     def get_functions_from_source(self, callback):
         # Get a list of .cpp and .h files in the directory

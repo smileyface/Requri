@@ -1,13 +1,16 @@
 import tkinter as tk
 from tkinter import ttk
 
+import structures
 from UI.pages import paging_handle
 from UI.pages.viewpage import ViewPage
+from structures.records import *
 
 
 class RequirementExtendedView(ViewPage):
     def __init__(self, master):
         super().__init__(master)
+        self.connected_listbox = None
         self.master = master
         self.requirement = None
 
@@ -61,9 +64,32 @@ class RequirementExtendedView(ViewPage):
 
     def make_trace_tab(self, master):
         tab = ttk.Frame(master)
-        label2 = tk.Label(tab, text='This is Tab 2')
-        label2.pack(padx=10, pady=10)
+        self.connected_listbox = ttk.Treeview(tab)
+        self.connected_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         return tab
+
+    def get_list_of_type(self, list, type):
+        list_of_type = []
+        for x in list:
+            if type(x) is type(type):
+                list_of_type.append(x)
+        return list_of_type
+
+    def populate_listbox(self):
+        connected = []
+        for key, values in self.requirement.connections.items():
+            connected.extend(values)
+        code_list = self.get_list_of_type(connected, Code)
+        requirements_list = self.get_list_of_type(connected, Requirement)
+        if len(code_list) > 0:
+            code_id = self.connected_listbox.insert("", "end", text="Implementations")
+            for x in code_list:
+                self.connected_listbox.insert(code_id, "end", text=str(x))
+        if len(requirements_list) > 0:
+            requirement_id = self.connected_listbox.insert("", "end", text="Related Requirements")
+            for x in requirements_list:
+                self.connected_listbox.insert(requirement_id, "end", text=x, iid=f"Req-{x.unique_id.to_string()}")
+
 
     def create_context_nav(self):
         edit_button = tk.Button(self.context_action_box, text="Edit", command=self.go_to_edit)
@@ -79,5 +105,7 @@ class RequirementExtendedView(ViewPage):
             self.unique_id.config(text=self.requirement.unique_id.to_string())
             self.title_label.config(text=self.requirement.title)
             self.text_label.config(text=self.requirement.text)
+            self.populate_listbox()
+
         else:
             raise ValueError("Data not passed")

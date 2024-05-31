@@ -2,10 +2,11 @@ from structures.records.requirement import Requirement
 
 _req_map = {}
 
+
 def update(unique_id, section, sub, title, text, tags):
     #Update section and subsection
     if not unique_id.section == section or not unique_id.sub == sub:
-        append(Requirement(section, sub,title, text, tags))
+        append(Requirement(section, sub, title, text, tags))
         _req_map.pop((unique_id.section, unique_id.sub))
     _req_map[(unique_id.section, unique_id.sub)][
         unique_id.unique_id].title = title
@@ -13,6 +14,7 @@ def update(unique_id, section, sub, title, text, tags):
         unique_id.unique_id].text = text
     _req_map[(unique_id.section, unique_id.sub)][
         unique_id.unique_id].tags = tags
+
 
 def append(requirement):
     if (requirement.unique_id.section, requirement.unique_id.sub) not in _req_map:
@@ -23,6 +25,7 @@ def append(requirement):
 
 def map_is_empty():
     return _req_map == {}
+
 
 def remove(requirement):
     del _req_map[(requirement.unique_id.section, requirement.unique_id.sub)][requirement.unique_id.unique_id]
@@ -54,6 +57,7 @@ def add_requirement(requirement):
 
 def get_requirement_map():
     return _req_map
+
 
 def get_requirement_list():
     list_of_map = []

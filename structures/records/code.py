@@ -1,4 +1,4 @@
-from structures.code_list import _code_list, signature_to_id_map
+from structures.lists.code_list import _code_list, signature_to_id_map
 from structures.records.record import Record
 
 
@@ -64,12 +64,6 @@ class Code(Record):
                 Code.id_map.append(x)
                 return x
 
-    def to_json(self):
-        return {"id": self._unique_id, "definition": self.definition, "declaration": self.declaration,
-                "access": self.access_level, "class": self.class_name,
-                "name": self.name, "arguments": self.arguments, "begin": self.func_begin, "end": self.func_end,
-                "call_list": self.call_list}
-
     def connect(self, type, connect):
         if not type in self.connections.keys():
             self.connections[type] = [connect]
@@ -79,10 +73,25 @@ class Code(Record):
     def __str__(self):
         return self.signature
 
+    def to_json(self):
+        definition = ""
+        declaration = ""
+        if self.definition:
+            definition = self.definition.path
+        if self.declaration:
+            declaration = self.declaration.path
+        call_list = []
+        for x in self.call_list:
+            call_list.append(str(x))
+        return {"id": self._unique_id, "definition": definition, "declaration": declaration,
+                "access": self.access_level, "class": self.class_name,
+                "name": self.name, "arguments": self.arguments, "begin": self.func_begin, "end": self.func_end,
+                "call_list": call_list}
+
 
 def expand_from_json(param):
     for x in param:
-        _code_list[x["id"]] = Code(x["location"], x["access"], x["class"], x["name"], x["arguments"], x["begin"],
+        _code_list[x["id"]] = Code(x["declaration"], x["access"], x["class"], x["name"], x["arguments"], x["begin"],
                                    x["end"], x["id"], False)
         _code_list[x["id"]].definition = x["definition"]
         signature_to_id_map[_code_list[x["id"]].signature] = _code_list[x["id"]].unique_id
