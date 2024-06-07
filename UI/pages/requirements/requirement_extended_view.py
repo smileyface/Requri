@@ -90,7 +90,6 @@ class RequirementExtendedView(ViewPage):
             for x in requirements_list:
                 self.connected_listbox.insert(requirement_id, "end", text=x, iid=f"Req-{x.unique_id.to_string()}")
 
-
     def create_context_nav(self):
         edit_button = tk.Button(self.context_action_box, text="Edit", command=self.go_to_edit)
         edit_button.pack()

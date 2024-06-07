@@ -1,6 +1,4 @@
-from UI.pages.records_view import RecordsView
-
-from UI.pages.requirements.add_requirement import AddRequirementPage
+from UI.pages.requirements.add_requirements.add_requirement import AddRequirementPage
 from UI.pages.requirements.mass_add_requirement import MassAddRequirementPage
 from UI.pages.requirements.edit_requirement import EditRequirementPage
 from UI.pages.requirements.requirement_extended_view import RequirementExtendedView

@@ -1,42 +1,39 @@
+import os
+from dataclasses import dataclass, field
+from typing import Optional, List, Dict
+
 from structures.lists.code_list import _code_list, signature_to_id_map
+from structures.records.code_location import Code_Location
 from structures.records.record import Record
 
 
-class Code_Location:
-    DEFINITION = 0
-    DECLARATION = 1
-
-    def __init__(self, type, file, begin, end):
-        self.type = type
-        self.file = file
-        self.begin = begin
-        self.end = end
-
-
+@dataclass
 class Code(Record):
-    id_map = []
+    id_map = set()
     id_range_max = 1000
+    file: str
+    access_level: str
+    class_name: str
+    name: str
+    arguments: List[str]
+    func_begin: str
+    func_end: str
+    definition: Optional[Code_Location] = None
+    declaration: Optional[Code_Location] = None
+    _unique_id: Optional[int] = field(default=None, init=False)  # Exclude from __init__
+    call_list: List = field(default_factory=list)
+    connections: Dict = field(default_factory=dict)
+    id: Optional[int] = None  # Add this line
 
-    def __init__(self, file, access_level, class_name, name, arguments, func_begin, func_end, definition,
-                 unique_id=None):
-        super()
-        self.access_level = access_level
-        self.class_name = class_name
-        self.name = name
-        self.arguments = arguments
-        self.func_begin = func_begin
-        self.func_end = func_end
-        self.call_list = []
-        self.connections = dict()
-        if definition:
-            self.definition = file
-            self.declaration = None
+    def __post_init__(self):
+        if self.id is None:
+            self._unique_id = self._create_unique_id()
         else:
-            self.definition = None
-            self.declaration = file
-        self._unique_id = None
-        if unique_id is not None:
-            self.unique_id = unique_id
+            self.unique_id = self.id
+
+
+    id_map = set()
+    id_range_max = 1000
 
     @property
     def unique_id(self):
@@ -45,14 +42,14 @@ class Code(Record):
         return self._unique_id
 
     @unique_id.setter
-    def unique_id(self, id):
-        if id < 0 or id > Code.id_range_max:
+    def unique_id(self, new_id):
+        if new_id < 0 or new_id > Code.id_range_max:
             raise ValueError("ID out of range")
-        elif id in Code.id_map:
+        elif new_id in Code.id_map:
             raise ValueError("Non Unique ID")
         else:
-            Code.id_map.append(id)
-            self._unique_id = id
+            Code.id_map.add(new_id)
+            self._unique_id = new_id
 
     @property
     def signature(self):
@@ -61,29 +58,30 @@ class Code(Record):
     def _create_unique_id(self):
         for x in range(0, self.id_range_max):
             if x not in Code.id_map:
-                Code.id_map.append(x)
+                Code.id_map.add(x)
                 return x
 
     def connect(self, type, connect):
-        if not type in self.connections.keys():
-            self.connections[type] = [connect]
-        else:
-            self.connections[type].append(connect)
+        self.connections.setdefault(type, []).append(connect)
 
     def __str__(self):
         return self.signature
+
+    def __del__(self):
+        if self._unique_id is not None and self._unique_id in Code.id_map:
+            Code.id_map.remove(self._unique_id)
 
     def to_json(self):
         definition = ""
         declaration = ""
         if self.definition:
-            definition = self.definition.path
+            definition = self.definition.file
         if self.declaration:
-            declaration = self.declaration.path
+            declaration = self.declaration.file
         call_list = []
         for x in self.call_list:
             call_list.append(str(x))
-        return {"id": self._unique_id, "definition": definition, "declaration": declaration,
+        return {"id": self.unique_id, "definition": definition, "declaration": declaration,
                 "access": self.access_level, "class": self.class_name,
                 "name": self.name, "arguments": self.arguments, "begin": self.func_begin, "end": self.func_end,
                 "call_list": call_list}
