@@ -1,38 +1,55 @@
+from typing import List, Dict, Union
+
+from structures.records import Code
 from structures.records.record import Record
 from structures.requirement_id import RequirementId
 
 
 class Requirement(Record):
-    def __init__(self, section, sub, title, text, tags, unique_id=None):
+    """Represents a requirement with a unique identifier, title, text, and tags."""
+    
+    def __init__(self, section: str, sub: str, title: str, text: str, tags: List[str], unique_id: int = None):
+        """
+        Initializes a new requirement with the given section, subsection, title, text, tags, and optional unique ID.
+        
+        Args:
+        - section: The section of the requirement.
+        - sub: The subsection of the requirement.
+        - title: The title of the requirement.
+        - text: The text of the requirement.
+        - tags: List of tags associated with the requirement.
+        - unique_id: Optional unique ID for the requirement.
+        """
+        if not isinstance(tags, list):
+            raise TypeError("`tags` must be a list.")
         super().__init__(tags)
         self._unique_id = RequirementId(section, sub, unique_id)
-        self.text = text.strip()
+        self.text = text.strip() if text else ''
         self.title = title
 
     def connect(self, connection):
-        if type(connection).__name__ == "Requirement":
+        """
+        Connects the requirement to another requirement or code instance.
+        
+        Args:
+        - connection: The requirement or code instance to connect to.
+        """
+        if isinstance(connection, Requirement):
             self.connections["Supporting Requirement"] = connection
-        elif type(connection).__name__ == "Code":
+        elif isinstance(connection, Code):
             self.connections["Implementation"] = connection
         else:
             super().connect(connection)
 
     @property
-    def unique_id(self):
+    def unique_id(self) -> RequirementId:
+        """Property that returns the unique identifier of the requirement."""
         return self._unique_id
 
-    def __str__(self):
-        if self.title != "":
-            return self.title
-        else:
-            return self.text[:20]
+    def __repr__(self) -> str:
+        """Return a string representation of the Requirement object."""
+        return f"{self.unique_id}: {self.title}"
 
-    def to_string(self):
-        string = self.unique_id.to_string() + ": " + self.title + "\n" + self.text + "\n\t"
-        for x in self.tags:
-            string += "#" + x + ", "
-        return string
-
-    def to_json(self):
-        json = {"id": self._unique_id.to_json(), "title": self.title, "text": self.text, "tags": self.tags}
-        return json
+    def to_json(self) -> Dict:
+        """Converts the requirement to a JSON representation."""
+        return {"id": self._unique_id.to_json(), "title": self.title, "text": self.text, "tags": self.tags}

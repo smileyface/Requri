@@ -1,5 +1,6 @@
 import os
 
+
 class Code_Location:
     DEFINITION = 0
     DECLARATION = 1
