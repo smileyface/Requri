@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 
-import structures
 from UI.pages import paging_handle
 from UI.pages.viewpage import ViewPage
 from structures.records import *
@@ -15,7 +14,7 @@ class RequirementExtendedView(ViewPage):
         self.requirement = None
 
     def create_body(self):
-        print("RequrementExtendedView body created")
+        print("RequirementExtendedView body created")
         # Create a Notebook widget (tabbed frame)
         notebook = ttk.Notebook(self.master)
         notebook.pack(fill='both', expand=True)
@@ -34,6 +33,7 @@ class RequirementExtendedView(ViewPage):
         # Create labels
         self.unique_id = tk.Label(title_frame, text="UNIQUE ID", font=("Helvetica", 8))
         self.title_label = tk.Label(title_frame, text="LABEL", font=("Helvetica", 12, "bold"))
+        # noinspection SpellCheckingInspection
         self.text_label = tk.Label(text_frame, justify="left", text="Lorem ipsum dolor sit amet, consectetur "
                                                                     "adipiscing elit, sed doeiusmod tempor incididunt "
                                                                     "ut labore et dolore magna aliqua. Ut enim ad "

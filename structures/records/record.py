@@ -8,6 +8,7 @@ class Record:
         self.tags = tags
         self.connections = defaultdict(list)
         Record._instances.append(self)
+        Record.remove_unused_tags()
 
     def connect(self, connect):
         """
@@ -22,6 +23,7 @@ class Record:
 
     @staticmethod
     def get_known_tags():
+
         return sorted(Record._known_tags)
 
     @staticmethod

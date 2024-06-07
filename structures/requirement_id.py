@@ -1,8 +1,6 @@
-import threading
 import logging
-from collections import defaultdict
 from dataclasses import dataclass, InitVar, field
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 @dataclass
 class RequirementId:

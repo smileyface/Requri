@@ -1,4 +1,4 @@
-from typing import List, Dict, Union
+from typing import List, Dict
 
 from structures.records import Code
 from structures.records.record import Record
@@ -53,3 +53,13 @@ class Requirement(Record):
     def to_json(self) -> Dict:
         """Converts the requirement to a JSON representation."""
         return {"id": self._unique_id.to_json(), "title": self.title, "text": self.text, "tags": self.tags}
+
+    def to_markdown(self) -> str:
+        """
+        Converts the requirement to a markdown representation.
+
+        Returns:
+        - A string containing the markdown representation of the requirement.
+        """
+        tags_str = ', '.join(self.tags)
+        return f"## {self.title}\n\n**ID:** {self.unique_id}\n\n**Text:**\n\n{self.text}\n\n**Tags:** {tags_str}\n"
