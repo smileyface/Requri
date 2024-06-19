@@ -3,7 +3,7 @@ from tkinter import ttk
 
 from UI.menubars.main import MainMenuBar
 from UI.pages import requirements, paging_handle
-from UI.pages.paging_handle import show_page, create_and_register_frame, PagesEnum
+from UI.pages.paging_handle import PagingHandle, PagesEnum
 
 
 class MainApplication(tk.Tk):
@@ -21,15 +21,15 @@ class MainApplication(tk.Tk):
 
         self.full_frame.pack(fill=tk.BOTH, expand=True)
 
-        create_and_register_frame(self.page_container, PagesEnum.RECORD_VIEW, requirements.RecordsView)
-        create_and_register_frame(self.page_container, PagesEnum.ADD_REQUIREMENT, requirements.AddRequirementPage)
-        create_and_register_frame(self.page_container, PagesEnum.EDIT_REQUIREMENT, requirements.EditRequirementPage)
-        create_and_register_frame(self.page_container, PagesEnum.MASS_ADD_REQUIREMENT,
-                                  requirements.MassAddRequirementPage)
-        create_and_register_frame(self.page_container, PagesEnum.REQUIREMENT_EXTENDED,
-                                  requirements.RequirementExtendedView)
+        PagingHandle.create_and_register_page(self.page_container, PagesEnum.RECORD_VIEW, requirements.RecordsView)
+        PagingHandle.create_and_register_page(self.page_container, PagesEnum.ADD_REQUIREMENT, requirements.AddRequirementPage)
+        PagingHandle.create_and_register_page(self.page_container, PagesEnum.EDIT_REQUIREMENT, requirements.EditRequirementPage)
+        PagingHandle.create_and_register_page(self.page_container, PagesEnum.MASS_ADD_REQUIREMENT,
+                                              requirements.MassAddRequirementPage)
+        PagingHandle.create_and_register_page(self.page_container, PagesEnum.REQUIREMENT_EXTENDED,
+                                              requirements.RequirementExtendedView)
 
-        show_page(PagesEnum.RECORD_VIEW)
+        PagingHandle.show_page(PagesEnum.RECORD_VIEW)
         self.create_menu(self)
 
     def create_navigation_bar(self):

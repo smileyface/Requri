@@ -9,6 +9,10 @@ from structures.records.record import Record
 
 
 class TestCode:
+    @pytest.fixture(autouse=True)
+    def teardown(self):
+        yield
+        Record.clear_records()
 
     #  Initializes with all attributes correctly
     def test_initializes_with_all_attributes_correctly(self):

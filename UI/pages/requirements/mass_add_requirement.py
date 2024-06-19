@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from UI.pages.paging_handle import page_return
+from UI.pages.paging_handle import PagingHandle
 from UI.pages.requirements.add_requirements.add_requirement import AddRequirementPage, get_variable
 from structures.lists import requirement_list
 from structures.records.requirement import Requirement
@@ -17,5 +17,5 @@ class MassAddRequirementPage(AddRequirementPage):
                               text, self.tagging_text.list)
 
             requirement_list.append(req)
-        page_return()
+        PagingHandle.page_return()
   

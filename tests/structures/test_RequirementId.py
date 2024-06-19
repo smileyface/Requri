@@ -2,26 +2,28 @@
 
 import pytest
 
+from structures.records.record import Record
 from structures.requirement_id import RequirementId
 
 
 class TestRequirementId:
 
-    def setup_method(self):
-        # Ensure id_map is reset before each test
-        RequirementId.id_map = {}
+    @pytest.fixture(autouse=True)
+    def teardown(self):
+        yield
+        Record.clear_records()
 
     #  Creating a RequirementId instance with a unique ID
     def test_create_instance_with_unique_id(self):
         req_id = RequirementId("section1", "sub1", 1)
         assert req_id.unique_id == 1
-        assert RequirementId.id_map[("section1", "sub1")] == [1]
+        assert RequirementId.id_map[("section1", "sub1")] == {1}
 
     #  Creating a RequirementId instance without a unique ID and auto-generating one
     def test_create_instance_without_unique_id(self):
         req_id = RequirementId("section2", "sub2")
         assert req_id.unique_id == 0
-        assert RequirementId.id_map[("section2", "sub2")] == [0]
+        assert RequirementId.id_map[("section2", "sub2")] == {0}
 
     #  Getting the unique_id property when it is already set
     def test_get_unique_id_when_set(self):
@@ -33,7 +35,7 @@ class TestRequirementId:
         req_id = RequirementId("section4", "sub4")
         req_id.unique_id = 4
         assert req_id.unique_id == 4
-        assert RequirementId.id_map[("section4", "sub4")] == [4]
+        assert RequirementId.id_map[("section4", "sub4")] == {4}
 
     #  Converting a RequirementId instance to a string
     def test_to_string_conversion(self):
@@ -62,7 +64,7 @@ class TestRequirementId:
         req_id1 = RequirementId("section9", "sub9", 9)
         req_id2 = RequirementId("section9", "sub9")
         assert req_id2.unique_id == 0
-        assert RequirementId.id_map[("section9", "sub9")] == [9, 0]
+        assert RequirementId.id_map[("section9", "sub9")] == {9, 0}
 
     #  Deleting a RequirementId instance and ensuring the ID is removed from id_map
     def test_delete_instance_removes_id_from_map(self):

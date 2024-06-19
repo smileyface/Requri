@@ -1,31 +1,34 @@
-from typing import List, Dict
+import logging
+from dataclasses import dataclass, InitVar, field
+from typing import List, Dict, Optional
 
 from structures.records import Code
 from structures.records.record import Record
 from structures.requirement_id import RequirementId
 
 
+@dataclass
 class Requirement(Record):
-    """Represents a requirement with a unique identifier, title, text, and tags."""
-    
-    def __init__(self, section: str, sub: str, title: str, text: str, tags: List[str], unique_id: int = None):
-        """
-        Initializes a new requirement with the given section, subsection, title, text, tags, and optional unique ID.
-        
-        Args:
-        - section: The section of the requirement.
-        - sub: The subsection of the requirement.
-        - title: The title of the requirement.
-        - text: The text of the requirement.
-        - tags: List of tags associated with the requirement.
-        - unique_id: Optional unique ID for the requirement.
-        """
-        if not isinstance(tags, list):
+    section: str
+    sub: str
+    title: str
+    text: str
+    tags: List[str]
+    new_unique_id: InitVar[Optional[int]] = None
+    _unique_id: RequirementId = field(init=False)
+
+    def __post_init__(self, new_unique_id: Optional[int]):
+        if not isinstance(self.tags, list):
             raise TypeError("`tags` must be a list.")
-        super().__init__(tags)
-        self._unique_id = RequirementId(section, sub, unique_id)
-        self.text = text.strip() if text else ''
-        self.title = title
+        super().__init__(self.tags)
+        self._unique_id = RequirementId(self.section, self.sub, new_unique_id)
+        self.text = self.text.strip() if self.text else ''
+
+    def __del__(self):
+        logging.info(f"Deleting Requirement: {self.unique_id}")
+        super().__del__()
+        del self._unique_id
+        pass
 
     def connect(self, connection):
         """
@@ -48,7 +51,10 @@ class Requirement(Record):
 
     def __repr__(self) -> str:
         """Return a string representation of the Requirement object."""
-        return f"{self.unique_id}: {self.title}"
+        connection_str = ""
+        if "Implementation" in self.connections and self.connections["Implementation"]:
+            connection_str = f" (Connected to {self.connections['Implementation']})"
+        return f"{self.unique_id}: {self.title}{connection_str}"
 
     def to_json(self) -> Dict:
         """Converts the requirement to a JSON representation."""

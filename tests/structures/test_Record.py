@@ -8,6 +8,11 @@ from structures.records.record import Record
 
 class TestRecord:
 
+    @pytest.fixture(autouse=True)
+    def teardown(self):
+        yield
+        Record.clear_records()
+
     #  Creating a Record instance with a list of tags
     def test_create_record_with_tags(self):
         tags = ['tag1', 'tag2']

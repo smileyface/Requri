@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from UI.pages.paging_handle import page_return
+from UI.pages.paging_handle import PagingHandle
 from UI.pages.requirements.add_requirements.add_requirement import AddRequirementPage, get_variable
 from structures.lists import requirement_list
 
@@ -8,6 +8,11 @@ from structures.lists import requirement_list
 class EditRequirementPage(AddRequirementPage):
     def __init__(self, master):
         super().__init__(master)
+        self.section = None
+        self.subsection = None
+        self.requirement_text = None
+        self.title_entry = None
+        self.tagging_text = None
         self.master = master
         self.requirement = None
 
@@ -15,7 +20,7 @@ class EditRequirementPage(AddRequirementPage):
         requirement_list.update(self.requirement.unique_id, get_variable(self.section), get_variable(self.subsection),
                                 self.title_entry.get(), self.requirement_text.get("1.0", tk.END),
                                 self.tagging_text.list)
-        page_return()
+        PagingHandle.page_return()
 
     def create_context_nav(self):
         super().create_context_nav()

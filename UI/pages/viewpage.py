@@ -31,11 +31,23 @@ class ViewPage(tk.Frame):
                 pass
                 # Handle the case where the attribute does not exist
 
-    def create_body(self):
-        raise NotImplementedError("Subclasses should implement this!")
+    def create_body(self) -> None:
+        """
+        Placeholder method to be overridden by subclasses.
+        
+        Raises:
+            NotImplementedError: Subclasses should implement this method.
+        """
+        raise NotImplementedError("Subclasses should implement this method!")
 
-    def create_context_nav(self):
-        pass
+    def create_context_nav(self) -> None:
+        """
+        Placeholder method intended to be overridden by subclasses.
+        
+        Raises:
+            NotImplementedError: Subclasses should implement this method.
+        """
+        raise NotImplementedError("Subclasses should implement this!")
 
     def to_string(self):
         return f"{type(self)}"

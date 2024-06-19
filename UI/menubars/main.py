@@ -5,7 +5,7 @@ from tkinter import filedialog
 
 from parsers.code import source_cpp
 from UI.dialog.new_project import NewProjectDialog
-from UI.pages.paging_handle import show_page, PagesEnum, get_page, get_current_page
+from UI.pages.paging_handle import PagingHandle, PagesEnum
 from structures import project
 from structures.lists import requirement_list, code_list
 
@@ -69,7 +69,7 @@ class MainMenuBar(tk.Menu):
         self.new_file_callback()
         dialog = NewProjectDialog(self.master, title="New Project")
         project.set_name(dialog)
-        get_page(get_current_page()).update()
+        PagingHandle.get_page(PagingHandle.get_current_page()).update()
 
     def save_file(self):
         if project.get_save_file():
@@ -91,12 +91,12 @@ class MainMenuBar(tk.Menu):
         if project.get_save_file():
             with open(project.get_save_file(), "r") as file:
                 project.expand_save_file(json.load(file))
-        get_page(PagesEnum.RECORD_VIEW).on_show()
+        PagingHandle.get_page(PagesEnum.RECORD_VIEW).on_show()
 
     def import_code(self):
         project.set_code_location(filedialog.askdirectory(initialdir="/", title="Select Code Directory"))
         code_list.generate_code_list(source_cpp.parse())
-        get_page(get_current_page()).update()
+        PagingHandle.get_page(PagingHandle.get_current_page()).update()
 
     def import_test(self):
         print("Importing Test")
@@ -120,7 +120,7 @@ class MainMenuBar(tk.Menu):
         print("Paste")
 
     def add_requirement(self):
-        show_page(PagesEnum.ADD_REQUIREMENT)
+        PagingHandle.show_page(PagesEnum.ADD_REQUIREMENT)
 
     def mass_add_requirement(self):
-        show_page(PagesEnum.MASS_ADD_REQUIREMENT)
+        PagingHandle.show_page(PagesEnum.MASS_ADD_REQUIREMENT)

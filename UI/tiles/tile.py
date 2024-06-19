@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from UI.pages.paging_handle import get_page, show_page, PagesEnum
+from UI.pages.paging_handle import PagingHandle, PagesEnum
 from structures.connector import connect
 from structures.records.requirement import Requirement
 
@@ -105,8 +105,8 @@ class Tile(tk.Frame):
         print(f"{self.data} double clicked")
         self.deselect()
         if isinstance(self.data, Requirement):
-            get_page(PagesEnum.REQUIREMENT_EXTENDED).requirement = self.data
-            show_page(PagesEnum.REQUIREMENT_EXTENDED)
+            PagingHandle.get_page(PagesEnum.REQUIREMENT_EXTENDED).requirement = self.data
+            PagingHandle.show_page(PagesEnum.REQUIREMENT_EXTENDED)
 
     def toggle_selection(self):
         if not self.selected:

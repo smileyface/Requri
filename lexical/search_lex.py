@@ -5,9 +5,9 @@ tokens = (
     'TAG',
     'TITLE',
     'ALL',
-    'ARG_VALUE',
+    'APPEND',
     'EMPTY_ARG',
-    'APPEND'
+    'ARG_VALUE'
 )
 
 # Define regex for tokens
@@ -25,6 +25,7 @@ def t_ARG_VALUE(t):
 
 # Define error handling
 def t_error(t):
+    print(f"Illegal character '{t.value[0]}'")
     t.lexer.skip(1)
 
 

@@ -18,7 +18,8 @@ class File:
 
     @path.setter
     def path(self, _path):
-        self._path = _path.replace(project.get_code_location(), "")
+        _path = os.path.normpath(_path)
+        self._path = os.path.relpath(_path, project.get_code_location())
 
     @property
     def full_path(self):

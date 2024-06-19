@@ -1,5 +1,5 @@
 import ply.yacc as yacc
-
+from lexical.search_lex import tokens
 import lexical.search_operations as search_operations
 
 
@@ -77,4 +77,4 @@ def p_error(p):
 
 
 # Build the parser
-parser = yacc.yacc()
+parser = yacc.yacc(debug=True)
