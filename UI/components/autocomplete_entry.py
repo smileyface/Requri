@@ -1,8 +1,44 @@
 import tkinter as tk
 
-
 class AutoCompleteEntry(tk.Frame):
+    """
+    AutoCompleteEntry is a custom Tkinter widget that provides an autocomplete
+    functionality for entry fields. It allows users to select from a list of
+    predefined choices while typing in the entry field.
+
+    Attributes:
+        choices (list): List of predefined choices for autocomplete.
+        in_state (bool): Indicates whether the widget is in autocomplete state.
+        widgetName (str): Name of the widget.
+        current_text (str): Current text in the entry field.
+        entry (tk.Entry): Tkinter Entry widget for text input.
+        option_list (tk.Listbox): Tkinter Listbox widget for displaying choices.
+
+    Methods:
+        list (property): Gets or sets the list of entries in the entry field.
+        check_trigger(event): Checks for triggers to show or hide the popup.
+        backspaces(event): Handles backspace key events.
+        show_popup(): Displays the popup listbox with choices.
+        _print_popup_state(): Prints the state of the popup (for debugging).
+        add_current_text_to_popup(): Adds the current text to the choices list.
+        add_choices_from_popup(event): Adds selected choice from the popup to the entry field.
+        update_options(): Updates the listbox with filtered choices.
+        get_options(): Retrieves the filtered list of choices based on current text.
+        update_choices(choices): Updates the predefined choices list.
+        insert(index, tag): Inserts a new tag at the specified index in the choices list.
+        clear(): Clears the entry field.
+    """
+
     def __init__(self, master, choices, *args, **kwargs):
+        """
+        Initializes the AutoCompleteEntry widget.
+
+        Parameters:
+            master (tk.Widget): Parent widget.
+            choices (list): List of predefined choices for autocomplete.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         super().__init__(master, *args, **kwargs)
         self.choices = list(choices)
         self.in_state = False
@@ -23,6 +59,12 @@ class AutoCompleteEntry(tk.Frame):
 
     @property
     def list(self):
+        """
+        Gets the list of entries in the entry field.
+
+        Returns:
+            list: List of entries in the entry field.
+        """
         entries = self.entry.get().split(",")
         for x in range(len(entries)):
             entries[x] = entries[x].strip().strip("#")
@@ -32,24 +74,50 @@ class AutoCompleteEntry(tk.Frame):
 
     @list.setter
     def list(self, value):
+        """
+        Sets the list of entries in the entry field.
+
+        Parameters:
+            value (list): List of entries to set in the entry field.
+
+        Raises:
+            ValueError: If the value is not a list.
+        """
         if isinstance(value, list):
             self.entry.insert(0, "#" + ", #".join(value) + ",")
         else:
             raise ValueError
 
     def check_trigger(self, event):
+        """
+        Checks for triggers to show or hide the popup based on the event keysym.
+        If the event keysym is 'numbersign' and the widget is not in autocomplete state,
+        it shows the popup. If the event keysym is 'comma' and the popup is visible
+        and the widget is in autocomplete state, it adds the current text to the choices
+        list and hides the popup. Otherwise, if the widget is in autocomplete state,
+        it appends the event character to the current text and updates the options list.
+
+        Parameters:
+            event (tk.Event): The key event that triggered this method.
+        """
         if event.keysym == 'numbersign' and self.in_state is False:
-            self.after(0, self.show_popup)  # Schedule show_popup on the main event loop
+            self.show_popup()
             self.in_state = True
         elif event.keysym == 'comma' and self.option_list.winfo_ismapped() and self.in_state is True:
-            self.after(0, self.add_current_text_to_popup)  # Schedule add_current_text_to_popup on the main event loop
+            self.add_current_text_to_popup()
             self.in_state = False
         else:
             if self.in_state is True:
                 self.current_text += event.char
-                self.after(0, self.update_options)  # Schedule update_options on the main event loop
+                self.update_options()
 
     def backspaces(self, event):
+        """
+        Handles backspace key events.
+
+        Parameters:
+            event (tk.Event): The key event that triggered this method.
+        """
         if event.keysym == 'BackSpace':
             current_text = self.entry.get()
             if self.current_text != "" and self.in_state is True:
@@ -63,6 +131,9 @@ class AutoCompleteEntry(tk.Frame):
                 self.option_list.pack_forget()
 
     def show_popup(self):
+        """
+        Displays the popup listbox with choices.
+        """
         self.current_text = ""
         if not self.option_list.winfo_ismapped():
             self.update_options()
@@ -71,14 +142,26 @@ class AutoCompleteEntry(tk.Frame):
             self.after(100, self._print_popup_state)  # Add delay to check state
 
     def _print_popup_state(self):
+        """
+        Prints the state of the popup (for debugging).
+        """
         print("Popup is mapped:", self.option_list.winfo_ismapped())
         print("Popup widget state:", self.option_list)
 
     def add_current_text_to_popup(self):
+        """
+        Adds the current text to the choices list.
+        """
         self.choices.append(self.current_text)
         self.option_list.pack_forget()
 
     def add_choices_from_popup(self, event):
+        """
+        Adds the selected choice from the popup to the entry field.
+
+        Parameters:
+            event (tk.Event): The event that triggered this method.
+        """
         index = self.option_list.curselection()
         if index:
             selected_text = self.option_list.get(index)
@@ -92,12 +175,21 @@ class AutoCompleteEntry(tk.Frame):
             self.option_list.pack_forget()
 
     def update_options(self):
+        """
+        Updates the listbox with filtered choices.
+        """
         self.option_list.delete(0, tk.END)
         choices = self.get_options()
         for choice in choices:
             self.option_list.insert(tk.END, choice)
 
     def get_options(self):
+        """
+        Retrieves the filtered list of choices based on current text.
+
+        Returns:
+            list: Filtered list of choices.
+        """
         options = []
         if self.current_text:
             for choice in self.choices:
@@ -108,6 +200,12 @@ class AutoCompleteEntry(tk.Frame):
         return options
 
     def update_choices(self, choices):
+        """
+        Updates the predefined choices list.
+
+        Parameters:
+            choices (list): List of new choices.
+        """
         self.choices = choices
 
     def insert(self, index, tag):
@@ -115,13 +213,13 @@ class AutoCompleteEntry(tk.Frame):
         Inserts a new tag at the specified index in the choices list.
 
         Parameters:
-        - index (int): The index at which the tag should be inserted.
-        - tag (str): The tag to be inserted into the choices list.
-
-        Returns:
-        None
+            index (int): The index at which the tag should be inserted.
+            tag (str): The tag to be inserted into the choices list.
         """
         self.choices.insert(index, tag)
 
     def clear(self):
+        """
+        Clears the entry field.
+        """
         self.entry.delete(0, tk.END)
