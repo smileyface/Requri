@@ -65,11 +65,7 @@ class AutoCompleteEntry(tk.Frame):
         Returns:
             list: List of entries in the entry field.
         """
-        entries = self.entry.get().split(",")
-        for x in range(len(entries)):
-            entries[x] = entries[x].strip().strip("#")
-        if '' in entries:
-            entries.remove('')
+        entries = [entry.strip().strip("#") for entry in self.entry.get().split(",") if entry.strip()]
         return entries
 
     @list.setter
@@ -84,32 +80,27 @@ class AutoCompleteEntry(tk.Frame):
             ValueError: If the value is not a list.
         """
         if isinstance(value, list):
+            self.entry.delete(0, tk.END)
             self.entry.insert(0, "#" + ", #".join(value) + ",")
         else:
             raise ValueError
 
     def check_trigger(self, event):
         """
-        Checks for triggers to show or hide the popup based on the event keysym.
-        If the event keysym is 'numbersign' and the widget is not in autocomplete state,
-        it shows the popup. If the event keysym is 'comma' and the popup is visible
-        and the widget is in autocomplete state, it adds the current text to the choices
-        list and hides the popup. Otherwise, if the widget is in autocomplete state,
-        it appends the event character to the current text and updates the options list.
+        Checks for triggers to show or hide the popup.
 
         Parameters:
             event (tk.Event): The key event that triggered this method.
         """
-        if event.keysym == 'numbersign' and self.in_state is False:
+        if event.keysym == 'numbersign' and not self.in_state:
             self.show_popup()
             self.in_state = True
-        elif event.keysym == 'comma' and self.option_list.winfo_ismapped() and self.in_state is True:
+        elif event.keysym == 'comma' and self.option_list.winfo_ismapped() and self.in_state:
             self.add_current_text_to_popup()
             self.in_state = False
-        else:
-            if self.in_state is True:
-                self.current_text += event.char
-                self.update_options()
+        elif self.in_state:
+            self.current_text += event.char
+            self.update_options()
 
     def backspaces(self, event):
         """
@@ -120,9 +111,9 @@ class AutoCompleteEntry(tk.Frame):
         """
         if event.keysym == 'BackSpace':
             current_text = self.entry.get()
-            if self.current_text != "" and self.in_state is True:
+            if self.current_text and self.in_state:
                 self.current_text = self.current_text[:-1]
-            elif current_text and current_text[-1] == ",":
+            elif current_text.endswith(","):
                 self.in_state = True
                 self.show_popup()
                 self.current_text = current_text.split("#")[-1][:-1]
@@ -152,7 +143,8 @@ class AutoCompleteEntry(tk.Frame):
         """
         Adds the current text to the choices list.
         """
-        self.choices.append(self.current_text)
+        if self.current_text and self.current_text not in self.choices:
+            self.choices.append(self.current_text)
         self.option_list.pack_forget()
 
     def add_choices_from_popup(self, event):
@@ -165,11 +157,10 @@ class AutoCompleteEntry(tk.Frame):
         index = self.option_list.curselection()
         if index:
             selected_text = self.option_list.get(index)
-            autocompleted_entry = self.list
-            autocompleted_entry.append(selected_text)
-            strong = "#" + ", #".join(autocompleted_entry) + ","
+            current_entries = self.list
+            current_entries.append(selected_text)
             self.entry.delete(0, tk.END)  # Clear existing text
-            self.entry.insert(0, strong)  # Insert new text
+            self.entry.insert(0, "#" + ", #".join(current_entries) + ",")  # Insert new text
             self.current_text = selected_text
             self.in_state = False
             self.option_list.pack_forget()
@@ -190,14 +181,9 @@ class AutoCompleteEntry(tk.Frame):
         Returns:
             list: Filtered list of choices.
         """
-        options = []
         if self.current_text:
-            for choice in self.choices:
-                if self.current_text in choice and len(options) < 5:
-                    options.append(choice)
-        else:
-            options = self.choices[:5]
-        return options
+            return [choice for choice in self.choices if self.current_text in choice][:5]
+        return self.choices[:5]
 
     def update_choices(self, choices):
         """
