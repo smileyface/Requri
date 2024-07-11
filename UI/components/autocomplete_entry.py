@@ -29,7 +29,7 @@ class AutoCompleteEntry(tk.Frame):
         clear(): Clears the entry field.
     """
 
-    def __init__(self, master, choices, *args, **kwargs):
+    def __init__(self, master, choices = [], *args, **kwargs):
         """
         Initializes the AutoCompleteEntry widget.
 
@@ -209,3 +209,10 @@ class AutoCompleteEntry(tk.Frame):
         Clears the entry field.
         """
         self.entry.delete(0, tk.END)
+
+    def configure(self, **kwargs):
+        """
+        Configure the combobox. Supports updating values and the selected callback.
+        """
+        if 'choices' in kwargs:
+            self.choices = kwargs['choices']
