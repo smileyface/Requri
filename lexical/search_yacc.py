@@ -1,3 +1,5 @@
+import logging
+
 import ply.yacc as yacc
 from lexical.search_lex import tokens
 import lexical.search_operations as search_operations
@@ -16,7 +18,7 @@ def p_expression(p):
 
     '''
     if len(p) == 2:
-        print("Parsing expression:", p[1])
+        logging.info(f"Parsing expression:{p[1]}")
         if p[1] == "all":
             p[0] = search_operations.get_all()
         else:
@@ -47,7 +49,7 @@ def p_title_list(p):
         else:
             current_list = p.slice[1].value + search_operations.get_titles(p[3])
         p[0] = list(set(current_list))
-    print(f"Parsing title_list: {p[2]} found {len(p[0])} objects with that title")
+    logging.info(f"Parsing title_list: {p[2]} found {len(p[0])} objects with that title")
 
 
 def p_tag_list(p):
@@ -69,7 +71,7 @@ def p_tag_list(p):
         else:
             current_list = p.slice[1].value + search_operations.get_tags(p[3])
         p[0] = list(set(current_list))
-    print(f"Parsing tag_list: {p[2]} found {len(p[0])} objects with that tag")
+    logging.info(f"Parsing tag_list: {p[2]} found {len(p[0])} objects with that tag")
 
 
 def p_error(p):

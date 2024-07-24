@@ -1,3 +1,5 @@
+import logging
+
 from lexical.search_lex import lexer
 from lexical.search_yacc import parser
 
@@ -9,7 +11,7 @@ def interpret(input_string):
 
     # Parse input string
     result = parser.parse(input_string)
-    print(f"Found {len(result)} records")
+    logging.info(f"Found {len(result)} records")
     return result
 
 

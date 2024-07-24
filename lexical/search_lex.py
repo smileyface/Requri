@@ -1,3 +1,5 @@
+import logging
+
 import ply.lex as lex
 
 # Define tokens
@@ -25,7 +27,7 @@ def t_ARG_VALUE(t):
 
 # Define error handling
 def t_error(t):
-    print(f"Illegal character '{t.value[0]}'")
+    logging.error(f"Illegal character '{t.value[0]}'")
     t.lexer.skip(1)
 
 

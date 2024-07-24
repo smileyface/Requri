@@ -1,3 +1,4 @@
+import logging
 import tkinter as tk
 from tkinter import ttk
 
@@ -14,7 +15,7 @@ class RequirementExtendedView(ViewPage):
         self.requirement = None
 
     def create_body(self):
-        print("RequirementExtendedView body created")
+        logging.info("RequirementExtendedView body created")
         # Create a Notebook widget (tabbed frame)
         notebook = ttk.Notebook(self.master)
         notebook.pack(fill='both', expand=True)

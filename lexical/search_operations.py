@@ -1,3 +1,5 @@
+import logging
+
 import structures
 
 
@@ -28,7 +30,7 @@ def get_titles(title):
         if title == x.title:
             found_requirements.append(x)
     if found_requirements == []:
-        print(f"Title {title} not found")
+        logging.error(f"Title {title} not found")
         return None
     return found_requirements
 
