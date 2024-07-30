@@ -5,6 +5,9 @@ from functools import wraps
 
 import pytest
 
+from UI.pages.paging_handle import PagingHandle, PagesEnum
+from UI.pages import requirements
+
 
 @pytest.fixture(scope="function")
 def root():

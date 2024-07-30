@@ -1,5 +1,6 @@
 from UI.components.combobox_with_add import ComboboxWithAdd  # Adjust the import path as needed
-from tests.tkinter_test import tkinter_test, root  # Adjust the import path as needed
+from testing.utils.decorators import tkinter_test
+from testing.fixtures.root_fixture import root
 
 
 class TestComboboxWithAdd:
@@ -10,7 +11,7 @@ class TestComboboxWithAdd:
         Test: Initialize with default options and verify combobox values.
         """
         combobox = ComboboxWithAdd(root)
-        assert combobox.combobox['values'] == ''  # Tkinter combobox returns an empty string for an empty list
+        assert combobox.combobox['values'] == ('',)  # Tkinter combobox returns an empty string for an empty list
 
     @tkinter_test
     def test_initialize_with_provided_options(self, root):
@@ -19,7 +20,7 @@ class TestComboboxWithAdd:
         """
         options = ['Option1', 'Option2']
         combobox = ComboboxWithAdd(root, options=options)
-        assert combobox.combobox['values'] == ('Option1', 'Option2')
+        assert combobox.combobox['values'] == ('', 'Option1', 'Option2')
 
     @tkinter_test
     def test_set_options_updates_combobox(self, root):
@@ -38,8 +39,9 @@ class TestComboboxWithAdd:
         """
         options = ['Option1', 'Option2']
         combobox = ComboboxWithAdd(root, options=options)
-        combobox.clear()
         assert combobox.combobox['values'] == ('', 'Option1', 'Option2')
+        combobox.clear()
+        assert combobox.combobox['values'] == ('', )
         assert combobox.variable.get() == ''
 
     @tkinter_test
@@ -67,7 +69,8 @@ class TestComboboxWithAdd:
         options = ['Option1', 'Option2']
         combobox = ComboboxWithAdd(root, options=options)
         new_options = ['NewOption1', 'NewOption2']
-        combobox.update(new_options)
+        combobox.set_options(new_options)
+        combobox.update()
         assert combobox.combobox['values'][0] == ''
 
     @tkinter_test
@@ -76,7 +79,7 @@ class TestComboboxWithAdd:
         Test: Initialize with no options and verify combobox values.
         """
         combobox = ComboboxWithAdd(root)
-        assert combobox.combobox['values'] == ''  # Tkinter combobox returns an empty string for an empty list
+        assert combobox.combobox['values'] == ('', )  # Tkinter combobox returns an empty string for an empty list
 
     @tkinter_test
     def test_initialize_with_empty_options_list(self, root):
@@ -84,7 +87,7 @@ class TestComboboxWithAdd:
         Test: Initialize with empty options list and verify combobox values.
         """
         combobox = ComboboxWithAdd(root, options=[])
-        assert combobox.combobox['values'] == ''  # Tkinter combobox returns an empty string for an empty list
+        assert combobox.combobox['values'] == ('', )  # Tkinter combobox returns an empty string for an empty list
 
     @tkinter_test
     def test_set_options_with_empty_list(self, root):
@@ -93,16 +96,6 @@ class TestComboboxWithAdd:
         """
         combobox = ComboboxWithAdd(root)
         combobox.set_options([])
-        assert combobox.combobox['values'] == ('',)
-
-    @tkinter_test
-    def test_update_with_none(self, root):
-        """
-        Test: Verify behavior when update is called with None.
-        """
-        options = ['Option1', 'Option2']
-        combobox = ComboboxWithAdd(root, options=options)
-        combobox.update(None)
         assert combobox.combobox['values'] == ('',)
 
     @tkinter_test

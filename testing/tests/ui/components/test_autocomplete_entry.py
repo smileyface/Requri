@@ -1,26 +1,8 @@
-# test_show_popup.py
-
-import time
-import tkinter as tk
-
-from UI.components.autocomplete_entry import AutoCompleteEntry
-from tests.tkinter_test import tkinter_test, root
-
-
-class TestAutoCompleteEntry:
-
-    @tkinter_test
-    def test_entry_field_updates_with_valid_tag(self, root):
-        entry = AutoCompleteEntry(root, choices=[])
-        entry.pack()
-        entry.list = ["tag1"]
-        time.sleep(0.2)  # Allow time for UI to update
-        return entry.entry.get() == "#tag1,"# test_show_popup.py
-
 import pytest
 import tkinter as tk
 from UI.components.autocomplete_entry import AutoCompleteEntry
-from tkinter_test import tkinter_test, root  # Import the tkinter_test decorator and root fixture
+from testing.utils.decorators import tkinter_test
+from testing.fixtures.root_fixture import root
 import time
 
 

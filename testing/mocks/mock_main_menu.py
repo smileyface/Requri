@@ -7,4 +7,3 @@ class MockMenuBar(MainMenuBar):
 
     def new_file(self):
         self.called.append("new_file")
-

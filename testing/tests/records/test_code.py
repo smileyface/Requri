@@ -60,8 +60,8 @@ class TestCode:
     def test_connects_to_other_records_properly(self):
         code_instance = Code("example_file.py", "public", "ExampleClass", "example_method", ["arg1", "arg2"], "func_begin", "func_end")
         record_instance = Record(["tag1", "tag2"])
-        code_instance.connect("connection_type", record_instance)
-        assert record_instance in code_instance.connections["connection_type"]
+        code_instance.connect(record_instance)
+        assert record_instance in code_instance.connections[Record]
 
     #  Sets unique ID correctly when provided
     def test_sets_unique_id_correctly_when_provided(self):
@@ -102,5 +102,5 @@ class TestCode:
         code_instance = Code("example_file.py", "public", "ExampleClass", "example_method", ["arg1", "arg2"], "func_begin", "func_end")
         for i in range(1000):
             record_instance = Record([f"tag{i}"])
-            code_instance.connect("connection_type", record_instance)
-        assert len(code_instance.connections["connection_type"]) == 1000
+            code_instance.connect(record_instance)
+        assert len(code_instance.connections[Record]) == 1000

@@ -8,7 +8,8 @@ from UI.pages.paging_handle import PagingHandle, PagesEnum
 import pytest
 
 from UI.pages.viewpage import ViewPage
-from tests.tkinter_test import tkinter_test, root
+from testing.utils.decorators import tkinter_test
+from testing.fixtures.root_fixture import root
 
 
 class TestPage(ViewPage):
@@ -34,7 +35,6 @@ class TestPage(ViewPage):
 
 class TestPagingHandle:
 
-    
     @pytest.fixture(autouse=True)
     def teardown(self):
         yield
@@ -80,7 +80,6 @@ class TestPagingHandle:
     #  create_and_register_page calls create_body on the page object
     @tkinter_test
     def test_create_and_register_frame_calls_create_body(self, root):
-
         PagingHandle.create_and_register_page(root, PagesEnum.RECORD_VIEW, TestPage)
         assert PagingHandle._page_map[PagesEnum.RECORD_VIEW].create_body_called is True
 
