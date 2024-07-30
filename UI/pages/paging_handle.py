@@ -40,34 +40,20 @@ class PagingHandle:
         raise ValueError(f"Unknown page: {page}")
 
     @staticmethod
-    def show_page(page_enum: Enum, forgo_stack: bool = False) -> None:
-        """
-        Display the specified page.
+    def show_page(page_enum, forgo_stack=False):
+        if page_enum not in PagingHandle._page_map:
+            raise KeyError(f"Page {page_enum} not registered")
+        new_page = PagingHandle._page_map[page_enum]
+    
+        if PagingHandle._current_page:
+            PagingHandle._current_page.hide()
 
-        Args:
-            page_enum (Enum): The enum value of the page to display.
-            forgo_stack (bool, optional): Whether to forgo adding the current page to the back stack. Defaults to False.
-
-        Raises:
-            ValueError: If the specified page_enum is not found in the _page_map.
-
-        Returns:
-            None
-        """
-        logging.info(f"Displaying page {page_enum}")
-
-        frame = PagingHandle.get_page(page_enum)
-        if frame:
-            if PagingHandle._current_page:
-                if not forgo_stack:
-                    PagingHandle._page_back_stack.append(PagingHandle.get_enum_from_page(PagingHandle._current_page))
-                PagingHandle._current_page.pack_forget()
-                PagingHandle._page_map[PagingHandle.get_enum_from_page(PagingHandle._current_page)].on_hide()
-            frame.pack(fill=tk.BOTH, expand=True)
-            PagingHandle._page_map[page_enum].on_show()
-            PagingHandle._current_page = frame
-        else:
-            raise ValueError(f"Page not found: {page_enum}")
+            if not forgo_stack:
+                PagingHandle._page_back_stack.append(PagingHandle.get_enum_from_page(PagingHandle._current_page))
+                
+        new_page.show()
+        PagingHandle._current_page = new_page
+        logging.debug(f"Page {page_enum} shown successfully.")
 
     @staticmethod
     def page_return():
@@ -99,11 +85,20 @@ class PagingHandle:
 
     @staticmethod
     def create_and_register_page(parent, page_enum, page_type):
-        if parent == None:
-            raise TypeError("NoneType")
+        if parent is None:
+            raise KeyError("NoneType")
+        if page_enum in PagingHandle._page_map:
+            logging.info("Attempting to double add page. Page not added.")
+            return
         page = page_type(parent)
         page.create_body()
+
+        parent.update()
         PagingHandle._page_map[page_enum] = page
+
+        if PagingHandle._current_page is None:
+            PagingHandle.show_page(page_enum, forgo_stack=True)
+
 
     @staticmethod
     def clear_paging_handler():
