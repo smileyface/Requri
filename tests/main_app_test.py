@@ -1,12 +1,10 @@
-import pytest
+
 from functools import wraps
+
+import pytest
+
 from UI.pages.paging_handle import PagingHandle, PagesEnum
 from tests.ui.page.mock_main_app import MockMainApplication
-
-import pytest
-import tkinter as tk
-import threading
-
 
 
 @pytest.fixture

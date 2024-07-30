@@ -34,6 +34,8 @@ class MainApplication(tk.Tk):
         PagingHandle.create_and_register_page(self.page_container, PagesEnum.REQUIREMENT_EXTENDED,
                                               requirements.RequirementExtendedView)
 
+        PagingHandle.show_page(PagesEnum.RECORD_VIEW, forgo_stack=True)
+
         self.create_menu()
 
     def create_navigation_bar(self):

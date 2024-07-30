@@ -52,7 +52,7 @@ class TestPagingHandle:
     def test_show_page_adds_to_back_stack(self, root):
         PagingHandle.create_and_register_page(root, PagesEnum.RECORD_VIEW, TestPage)
         PagingHandle.create_and_register_page(root, PagesEnum.ADD_REQUIREMENT, TestPage)
-        #Record_View is already shown
+        PagingHandle.show_page(PagesEnum.RECORD_VIEW)
         PagingHandle.show_page(PagesEnum.ADD_REQUIREMENT)
         assert PagingHandle._page_back_stack == [PagesEnum.RECORD_VIEW]
 
@@ -91,7 +91,7 @@ class TestPagingHandle:
         PagingHandle.create_and_register_page(root, PagesEnum.ADD_REQUIREMENT, TestPage)
         PagingHandle.show_page(PagesEnum.RECORD_VIEW)
         PagingHandle.show_page(PagesEnum.ADD_REQUIREMENT, forgo_stack=True)
-        assert PagingHandle._page_back_stack == [PagesEnum.RECORD_VIEW]
+        assert PagingHandle._page_back_stack == []
 
     #  show_page raises ValueError if the page_enum is not found in _page_map
     def test_show_page_raises_value_error_for_invalid_enum(self):
@@ -149,7 +149,7 @@ class TestPagingHandle:
 
         # Ensure initial state
         assert len(PagingHandle._page_map) == 2
-        assert len(PagingHandle._page_back_stack) == 2
+        assert len(PagingHandle._page_back_stack) == 1
         assert PagingHandle._current_page is not None
 
         # Call clear_paging_handler

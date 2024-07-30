@@ -96,9 +96,6 @@ class PagingHandle:
         parent.update()
         PagingHandle._page_map[page_enum] = page
 
-        if PagingHandle._current_page is None:
-            PagingHandle.show_page(page_enum, forgo_stack=True)
-
 
     @staticmethod
     def clear_paging_handler():

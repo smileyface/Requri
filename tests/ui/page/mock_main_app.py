@@ -26,7 +26,7 @@ class MockMainApplication(tk.Tk):
         PagingHandle.create_and_register_page(self.page_container, PagesEnum.MASS_ADD_REQUIREMENT, requirements.MassAddRequirementPage)
         PagingHandle.create_and_register_page(self.page_container, PagesEnum.REQUIREMENT_EXTENDED, requirements.RequirementExtendedView)
 
-        PagingHandle.show_page(PagesEnum.RECORD_VIEW)
+        PagingHandle.show_page(PagesEnum.RECORD_VIEW, forgo_stack=True)
 
     def create_navigation_bar(self):
         self.page_back_button = tk.Button(self.button_box, text="<", command=PagingHandle.page_return)
