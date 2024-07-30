@@ -1,0 +1,9 @@
+pytest
+pytest-cov
+black
+isort
+pylint
+debugpy
+
+ply
+clang
