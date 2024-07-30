@@ -37,14 +37,14 @@ class TestRequirement:
         req1 = Requirement("section1", "subsection1", "Title1", "Text1", ["tag1"])
         req2 = Requirement("section2", "subsection2", "Title2", "Text2", ["tag2"])
         req1.connect(req2)
-        assert req1.connections["Supporting Requirement"] == req2
+        assert req1.connections[Requirement][0] == req2
 
     #  Connects to a Code instance
     def test_connects_to_code_instance(self):
         req = Requirement("section1", "subsection1", "Title1", "Text1", ["tag1"])
         code = Code("file1", "public", "Class1", "method1", ["arg1", "arg2"], 1, 21)
         req.connect(code)
-        assert req.connections["Implementation"] == code
+        assert req.connections[Code][0] == code
 
     #  Converts to JSON format correctly
     def test_converts_to_json_format_correctly(self):
@@ -123,4 +123,4 @@ class TestRequirement:
         req = Requirement("section1", "subsection1", "Title1", "Text1", ["tag1"])
         code = Code("file1", "public", "Class1", "method1", ["arg1", "arg2"], 1, 21)
         req.connect(code)
-        assert req.connections["Implementation"] == code
+        assert req.connections[Code] == [code]

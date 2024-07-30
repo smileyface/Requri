@@ -30,19 +30,6 @@ class Requirement(Record):
         del self._unique_id
         pass
 
-    def connect(self, connection):
-        """
-        Connects the requirement to another requirement or code instance.
-        
-        Args:
-        - connection: The requirement or code instance to connect to.
-        """
-        if isinstance(connection, Requirement):
-            self.connections["Supporting Requirement"] = connection
-        elif isinstance(connection, Code):
-            self.connections["Implementation"] = connection
-        else:
-            super().connect(connection)
 
     @property
     def unique_id(self) -> RequirementId:
@@ -52,8 +39,11 @@ class Requirement(Record):
     def __repr__(self) -> str:
         """Return a string representation of the Requirement object."""
         connection_str = ""
-        if "Implementation" in self.connections and self.connections["Implementation"]:
-            connection_str = f" (Connected to {self.connections['Implementation']})"
+        if Code in self.connections and self.connections[Code]:
+            connection_str = " (Connected to "
+            for x in self.connections[Code]:
+                connection_str += f"{x}"
+            connection_str += ")"
         return f"{self.unique_id}: {self.title}{connection_str}"
 
     def to_json(self) -> Dict:
