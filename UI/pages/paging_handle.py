@@ -50,7 +50,8 @@ class PagingHandle:
 
             if not forgo_stack:
                 PagingHandle._page_back_stack.append(PagingHandle.get_enum_from_page(PagingHandle._current_page))
-                
+
+        new_page.pack(expand=True, fill='both')
         new_page.show()
         PagingHandle._current_page = new_page
         logging.debug(f"Page {page_enum} shown successfully.")

@@ -1,3 +1,4 @@
+import logging
 import tkinter as tk
 
 from UI.components.tile_display import TileView
@@ -9,17 +10,22 @@ class RecordsView(ViewPage):
         super().__init__(master)
         self.label = None
         self.requirement_listbox = None
-        self.master = master
 
     def create_body(self):
-        self.label = tk.Label(self.master, text="Requirements:")
-        self.requirement_listbox = TileView(self.master)
+        logging.info(f"{type(self).__name__} body created")
+        self.label = tk.Label(self, text="Requirements:")
+        self.requirement_listbox = TileView(self)
 
+    def display_body(self):
         self.label.pack(fill=tk.X)
         self.requirement_listbox.pack(fill=tk.BOTH, expand=True)
 
+    def create_context_nav(self) -> None:
+        pass
+
     def on_show(self):
         self.update()
+        super().on_show()
 
     def update(self):
         self.requirement_listbox.update()

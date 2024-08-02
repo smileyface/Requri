@@ -60,10 +60,7 @@ class Code(Record):
                 Code.id_map.add(x)
                 return x
 
-    def connect(self, type, connect):
-        self.connections.setdefault(type, []).append(connect)
-
-    def __str__(self):
+    def __repr__(self):
         return self.signature
 
     def __del__(self):

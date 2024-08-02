@@ -1,63 +1,95 @@
+import logging
 import tkinter as tk
+from abc import ABC, abstractmethod
 from tkinter import ttk
 from typing import Any
 
-from UI.pages import paging_handle
 
+class ViewPage(ABC, tk.Frame):
+    def __init__(self, master, *args: Any, **kwargs: Any) -> None:
+        """
+        Initializes an instance of the ViewPage class.
 
-class ViewPage(tk.Frame):
-    def __init__(self, parent_widget, *args: Any, **kwargs: Any) -> None:
-            """
-            Initializes an instance of the ViewPage class.
+        Args:
+            master: The parent widget.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
 
-            Args:
-                parent_widget: The parent widget.
-                *args: Additional positional arguments.
-                **kwargs: Additional keyword arguments.
+        Attributes:
+            master: The parent widget.
+            main_app_body: The main application body frame.
+            context_action_box: The context action box widget.
+        """
+        if master is None:
+            raise AttributeError("No parent container passed in")
+        super().__init__(master)
+        self.master = master
+        self.context_action_box = self._get_context_action_box()
+        self.displayed = False
 
-            Attributes:
-                parent_widget: The parent widget.
-                main_app_body: The main application body frame.
-                context_action_box: The context action box widget.
-            """
-            super().__init__(parent_widget)
-            self.parent_widget = parent_widget
-            self.main_app_body = ttk.Frame(self.parent_widget)
-            self.context_action_box = None
+    def _get_context_action_box(self):
+        parent = self.master
+        while parent:
+            if hasattr(parent, 'context_action_box'):
+                return parent.context_action_box
+            parent = parent.master
+        # Fallback if not found
+        return ttk.Frame(self.master, name="unattached_context_action_frame")
 
-            if hasattr(self.parent_widget, 'master') and hasattr(self.parent_widget.master, 'master') and hasattr(self.parent_widget.master.master, 'master') and hasattr(self.parent_widget.master.master.master, 'context_action_box'):
-                self.context_action_box = self.parent_widget.master.master.master.context_action_box
-            else:
-                pass
-                # Handle the case where the attribute does not exist
-
+    @abstractmethod
     def create_body(self) -> None:
         """
-        Placeholder method to be overridden by subclasses.
-        
-        Raises:
-            NotImplementedError: Subclasses should implement this method.
-        """
-        raise NotImplementedError("Subclasses should implement this method!")
+        This is where the components of a page are created.
 
+        Placeholder method to be overridden by subclasses.
+        """
+        logging.info(f"{type(self).__name__} body created")
+
+    @abstractmethod
     def create_context_nav(self) -> None:
         """
         Placeholder method intended to be overridden by subclasses.
-        
-        Raises:
-            NotImplementedError: Subclasses should implement this method.
         """
-        raise NotImplementedError("Subclasses should implement this!")
+        pass
+
+    @abstractmethod
+    def display_body(self):
+        """
+        This is where the components of a page are packed.
+
+        Placeholder method intended to be overridden by subclasses.
+
+        """
+        pass
 
     def to_string(self):
         return f"{type(self)}"
 
     def on_show(self):
-        self.create_context_nav()
+        """
+        This is for page specific commands when page is about to be displayed.
+        This is to be inherited when needed.
+        """
+        pass
 
     def on_hide(self):
         for widget in self.context_action_box.winfo_children():
             widget.destroy()
+
+    def show(self):
+        if self.displayed:
+            return
+        self.display_body()
+        self.create_context_nav()
+        self.on_show()
+        self.displayed = True
+
+    def hide(self):
+        if not self.displayed:
+            return
+        self.pack_forget()
+        self.on_hide()
+        self.displayed = False
 
     def update(self):
         pass

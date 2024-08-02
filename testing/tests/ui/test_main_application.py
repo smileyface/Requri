@@ -69,3 +69,9 @@ class TestMainApplication:
         pages = app.page_container.winfo_children()
         visible_pages = [page for page in pages if page.winfo_ismapped()]
         assert len(visible_pages) == 1
+
+
+    def test_app_tree_is_displayed(self, app):
+        assert app.winfo_ismapped() == 1
+        assert app.page_container.winfo_ismapped() == 1
+        assert app.page_container.children['!recordsview'].winfo_ismapped()
