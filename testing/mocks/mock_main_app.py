@@ -21,3 +21,5 @@ class MockMainApplication(MainApplication):
             widget.destroy()
         super().destroy()
 
+    def run(self):
+        self.mainloop()  # Start the main loop
