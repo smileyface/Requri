@@ -7,13 +7,13 @@ setup(
     author="Kason Bennett",
     author_email="kasonbennett65@gmail.com",
     url="https://github.com/smileyface/Requri",  # Update with your project's URL
-    packages=find_packages(),
+    packages=find_packages(where='src'),
+    package_dir={'': 'src'},
     install_requires=[
         'ply>=3.11',  # lexer
         'pytest>=8.2.2',  # Testing
-        'clang>=17.0.6'  # C++ parsing
-        'jsonlib',  # Example dependency, adjust as necessary
-        'tkinter',  # UI components
+        'clang>=17.0.6',  # C++ parsing
+        'tk',  # UI components
         'logging',  # Standard library, included by default
     ],
     classifiers=[

@@ -1,9 +1,12 @@
-pytest
+pytest~=8.2.2
 pytest-cov
 black
 isort
 pylint
 debugpy
 
-ply
-clang
+ply~=3.11
+clang~=17.0.6
+logging~=0.4.9.6
+structures~=0.9.5
+setuptools~=56.0.0
