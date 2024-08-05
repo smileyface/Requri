@@ -1,9 +1,9 @@
 import pytest
 
 from UI.pages.viewpage import ViewPage
-from testing.fixtures.app_fixtures import app
-from testing.fixtures.view_page_fixture import test_page
-from testing.mocks.mock_main_app import MockMainApplication
+from tests.fixtures.app_fixtures import app
+from tests.fixtures.view_page_fixture import test_page
+from tests.mocks.mock_main_app import MockMainApplication
 
 
 class TestViewPage:

@@ -1,6 +1,6 @@
 from UI.components.combobox_with_add import ComboboxWithAdd  # Adjust the import path as needed
-from testing.utils.decorators import tkinter_test
-from testing.fixtures.root_fixture import root
+from tests.utils.decorators import tkinter_test
+from tests.fixtures.root_fixture import root
 
 
 class TestComboboxWithAdd:

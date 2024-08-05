@@ -1,5 +1,5 @@
 import pytest
-from testing.mocks.mock_main_app import MockMainApplication
+from tests.mocks.mock_main_app import MockMainApplication
 from UI.pages.paging_handle import PagingHandle, PagesEnum
 
 @pytest.fixture

@@ -3,7 +3,7 @@ import pytest
 
 from UI.pages.requirements.add_requirement import AddRequirementPage
 from UI.pages.requirements.edit_requirement import EditRequirementPage
-from testing.mocks.mock_main_app import MockMainApplication
+from tests.mocks.mock_main_app import MockMainApplication
 
 
 def create_and_show_page(app: MockMainApplication, page_class, requirement=None):

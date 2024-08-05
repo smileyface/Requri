@@ -4,7 +4,7 @@ import os
 from structures import project
 from structures.records.record import Record
 
-from structures.source_file import File
+from src.structures.source_file import File
 
 import pytest
 

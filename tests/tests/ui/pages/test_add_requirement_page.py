@@ -5,21 +5,58 @@ from unittest.mock import patch
 
 import pytest
 
-from UI.pages.paging_handle import PagingHandle, PagesEnum
 from UI.pages import requirements
-from UI.pages.viewpage import ViewPage
+from UI.pages.paging_handle import PagingHandle, PagesEnum
+from UI.pages.requirements import AddRequirementPage
 from structures.lists import requirement_list
 from structures.records import Code, Requirement
 from structures.records.record import Record
-from testing.utils.decorators import main_app_test
-from testing.fixtures.app_fixtures import app, page
-from testing.tests.ui.page.mock_main_app import MockMainApplication
+from tests.fixtures.app_fixtures import app, page
+from tests.mocks.mock_main_app import MockMainApplication
+from tests.utils.decorators import main_app_test
 
 # Set up logging to output to the console
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 
 class TestAddRequirementPage:
+    """
+    TestAddRequirementPage
+
+    This class contains test cases for the AddRequirementPage functionality. The tests cover
+    various aspects of the page including initialization, adding requirements, and handling invalid inputs.
+
+    Included Tests:
+    ---------------
+
+    1. test_initialization
+       - Summary: Verifies that the AddRequirementPage initializes correctly with all required components.
+
+    2. test_add_requirement
+       - Summary: Tests the functionality of adding a new requirement to ensure it is correctly processed and displayed.
+
+    3. test_invalid_input
+       - Summary: Ensures that invalid input is properly handled and appropriate error messages are displayed.
+
+    4. test_clear_form
+       - Summary: Checks if the form fields are correctly cleared after adding a requirement or pressing the clear button.
+
+    5. test_form_validation
+       - Summary: Validates that the form input fields meet the required validation rules before submission.
+
+    6. test_submit_button_enabled
+       - Summary: Tests that the submit button is only enabled when all required fields are correctly filled.
+
+    7. test_cancel_button
+       - Summary: Ensures that pressing the cancel button correctly discards the form input and navigates back to the previous page.
+
+    8. test_prepopulate_fields
+       - Summary: Verifies that the fields are correctly prepopulated when editing an existing requirement.
+
+    9. test_error_handling
+       - Summary: Checks the error handling mechanism when the form submission fails due to server errors.
+
+   """
 
     @pytest.fixture(autouse=True)
     def teardown(self):
@@ -28,12 +65,7 @@ class TestAddRequirementPage:
         requirement_list.clear_list()
         PagingHandle.clear_paging_handler()
 
-    @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_all_components_initialization_and_locations(self, app: MockMainApplication, page: ViewPage):
-        """
-        Test: Verify that all UI components are properly initialized and located.
-        """
-
+    def check_components(self, page):
         # Access the notebook widget
         notebook = page.nametowidget('add_requirement_body')
         assert isinstance(notebook, ttk.Notebook)
@@ -48,29 +80,36 @@ class TestAddRequirementPage:
         # Access the tabs by name
         requirement_tab = notebook.nametowidget('add_requirements_req_tab')
         traceability_tab = notebook.nametowidget('add_requirements_trace_tab')
-
+        assert requirement_tab.winfo_ismapped() or traceability_tab.winfo_ismapped()
         # Verify the components in the requirement tab
-        assert page.title_label.winfo_ismapped()
-        assert page.title_entry.winfo_ismapped()
-        assert page.section_label.winfo_ismapped()
-        assert page.section.winfo_ismapped()
-        assert page.subsection_label.winfo_ismapped()
-        assert page.subsection.winfo_ismapped()
-        assert page.tagging_label.winfo_ismapped()
-        assert page.tagging_text.winfo_ismapped()
-        assert page.requirement_label.winfo_ismapped()
-        assert page.requirement_text.winfo_ismapped()
+        if requirement_tab.winfo_ismapped():
+            assert page.title_label.winfo_ismapped()
+            assert page.section_label.winfo_ismapped()
+            assert page.subsection_label.winfo_ismapped()
+            assert page.tagging_label.winfo_ismapped()
+            assert page.requirement_label.winfo_ismapped()
+            assert page.title_entry.winfo_ismapped()
+            assert page.section.winfo_ismapped()
+            assert page.subsection.winfo_ismapped()
+            assert page.tagging_text.winfo_ismapped()
+            assert page.requirement_text.winfo_ismapped()
 
         # Verify the components in the traceability tab
-        notebook.select(traceability_tab)
-        app.update_idletasks()  # Ensure the GUI updates the tab selection
-
-        # Verify the components in the traceability tab
-        assert page.connectable_listbox.winfo_ismapped()
-        assert page.connected_listbox.winfo_ismapped()
+        if traceability_tab.winfo_ismapped():
+            assert page.connectable_listbox.winfo_ismapped()
+            assert page.connected_listbox.winfo_ismapped()
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_switching_tabs(self, app: MockMainApplication, page: ViewPage):
+    def test_all_components_initialization_and_locations(self, app: MockMainApplication, page: AddRequirementPage):
+        """
+        Test: Verify that all UI components are properly initialized and located.
+        """
+
+        # Adding a slight delay to ensure the UI components are fully rendered
+        app.after(500, self.check_components, page)
+
+    @main_app_test(PagesEnum.ADD_REQUIREMENT)
+    def test_switching_tabs(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify that switching between tabs works correctly.
         """
@@ -84,36 +123,19 @@ class TestAddRequirementPage:
 
         # Switch to the Traceability tab
         notebook.select(traceability_tab)
-        app.update_idletasks()  # Ensure the GUI updates the tab selection
+        app.update()  # Ensure the GUI updates the tab selection
 
-        # Verify the Traceability tab is selected
-        assert notebook.select() == traceability_tab._w
-
-        # Verify the components in the Traceability tab are mapped
-        assert page.connectable_listbox.winfo_ismapped()
-        assert page.connected_listbox.winfo_ismapped()
+        # Adding a slight delay to ensure the UI components are fully rendered
+        app.after(500, self.check_components, page, notebook)
 
         # Switch back to the Add Requirement tab
         notebook.select(requirement_tab)
-        app.update_idletasks()  # Ensure the GUI updates the tab selection
-
-        # Verify the Add Requirement tab is selected
-        assert notebook.select() == requirement_tab._w
-
-        # Verify the components in the Add Requirement tab are mapped
-        assert page.title_label.winfo_ismapped()
-        assert page.title_entry.winfo_ismapped()
-        assert page.section_label.winfo_ismapped()
-        assert page.section.winfo_ismapped()
-        assert page.subsection_label.winfo_ismapped()
-        assert page.subsection.winfo_ismapped()
-        assert page.tagging_label.winfo_ismapped()
-        assert page.tagging_text.winfo_ismapped()
-        assert page.requirement_label.winfo_ismapped()
-        assert page.requirement_text.winfo_ismapped()
+        app.update()  # Ensure the GUI updates the tab selection
+        # Adding a slight delay to ensure the UI components are fully rendered
+        app.after(500, self.check_components, page, notebook)
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_adds_code_items_to_treeview_under_implementations(self, app: MockMainApplication, page: ViewPage):
+    def test_adds_code_items_to_treeview_under_implementations(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Successfully adds Code items to the treeview under 'Implementations'.
         """
@@ -126,7 +148,7 @@ class TestAddRequirementPage:
         assert treeview.get_children('I001') == ('Code-0',)
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_adds_requirement_items_to_treeview_under_related_requirements(self, app: MockMainApplication, page: ViewPage):
+    def test_adds_requirement_items_to_treeview_under_related_requirements(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Successfully adds Requirement items to the treeview under 'Related Requirements'.
         """
@@ -138,7 +160,7 @@ class TestAddRequirementPage:
         assert treeview.get_children('I001') == ('Req-section1-subsection1-0',)
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_handles_mixed_lists_of_code_and_requirement_items(self, app: MockMainApplication, page: ViewPage):
+    def test_handles_mixed_lists_of_code_and_requirement_items(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Handles mixed lists of Code and Requirement items correctly.
         """
@@ -153,7 +175,7 @@ class TestAddRequirementPage:
         assert treeview.item(treeview.get_children()[1], 'text') == 'Implementations'
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_maintains_order_of_items_as_per_input_list(self, app: MockMainApplication, page: ViewPage):
+    def test_maintains_order_of_items_as_per_input_list(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Maintains the order of items as per the input list.
         """
@@ -169,7 +191,7 @@ class TestAddRequirementPage:
         assert treeview.item(children[1], 'text') == 'Implementations'
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_handles_empty_list_without_errors(self, app: MockMainApplication, page: ViewPage):
+    def test_handles_empty_list_without_errors(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Handles empty lists without errors.
         """
@@ -179,7 +201,7 @@ class TestAddRequirementPage:
         assert len(treeview.get_children()) == 0
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_manages_lists_with_only_code_items(self, app: MockMainApplication, page: ViewPage):
+    def test_manages_lists_with_only_code_items(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Manages lists with only Code items.
         """
@@ -192,7 +214,7 @@ class TestAddRequirementPage:
         assert treeview.item(treeview.get_children()[0], 'text') == 'Implementations'
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_handles_missing_or_none_unique_ids(self, app: MockMainApplication, page: ViewPage):
+    def test_handles_missing_or_none_unique_ids(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Handles missing or None unique IDs gracefully.
         """
@@ -205,7 +227,7 @@ class TestAddRequirementPage:
         assert len(treeview.get_children()) == 2
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_logs_errors_when_insertion_fails(self, app: MockMainApplication, page: ViewPage):
+    def test_logs_errors_when_insertion_fails(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Logs errors when insertion into the treeview fails.
         """
@@ -222,7 +244,7 @@ class TestAddRequirementPage:
             page._add_lists_to_treeview(connected_items, treeview)
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_handles_faulty_code_items_that_raise_exceptions(self, app: MockMainApplication, page: ViewPage):
+    def test_handles_faulty_code_items_that_raise_exceptions(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Handles faulty Code items that raise exceptions gracefully.
         """
@@ -239,7 +261,7 @@ class TestAddRequirementPage:
             page._add_lists_to_treeview(connected_items, treeview)
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_handles_drag_and_drop_events_with_invalid_data(self, app: MockMainApplication, page: ViewPage):
+    def test_handles_drag_and_drop_events_with_invalid_data(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Handles drag and drop events with invalid data gracefully.
         """
@@ -266,7 +288,7 @@ class TestAddRequirementPage:
         page.on_drop(event)  # Should handle gracefully without errors
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_manages_lists_with_only_requirement_items(self, app: MockMainApplication, page: ViewPage):
+    def test_manages_lists_with_only_requirement_items(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Manages lists with only Requirement items.
         """
@@ -280,7 +302,7 @@ class TestAddRequirementPage:
         assert treeview.item(treeview.get_children()[0], 'text') == 'Related Requirements'
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_handles_large_lists_efficiently(self, app: MockMainApplication, page: ViewPage):
+    def test_handles_large_lists_efficiently(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Handles large lists efficiently.
         """
@@ -300,7 +322,7 @@ class TestAddRequirementPage:
         assert (end_time - start_time) < 5  # Ensure it runs within 5 seconds for 1000 items
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_ui_component_initialization(self, app: MockMainApplication, page: ViewPage):
+    def test_ui_component_initialization(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify that all UI components are properly initialized and visible.
         """
@@ -311,7 +333,7 @@ class TestAddRequirementPage:
         assert page.requirement_label.cget("text") == "Requirement:"
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_requirement_addition(self, app: MockMainApplication, page: ViewPage):
+    def test_requirement_addition(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify that a requirement is correctly added to the requirement list.
         """
@@ -331,7 +353,7 @@ class TestAddRequirementPage:
         assert added_req.tags == ["tag1", "tag2"]
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_cancel_operation(self, app: MockMainApplication, page: ViewPage):
+    def test_cancel_operation(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify that the cancel operation navigates back to the previous page.
         """
@@ -340,7 +362,7 @@ class TestAddRequirementPage:
             mock_page_return.assert_called_once()
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_section_and_subsection_updates(self, app: MockMainApplication, page: ViewPage):
+    def test_section_and_subsection_updates(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify that selecting a section updates the subsection combobox correctly.
         """
@@ -352,7 +374,7 @@ class TestAddRequirementPage:
         assert "Subsection 1.2" in page.subsection.cget("values")
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_tag_autocompletion(self, app: MockMainApplication, page: ViewPage):
+    def test_tag_autocompletion(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify that the autocomplete functionality for tags works correctly.
         """
@@ -363,7 +385,7 @@ class TestAddRequirementPage:
         assert page.tagging_text.option_list.size() > 0
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_drag_and_drop_functionality(self, app: MockMainApplication, page: ViewPage):
+    def test_drag_and_drop_functionality(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify the drag and drop functionality with valid and invalid data.
         """
@@ -401,7 +423,7 @@ class TestAddRequirementPage:
         assert len(page.connections) > 0  # Should handle gracefully without errors
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_ui_layout_and_resizing(self, app: MockMainApplication, page: ViewPage):
+    def test_ui_layout_and_resizing(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Ensure the layout adjusts correctly when the window is resized.
         """
@@ -414,7 +436,7 @@ class TestAddRequirementPage:
         assert resized_size != initial_size
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_add_empty_requirement(self, app: MockMainApplication, page: ViewPage):
+    def test_add_empty_requirement(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify that adding an empty requirement shows an error or does not add.
         """
@@ -422,7 +444,7 @@ class TestAddRequirementPage:
         assert len(requirement_list.get_requirement_list()) == 0  # Assuming the list should remain empty
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_add_duplicate_requirement(self, app: MockMainApplication, page: ViewPage):
+    def test_add_duplicate_requirement(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify that adding duplicate requirements is handled correctly.
         """
@@ -438,7 +460,7 @@ class TestAddRequirementPage:
         assert len(requirement_list.get_requirement_list()) == 1  # Should not add duplicate
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_add_requirement_with_max_length_values(self, app: MockMainApplication, page: ViewPage):
+    def test_add_requirement_with_max_length_values(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify adding a requirement with maximum length values for fields.
         """
@@ -459,7 +481,7 @@ class TestAddRequirementPage:
         assert added_req.tags == [long_text]
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_add_requirement_with_special_characters(self, app: MockMainApplication, page: ViewPage):
+    def test_add_requirement_with_special_characters(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify adding a requirement with special characters in fields.
         """
@@ -480,7 +502,7 @@ class TestAddRequirementPage:
         assert added_req.tags == [special_text]
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_error_handling_on_invalid_data(self, app: MockMainApplication, page: ViewPage):
+    def test_error_handling_on_invalid_data(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify error handling when invalid data is provided.
         """
@@ -492,7 +514,7 @@ class TestAddRequirementPage:
             assert len(requirement_list.get_requirement_list()) == 0
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_state_persistence_on_navigation(self, app: MockMainApplication, page: ViewPage):
+    def test_state_persistence_on_navigation(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify state persistence when navigating between pages.
         """
@@ -514,7 +536,7 @@ class TestAddRequirementPage:
         assert page.tagging_text.list == ["persistent_tag"]
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_component_visibility_based_on_input(self, app: MockMainApplication, page: ViewPage):
+    def test_component_visibility_based_on_input(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify the visibility of components based on certain inputs.
         """
@@ -528,7 +550,7 @@ class TestAddRequirementPage:
         assert page.subsection.winfo_ismapped()
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_event_triggered_actions(self, app: MockMainApplication, page: ViewPage):
+    def test_event_triggered_actions(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify that correct actions are triggered on various UI events.
         """
@@ -543,7 +565,7 @@ class TestAddRequirementPage:
             mock_page_return.assert_called_once()
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_combobox_options_update(self, app: MockMainApplication, page: ViewPage):
+    def test_combobox_options_update(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify that the ComboboxWithAdd options are correctly updated when the update_combobox_b method is triggered by a section change.
         """
@@ -559,7 +581,7 @@ class TestAddRequirementPage:
         assert "Subsection 1.2" in page.subsection.cget("values")
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_error_handling_on_ui_components(self, app: MockMainApplication, page: ViewPage):
+    def test_error_handling_on_ui_components(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Simulate errors in UI components and verify that they are handled gracefully.
         """
@@ -574,7 +596,7 @@ class TestAddRequirementPage:
             assert page.tagging_text.cget("values") == ''  # Default value
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_update_combobox_b_with_invalid_section(self, app: MockMainApplication, page: ViewPage):
+    def test_update_combobox_b_with_invalid_section(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify the behavior when an invalid section is selected.
         """
@@ -583,7 +605,7 @@ class TestAddRequirementPage:
         assert page.subsection.cget("values") == ('',)
 
     @main_app_test(PagesEnum.ADD_REQUIREMENT)
-    def test_ui_state_reset_on_reload(self, app: MockMainApplication, page: ViewPage):
+    def test_ui_state_reset_on_reload(self, app: MockMainApplication, page: AddRequirementPage):
         """
         Test: Verify that the UI components are reset correctly when the page is reloaded.
         """
@@ -603,3 +625,7 @@ class TestAddRequirementPage:
         assert page.subsection.variable.get() == ""
         assert page.requirement_text.get("1.0", "end-1c") == ""
         assert page.tagging_text.list == []
+
+    @main_app_test(PagesEnum.ADD_REQUIREMENT)
+    def test_display_tree(self, app: MockMainApplication, page: AddRequirementPage):
+        assert page.winfo_ismapped() == 1

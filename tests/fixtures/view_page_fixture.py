@@ -12,17 +12,17 @@ class TestableViewPage(ViewPage):
 
     def on_show(self):
         super().on_show()
-        # Additional logic for testing
+        # Additional logic for tests
 
     def on_hide(self):
         super().on_hide()
-        # Additional logic for testing
+        # Additional logic for tests
 
     def display_body(self):
         self.pack(expand=True, fill='both')
 
     def create_context_nav(self):
-        # Example of adding context navigation buttons for testing
+        # Example of adding context navigation buttons for tests
         self.add_button = tk.Button(self, text="Add")
         self.add_button.pack()
         self.cancel_button = tk.Button(self, text="Cancel")

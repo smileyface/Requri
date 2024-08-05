@@ -8,8 +8,8 @@ from UI.pages.paging_handle import PagingHandle, PagesEnum
 import pytest
 
 from UI.pages.viewpage import ViewPage
-from testing.utils.decorators import tkinter_test
-from testing.fixtures.root_fixture import root
+from tests.utils.decorators import tkinter_test
+from tests.fixtures.root_fixture import root
 
 
 class TestPage(ViewPage):
