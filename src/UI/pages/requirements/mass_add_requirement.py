@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from UI.pages.paging_handle import PagingHandle
-from UI.pages.requirements.add_requirements.add_requirement import AddRequirementPage, get_variable
+from UI.pages.requirements.add_requirement import AddRequirementPage, get_variable
 from structures.lists import requirement_list
 from structures.records.requirement import Requirement
 

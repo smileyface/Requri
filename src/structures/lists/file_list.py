@@ -1,4 +1,4 @@
-from structures.source_file import File
+from src.structures.source_file import File
 from structures import project
 
 _source_file_list = []

@@ -4,7 +4,7 @@ _req_map = {}
 
 
 def update(unique_id, section, sub, title, text, tags):
-    #Update section and subsection
+    # Update section and subsection
     if not unique_id.section == section or not unique_id.sub == sub:
         append(Requirement(section, sub, title, text, tags))
         _req_map.pop((unique_id.section, unique_id.sub))
@@ -52,7 +52,7 @@ def get_requirement_from_index_string(string):
 
 
 def add_requirement(requirement):
-    _req_map.append(requirement)
+    _req_map[requirement.unique_id] = requirement
 
 
 def get_requirement_map():
@@ -78,3 +78,7 @@ def expand_from_json(all_the_things):
 
 def clear():
     return None
+
+
+def get(unique_id):
+    return _req_map[unique_id]

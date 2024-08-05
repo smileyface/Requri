@@ -10,41 +10,35 @@ from structures.records import *
 class RequirementExtendedView(ViewPage):
     def __init__(self, master):
         super().__init__(master)
+        self.trace_tab = None
+        self.text_label = None
+        self.title_label = None
+        self.unique_id = None
         self.connected_listbox = None
         self.master = master
         self.requirement = None
+        self.notebook = None
+        self.requirement_tab = None
+        self.title_frame = None
+        self.text_frame = None
 
     def create_body(self):
-        logging.info("RequirementExtendedView body created")
+        logging.info(f"{type(self).__name__} body created")
         # Create a Notebook widget (tabbed frame)
-        notebook = ttk.Notebook(self.master)
-        notebook.pack(fill='both', expand=True)
+        self.notebook = ttk.Notebook(self)
 
-        requirement_tab = self.make_requirement_tab(notebook)
-        trace_tab = self.make_trace_tab(notebook)
+        self.requirement_tab = self.make_requirement_tab(self.notebook)
+        self.trace_tab = self.make_trace_tab(self.notebook)
 
-        notebook.add(requirement_tab, text='Requirement')
-        notebook.add(trace_tab, text='Traceability')
+        self.notebook.add(self.requirement_tab, text='Requirement')
+        self.notebook.add(self.trace_tab, text='Traceability')
 
-    def make_requirement_tab(self, master):
-        tab = ttk.Frame(master)
-
-        title_frame = ttk.Frame(tab)
-        text_frame = ttk.Frame(tab)
-        # Create labels
-        self.unique_id = tk.Label(title_frame, text="UNIQUE ID", font=("Helvetica", 8))
-        self.title_label = tk.Label(title_frame, text="LABEL", font=("Helvetica", 12, "bold"))
-        # noinspection SpellCheckingInspection
-        self.text_label = tk.Label(text_frame, justify="left", text="Lorem ipsum dolor sit amet, consectetur "
-                                                                    "adipiscing elit, sed doeiusmod tempor incididunt "
-                                                                    "ut labore et dolore magna aliqua. Ut enim ad "
-                                                                    "minim veniam, quis nostrud exercitation ullamco "
-                                                                    "laboris nisi ut aliquip ex ea commodo consequat. "
-                                                                    "Duis aute irure dolor in reprehenderit in "
-                                                                    "voluptate velit esse cillum dolore eu fugiat "
-                                                                    "nulla pariatur. Excepteur sint occaecat "
-                                                                    "cupidatat non proident, sunt in culpa qui "
-                                                                    "officia deserunt mollit anim id est laborum.")
+    def display_body(self):
+        #Display main notebook
+        self.notebook.pack(fill='both', expand=True)
+        #Display Trace Tab
+        self.connected_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        #Display Requirements Tab
 
         # Pack labels inside the label frame
         self.unique_id.pack(side="left", pady=10)
@@ -52,8 +46,29 @@ class RequirementExtendedView(ViewPage):
         self.text_label.pack(side="left")
 
         # Pack the label frame to the top of the main frame
-        title_frame.pack(anchor="n", fill="x", padx=10, pady=10)
-        text_frame.pack(anchor="w", fill="x")
+        self.title_frame.pack(anchor="n", fill="x", padx=10, pady=10)
+        self.text_frame.pack(anchor="w", fill="x")
+
+    def make_requirement_tab(self, master):
+        tab = ttk.Frame(master)
+
+        self.title_frame = ttk.Frame(tab)
+        self.text_frame = ttk.Frame(tab)
+
+        # Create labels
+        self.unique_id = tk.Label(self.title_frame, text="UNIQUE ID", font=("Helvetica", 8))
+        self.title_label = tk.Label(self.title_frame, text="LABEL", font=("Helvetica", 12, "bold"))
+        # noinspection SpellCheckingInspection
+        self.text_label = tk.Label(self.text_frame, justify="left", text="Lorem ipsum dolor sit amet, consectetur "
+                                                                         "adipiscing elit, sed doeiusmod tempor incididunt "
+                                                                         "ut labore et dolore magna aliqua. Ut enim ad "
+                                                                         "minim veniam, quis nostrud exercitation ullamco "
+                                                                         "laboris nisi ut aliquip ex ea commodo consequat. "
+                                                                         "Duis aute irure dolor in reprehenderit in "
+                                                                         "voluptate velit esse cillum dolore eu fugiat "
+                                                                         "nulla pariatur. Excepteur sint occaecat "
+                                                                         "cupidatat non proident, sunt in culpa qui "
+                                                                         "officia deserunt mollit anim id est laborum.")
 
         def update_wraplength(event):
             tab_width = event.width
@@ -66,7 +81,6 @@ class RequirementExtendedView(ViewPage):
     def make_trace_tab(self, master):
         tab = ttk.Frame(master)
         self.connected_listbox = ttk.Treeview(tab)
-        self.connected_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         return tab
 
     def get_list_of_type(self, list, type):

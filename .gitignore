@@ -160,5 +160,5 @@ cython_debug/
 .idea/
 /testing/test_files/
 /tests/*.txt
-/lexical/parser.out
-/lexical/parsetab.py
+/src/lexical/parser.out
+/src/lexical/parsetab.py

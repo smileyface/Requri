@@ -7,7 +7,7 @@ import clang.cindex
 from structures import project
 from structures.lists import file_list
 from structures.records.code import Code
-from structures.source_file import File
+from src.structures.source_file import File
 
 # Set the library path for clang
 clang.cindex.Config.set_library_path("C:\\Program Files\\LLVM\\bin")

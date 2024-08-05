@@ -1,18 +1,13 @@
 import tkinter as tk
 
 from UI.pages.paging_handle import PagingHandle
-from UI.pages.requirements.add_requirements.add_requirement import AddRequirementPage, get_variable
+from UI.pages.requirements.add_requirement import AddRequirementPage, get_variable
 from structures.lists import requirement_list
 
 
 class EditRequirementPage(AddRequirementPage):
     def __init__(self, master):
         super().__init__(master)
-        self.section = None
-        self.subsection = None
-        self.requirement_text = None
-        self.title_entry = None
-        self.tagging_text = None
         self.master = master
         self.requirement = None
 
@@ -34,6 +29,8 @@ class EditRequirementPage(AddRequirementPage):
 
     def on_show(self):
         super().on_show()
+        if self.requirement is None:
+            raise ValueError("Requirement is not set. Cannot show the page.")
         # Populate fields with data from the provided Requirement instance
         self.title_entry.insert(0, self.requirement.title)  # Insert new text
         self.section.variable.set(self.requirement.unique_id.section)

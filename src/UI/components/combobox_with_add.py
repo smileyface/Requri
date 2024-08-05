@@ -2,11 +2,10 @@ import tkinter as tk
 from tkinter import ttk
 from typing import List, Callable, Optional
 
-
 class ComboboxWithAdd(tk.Frame):
     def __init__(self, master, options: Optional[List[str]] = None, selected_callback: Optional[Callable] = None):
         super().__init__(master)
-        self.options = options if options else []
+        self.options = [''] + options if options else ['']
         self.selected_callback = selected_callback
 
         self.variable = tk.StringVar(self)
@@ -24,29 +23,35 @@ class ComboboxWithAdd(tk.Frame):
         """
         self.combobox['values'] = values
 
-    def update(self, options: Optional[List[str]] = None):
+    def add_value(self, value: str):
+        """Add a new value to the combobox options."""
+        if value and value not in self.options:
+            self.options.append(value)
+            self.update()
+
+    def update(self):
         """
         Update the combobox with new options, adding a blank value at the top.
         """
-        if options is not None:
-            self.options = options
-        else:
-            self.options = []
         values_with_blank = [''] + self.options
         self.set_values(values_with_blank)
         self.variable.set(values_with_blank[0])
 
     def clear(self):
         """
-        Clear the combobox, resetting to include only the initial options with a blank value at the top.
+        Clear the combobox, resetting to an empty list with a blank value at the top.
         """
-        self.update(self.options)
+        self.options = []
+        self.update()
 
     def set_options(self, options: List[str]):
         """
         Set new options for the combobox.
         """
-        self.options = options
+        if options is not None:
+            self.options = options
+        else:
+            self.options = []
         self.update()
 
     def configure(self, **kwargs):
@@ -60,4 +65,11 @@ class ComboboxWithAdd(tk.Frame):
                 self.combobox.unbind("<<ComboboxSelected>>", self.selected_callback)
             self.selected_callback = kwargs['selected_callback']
             self.combobox.bind("<<ComboboxSelected>>", self.selected_callback)
-        super().configure(**kwargs)
+
+    def cget(self, key):
+        """
+        Get the resource value for a KEY given as a string.
+        """
+        if key == 'values':
+            return self.combobox['values']
+        return super().cget(key)
