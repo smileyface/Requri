@@ -1,6 +1,7 @@
 import pytest
 from tests.mocks.mock_main_app import MockMainApplication
-from UI.pages.paging_handle import PagingHandle, PagesEnum
+import src.UI.pages.paging_handle as PagingHandle
+from src.UI.pages.paging_handle import PagesEnum
 
 @pytest.fixture
 def app():

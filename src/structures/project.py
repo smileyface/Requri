@@ -1,8 +1,8 @@
 import os.path
 
-from structures.lists import requirement_list
-from structures.records import code
-from structures.lists import code_manager
+from src.structures.lists import requirement_list
+from src.structures.records import code
+from src.structures.lists import code_manager
 
 _name = ""
 _save_file = ""

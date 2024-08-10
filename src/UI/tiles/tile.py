@@ -1,8 +1,8 @@
 import tkinter as tk
 
-from UI.pages.paging_handle import PagingHandle, PagesEnum
-from structures.connector import connect
-from structures.records.requirement import Requirement
+import src.UI.pages.paging_handle as PagingHandle
+from src.UI.pages.paging_handle import PagesEnum
+from src.structures.records.requirement import Requirement
 
 
 class Tile(tk.Frame):

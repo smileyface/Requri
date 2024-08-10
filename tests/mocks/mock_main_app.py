@@ -1,4 +1,4 @@
-from UI.main_app import MainApplication
+from src.UI.main_app import MainApplication
 
 
 class MockMainApplication(MainApplication):

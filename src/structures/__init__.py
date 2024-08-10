@@ -1,5 +1,5 @@
-from structures.lists import requirement_list
-from structures.lists import code_manager
+from src.structures.lists import requirement_list
+from src.structures.lists import code_manager
 
 
 def get_lists():

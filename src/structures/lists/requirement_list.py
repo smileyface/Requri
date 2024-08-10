@@ -1,4 +1,5 @@
-from structures.records.requirement import Requirement
+from src.structures.records.requirement import Requirement
+from src.structures.requirement_id import RequirementId
 
 _req_map = {}
 
@@ -65,11 +66,6 @@ def get_requirement_list():
         list_of_map.extend(_req_map[x].values())
     return list_of_map
 
-
-def clear_list():
-    _req_map.clear()
-
-
 def expand_from_json(all_the_things):
     for x in all_the_things:
         req = Requirement(x["id"]['section'], x["id"]["sub"], x["title"], x["text"], x["tags"], x["id"]["id"])
@@ -77,8 +73,10 @@ def expand_from_json(all_the_things):
 
 
 def clear():
-    return None
+    _req_map.clear()
+    RequirementId.clear_id_map()
+
 
 
 def get(unique_id):
-    return _req_map[unique_id]
+    return _req_map[unique_id.key][unique_id.unique_id]

@@ -2,9 +2,9 @@ import logging
 import tkinter as tk
 from tkinter import ttk
 
-from UI.pages import paging_handle
-from UI.pages.viewpage import ViewPage
-from structures.records import *
+from src.UI.pages import paging_handle
+from src.UI.pages.viewpage import ViewPage
+from src.structures.records import *
 
 
 class RequirementExtendedView(ViewPage):

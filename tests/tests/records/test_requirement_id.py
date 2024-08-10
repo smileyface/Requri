@@ -2,8 +2,8 @@
 
 import pytest
 
-from structures.records.record import Record
-from structures.requirement_id import RequirementId
+from src.structures.records.record import Record
+from src.structures.requirement_id import RequirementId
 
 
 class TestRequirementId:

@@ -1,9 +1,9 @@
-import pytest
-import tkinter as tk
-from UI.components.autocomplete_entry import AutoCompleteEntry
-from tests.utils.decorators import tkinter_test
-from tests.fixtures.root_fixture import root
 import time
+import tkinter as tk
+
+from src.UI.components.autocomplete_entry import AutoCompleteEntry
+from tests.fixtures.root_fixture import root
+from tests.utils.decorators import tkinter_test
 
 
 class TestAutoCompleteEntry:

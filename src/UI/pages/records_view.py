@@ -1,8 +1,8 @@
 import logging
 import tkinter as tk
 
-from UI.components.tile_display import TileView
-from UI.pages.viewpage import ViewPage
+from src.UI.components.tile_display import TileView
+from src.UI.pages.viewpage import ViewPage
 
 
 class RecordsView(ViewPage):

@@ -1,10 +1,10 @@
-from UI.tiles.code_tile import CodeTile
-from UI.tiles.requirement_tile import RequirementTile
-from UI.components.scrollable_frame import ScrollableFrame
-from structures.lists import requirement_list
-from structures.records.code import Code
-from structures.records.requirement import Requirement
-from lexical.search import interpret
+from src.UI.tiles.code_tile import CodeTile
+from src.UI.tiles.requirement_tile import RequirementTile
+from src.UI.components.scrollable_frame import ScrollableFrame
+from src.structures.lists import requirement_list
+from src.structures.records.code import Code
+from src.structures.records.requirement import Requirement
+from src.lexical.search import interpret
 
 
 class TileView(ScrollableFrame):
@@ -63,7 +63,7 @@ class TileView(ScrollableFrame):
     def remove_selected(self, event):
         if self.selected_frame:
             index = self.tiles.index(self.selected_frame)
-            requirement = requirement_list.get_requirement_from_index(index)
+            requirement = requirement_list.get(index)
             requirement_list.remove(requirement)
             self.remove_tile(self.selected_frame)
             self.selected_frame = None  # Reset selected frame after removal

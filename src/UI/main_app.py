@@ -1,9 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 
-from UI.menubars.main import MainMenuBar
-from UI.pages import requirements
-from UI.pages.paging_handle import PagingHandle, PagesEnum
+from src.UI.menubars.main import MainMenuBar
+from src.UI.pages import requirements
+from src.UI.pages.paging_handle import PagesEnum
+import src.UI.pages.paging_handle as PagingHandle
 
 
 class MainApplication(tk.Tk):

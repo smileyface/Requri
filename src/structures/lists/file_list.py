@@ -1,5 +1,5 @@
 from src.structures.source_file import File
-from structures import project
+from src.structures import project
 
 _source_file_list = []
 

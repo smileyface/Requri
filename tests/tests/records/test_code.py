@@ -3,9 +3,9 @@
 
 import pytest
 
-from structures.records.code import Code
-from structures.records.code_location import Code_Location
-from structures.records.record import Record
+from src.structures.records.code import Code
+from src.structures.records.code_location import Code_Location
+from src.structures.records.record import Record
 
 
 class TestCode:

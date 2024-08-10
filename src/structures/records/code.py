@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict
 
-from structures.lists import code_manager
-from structures.records.code_location import Code_Location
-from structures.records.record import Record
+from src.structures.lists import code_manager
+from src.structures.records.code_location import Code_Location
+from src.structures.records.record import Record
 
 
 @dataclass

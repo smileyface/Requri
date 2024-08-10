@@ -2,7 +2,7 @@ from functools import wraps
 
 import pytest
 
-from UI.pages.paging_handle import PagingHandle
+import src.UI.pages.paging_handle as PagingHandle
 
 
 def main_app_test(page_enum):

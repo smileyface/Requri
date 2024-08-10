@@ -3,11 +3,12 @@ import tkinter as tk
 from enum import Enum
 from tkinter import filedialog
 
-from parsers.code import source_cpp
-from UI.dialog.new_project import NewProjectDialog
-from UI.pages.paging_handle import PagingHandle, PagesEnum
-from structures import project
-from structures.lists import requirement_list, code_list
+from src.parsers.code import source_cpp
+from src.UI.dialog.new_project import NewProjectDialog
+import src.UI.pages.paging_handle as PagingHandle
+from src.UI.pages.paging_handle import PagesEnum
+from src.structures import project
+from src.structures.lists import requirement_list, code_list
 
 
 class Callback_Functions(Enum):
@@ -65,7 +66,7 @@ class MainMenuBar(tk.Menu):
 
     def new_file(self):
         print("New file")
-        requirement_list.clear_list()
+        requirement_list.clear()
         self.new_file_callback()
         dialog = NewProjectDialog(self.master, title="New Project")
         project.set_name(dialog)
@@ -85,7 +86,7 @@ class MainMenuBar(tk.Menu):
         self.save_file()
 
     def open_file(self):
-        requirement_list.clear_list()
+        requirement_list.clear()
         project.set_save_file(filedialog.askopenfilename(initialdir="/", title="Select Open File",
                                                          filetypes=(("JSON files", "*.json"), ("All files", "*.*"))))
         if project.get_save_file():

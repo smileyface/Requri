@@ -1,7 +1,7 @@
 import os.path
 import hashlib
 
-from structures import project
+from src.structures import project
 
 
 class File:

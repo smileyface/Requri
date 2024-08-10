@@ -1,6 +1,6 @@
 import pytest
 
-from UI.pages.viewpage import ViewPage
+from src.UI.pages.viewpage import ViewPage
 from tests.fixtures.app_fixtures import app
 from tests.fixtures.view_page_fixture import test_page
 from tests.mocks.mock_main_app import MockMainApplication

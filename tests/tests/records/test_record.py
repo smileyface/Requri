@@ -3,7 +3,7 @@
 
 import pytest
 
-from structures.records.record import Record
+from src.structures.records.record import Record
 
 
 class TestRecord:

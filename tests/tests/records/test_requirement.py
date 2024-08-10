@@ -1,10 +1,8 @@
-import logging
-
 import pytest
 
-from structures.records import Code
-from structures.records.record import Record
-from structures.records.requirement import Requirement
+from src.structures.records import Code
+from src.structures.records.record import Record
+from src.structures.records.requirement import Requirement
 
 
 class TestRequirement:

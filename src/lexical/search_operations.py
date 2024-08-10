@@ -1,6 +1,6 @@
 import logging
 
-import structures
+import src.structures as structures
 
 
 def _get_lists():

@@ -1,7 +1,7 @@
 import logging
 
-from lexical.search_lex import lexer
-from lexical.search_yacc import parser
+from src.lexical.search_lex import lexer
+from src.lexical.search_yacc import parser
 
 
 # Define a function to interpret the input string

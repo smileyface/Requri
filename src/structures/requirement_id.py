@@ -58,6 +58,10 @@ class RequirementId:
         self.id_map[location].add(id)
         self._unique_id = id
 
+    @property
+    def key(self):
+        return self.section, self.sub
+
     def _create_unique_id(self) -> int:
         location = (self.section, self.sub)
         for x in range(0, self.id_range_max):
@@ -67,3 +71,7 @@ class RequirementId:
 
     def to_json(self) -> Dict[str, str]:
         return {"section": self.section, "sub": self.sub, "id": self.unique_id}
+
+    @staticmethod
+    def clear_id_map():
+        RequirementId.id_map.clear()

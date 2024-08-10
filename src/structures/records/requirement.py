@@ -2,9 +2,9 @@ import logging
 from dataclasses import dataclass, InitVar, field
 from typing import List, Dict, Optional
 
-from structures.records import Code
-from structures.records.record import Record
-from structures.requirement_id import RequirementId
+from src.structures.records import Code
+from src.structures.records.record import Record
+from src.structures.requirement_id import RequirementId
 
 
 @dataclass

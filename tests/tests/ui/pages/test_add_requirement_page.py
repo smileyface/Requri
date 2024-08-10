@@ -5,12 +5,13 @@ from unittest.mock import patch
 
 import pytest
 
-from UI.pages import requirements
-from UI.pages.paging_handle import PagingHandle, PagesEnum
-from UI.pages.requirements import AddRequirementPage
-from structures.lists import requirement_list
-from structures.records import Code, Requirement
-from structures.records.record import Record
+from src.UI.pages import requirements
+from src.UI.pages.paging_handle import PagesEnum
+import src.UI.pages.paging_handle as PagingHandle
+from src.UI.pages.requirements import AddRequirementPage
+from src.structures.lists import requirement_list
+from src.structures.records import Code, Requirement
+from src.structures.records.record import Record
 from tests.fixtures.app_fixtures import app, page
 from tests.mocks.mock_main_app import MockMainApplication
 from tests.utils.decorators import main_app_test
@@ -62,8 +63,7 @@ class TestAddRequirementPage:
     def teardown(self):
         yield
         Record.clear_records()
-        requirement_list.clear_list()
-        PagingHandle.clear_paging_handler()
+        requirement_list.clear()
 
     def check_components(self, page):
         # Access the notebook widget
@@ -357,7 +357,7 @@ class TestAddRequirementPage:
         """
         Test: Verify that the cancel operation navigates back to the previous page.
         """
-        with patch('UI.pages.paging_handle.PagingHandle.page_return', autospec=True) as mock_page_return:
+        with patch('src.UI.pages.paging_handle.page_return', autospec=True) as mock_page_return:
             page.cancel()
             mock_page_return.assert_called_once()
 

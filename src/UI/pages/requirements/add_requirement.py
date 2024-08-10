@@ -4,13 +4,13 @@ import tkinter as tk
 from tkinter import ttk
 from typing import List, Union, Any
 
-from UI.components.autocomplete_entry import AutoCompleteEntry
-from UI.components.combobox_with_add import ComboboxWithAdd
-from UI.pages.paging_handle import PagingHandle
-from UI.pages.viewpage import ViewPage
-from structures.lists import requirement_list
-from structures.records import *
-from structures.records.record import Record
+from src.UI.components.autocomplete_entry import AutoCompleteEntry
+from src.UI.components.combobox_with_add import ComboboxWithAdd
+import src.UI.pages.paging_handle as PagingHandle
+from src.UI.pages.viewpage import ViewPage
+from src.structures.lists import requirement_list
+from src.structures.records import *
+from src.structures.records.record import Record
 
 
 def get_variable(var):

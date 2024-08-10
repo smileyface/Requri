@@ -3,7 +3,7 @@ from tkinter import ttk
 
 import pytest
 
-from UI.pages.viewpage import ViewPage
+from src.UI.pages.viewpage import ViewPage
 
 class TestableViewPage(ViewPage):
     def __init__(self, parent, *args, **kwargs):

@@ -1,7 +1,7 @@
 import os
 import tkinter as tk
 
-from UI.tiles.tile import Tile
+from src.UI.tiles.tile import Tile
 
 
 class CodeTile(Tile):

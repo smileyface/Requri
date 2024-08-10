@@ -4,9 +4,9 @@ import threading
 
 import clang.cindex
 
-from structures import project
-from structures.lists import file_list
-from structures.records.code import Code
+from src.structures import project
+from src.structures.lists import file_list
+from src.structures.records.code import Code
 from src.structures.source_file import File
 
 # Set the library path for clang

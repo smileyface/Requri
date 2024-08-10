@@ -1,8 +1,8 @@
 import hashlib
 import os
 
-from structures import project
-from structures.records.record import Record
+from src.structures import project
+from src.structures.records.record import Record
 
 from src.structures.source_file import File
 

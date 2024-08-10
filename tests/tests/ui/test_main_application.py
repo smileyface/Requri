@@ -1,9 +1,10 @@
 # test_main_application.py
 
-from UI.main_app import MainApplication
 import pytest
-from UI.menubars.main import MainMenuBar
-from UI.pages.paging_handle import PagingHandle, PagesEnum
+from src.UI.main_app import MainApplication
+from src.UI.menubars.main import MainMenuBar
+from src.UI.pages.paging_handle import PagesEnum
+import src.UI.pages.paging_handle as PagingHandle
 
 
 @pytest.fixture
@@ -14,6 +15,42 @@ def app():
 
 
 class TestMainApplication:
+    """
+    TestMainApplication
+
+    This class contains test cases for the MainApplication functionality. The tests cover
+    various aspects of the application including initialization, navigation bar creation, and page registration.
+
+    Included Tests:
+    ---------------
+
+    1. test_initialization_title_and_dimensions
+       - Summary: Verifies that the MainApplication initializes with the correct title and dimensions.
+
+    2. test_navigation_bar_creation
+       - Summary: Ensures that the navigation bar components are correctly created.
+
+    3. test_menu_bar_creation
+       - Summary: Verifies that the menu bar is correctly created and is an instance of MainMenuBar.
+
+    4. test_pages_registration
+       - Summary: Checks that all pages are correctly registered in the PagingHandle.
+
+    5. test_initial_page_display
+       - Summary: Confirms that the initial page displayed is the RECORD_VIEW page.
+
+    6. test_incorrect_page_enum_registration
+       - Summary: Ensures that an invalid page enum registration raises a KeyError.
+
+    7. test_missing_or_incorrect_page_enum_values
+       - Summary: Verifies that missing or incorrect page enum values raise a KeyError.
+
+    8. test_context_action_box_updates
+       - Summary: Tests that the context action box updates correctly when pages are switched.
+
+    9. test_switching_between_pages
+       - Summary: Verifies that switching between pages updates the viewable state correctly.
+       """
 
     def test_initialization_title_and_dimensions(self, app):
         assert app.title() == "Requirement Tracker"

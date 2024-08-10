@@ -1,4 +1,4 @@
-from UI.components.combobox_with_add import ComboboxWithAdd  # Adjust the import path as needed
+from src.UI.components.combobox_with_add import ComboboxWithAdd  # Adjust the import path as needed
 from tests.utils.decorators import tkinter_test
 from tests.fixtures.root_fixture import root
 

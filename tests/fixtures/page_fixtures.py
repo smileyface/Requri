@@ -1,8 +1,8 @@
 
 import pytest
 
-from UI.pages.requirements.add_requirement import AddRequirementPage
-from UI.pages.requirements.edit_requirement import EditRequirementPage
+from src.UI.pages.requirements.add_requirement import AddRequirementPage
+from src.UI.pages.requirements.edit_requirement import EditRequirementPage
 from tests.mocks.mock_main_app import MockMainApplication
 
 
