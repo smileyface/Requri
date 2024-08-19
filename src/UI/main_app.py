@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 
+import logging
+
 from src.UI.menubars.main import MainMenuBar
 from src.UI.pages import requirements
 from src.UI.pages.paging_handle import PagesEnum
@@ -10,11 +12,15 @@ import src.UI.pages.paging_handle as PagingHandle
 class MainApplication(tk.Tk):
     def __init__(self):
         super().__init__()
+
         self.page_back_button = None
         self.page_forward_button = None
         self.context_action_box = None
         self.title("Requirement Tracker")
         self.geometry("900x765")
+        self.update()
+        self.width = self.winfo_width()
+        self.height = self.winfo_height()
 
         self.full_frame = tk.Frame(self, name="app_frame")
         self.page_container = tk.Frame(self.full_frame, name="page_container")
@@ -36,6 +42,8 @@ class MainApplication(tk.Tk):
                                               requirements.RequirementExtendedView)
 
         PagingHandle.show_page(PagesEnum.RECORD_VIEW, forgo_stack=True)
+
+        self.bind("<Configure>", self.on_resize)
 
         self.create_menu()
 
@@ -63,3 +71,10 @@ class MainApplication(tk.Tk):
     def destroy(self):
         PagingHandle.clear_paging_handler()
         super().destroy()
+
+    def on_resize(self, event):
+        if event.width != self.width or event.height != self.height:
+            logging.info(f"Resizing from {self.width}x{self.height} to {event.width}x{event.height}")
+            self.width = event.width
+            self.height = event.height
+            self.update_idletasks()  # Force update of geometry

@@ -1,27 +1,29 @@
-
 import pytest
 
 from src.UI.pages.requirements.add_requirement import AddRequirementPage
 from src.UI.pages.requirements.edit_requirement import EditRequirementPage
+import src.UI.pages.paging_handle as PagingHandle
 from tests.mocks.mock_main_app import MockMainApplication
 
 
-def create_and_show_page(app: MockMainApplication, page_class, requirement=None):
-    page = page_class(app)
+def create_and_show_page(page_class: PagingHandle.PagesEnum, requirement=None):
     if requirement:
-        page.requirement = requirement
-    page.create_body()
-    page.show()
-    return page
+        PagingHandle.get_page(page_class).requirement = requirement
+    PagingHandle.show_page(page_class)
+    return PagingHandle.get_page(page_class)
 
 
 @pytest.fixture
 def edit_requirement_page(app, request):
     requirement = request.param
-    page = create_and_show_page(app, EditRequirementPage, requirement)
+    page = create_and_show_page(PagingHandle.PagesEnum.EDIT_REQUIREMENT
+                                , requirement)
+    app.update_idletasks()
     yield page
+
 
 @pytest.fixture
 def add_requirement_page(app):
-    page = create_and_show_page(app, AddRequirementPage)
+    page = create_and_show_page(PagingHandle.PagesEnum.ADD_REQUIREMENT)
+    app.update_idletasks()
     yield page

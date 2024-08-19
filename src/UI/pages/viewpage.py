@@ -27,6 +27,10 @@ class ViewPage(ABC, tk.Frame):
         self.context_action_box = self._get_context_action_box()
         self.displayed = False
 
+        self.width = self.winfo_width()
+        self.height = self.winfo_height()
+        self.bind("<Configure>", self.on_resize)
+
     def _get_context_action_box(self):
         parent = self.master
         while parent:
@@ -61,6 +65,9 @@ class ViewPage(ABC, tk.Frame):
 
         """
         pass
+
+    def on_resize(self, event):
+        self.display_body()
 
     def to_string(self):
         return f"{type(self)}"

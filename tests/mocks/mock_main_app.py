@@ -5,7 +5,6 @@ class MockMainApplication(MainApplication):
     def __init__(self):
         super().__init__()
         self.title("Mock Main Application")
-        self.geometry("800x600")
         self.widgets = []
 
     def add_widget(self, widget):

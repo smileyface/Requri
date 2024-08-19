@@ -1,3 +1,5 @@
+import threading
+
 import pytest
 from tests.mocks.mock_main_app import MockMainApplication
 import src.UI.pages.paging_handle as PagingHandle
@@ -6,8 +8,16 @@ from src.UI.pages.paging_handle import PagesEnum
 @pytest.fixture
 def app():
     app = MockMainApplication()
+
+    def run_app():
+        app.after(0, app.run)
+
+    app_thread = threading.Thread(target=run_app)
+    app_thread.start()
+
     yield app
     app.destroy()
+    app_thread.join()
 
 @pytest.fixture
 def page(app, request):

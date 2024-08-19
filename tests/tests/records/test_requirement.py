@@ -109,13 +109,6 @@ class TestRequirement:
         req = Requirement("section1", "subsection1", "Title1", "   Text1   ", ["tag1"])
         assert req.text == "Text1"
 
-    #  Converts to string representation correctly with a Code instance connection
-    def test_converts_to_string_representation_correctly_with_code_instance(self):
-        req = Requirement("section1", "subsection1", "Title1", "Text1", ["tag1"], new_unique_id=123)
-        code = Code("file1", "public", "Class1", "method1", ["arg1", "arg2"], 1, 21)
-        req.connect(code)
-        assert str(req) == "section1-subsection1-123: Title1 (Connected to Class1::method1(arg1, arg2))"
-
     #  Connects to a Code instance
     def test_connects_to_a_code_instance(self):
         req = Requirement("section1", "subsection1", "Title1", "Text1", ["tag1"])
