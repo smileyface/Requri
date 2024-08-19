@@ -25,8 +25,9 @@ To use Requri, follow these steps:
 ## Running Tests
 To run the tests, follow these steps:
 
-- Navigate to the `test` directory.
-- Run the test suite using the provided test runner scripts or tools.
+- Run `pytest`
+
+Tests are located in `tests/tests`. 
 
 ## Contributing
 We welcome contributions to Requri! Please fork the repository and submit pull requests for review.

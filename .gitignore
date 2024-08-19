@@ -162,3 +162,4 @@ cython_debug/
 /tests/*.txt
 /src/lexical/parser.out
 /src/lexical/parsetab.py
+.coverage
