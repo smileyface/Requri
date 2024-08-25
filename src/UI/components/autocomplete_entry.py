@@ -66,6 +66,8 @@ class AutoCompleteEntry(tk.Frame):
             list: List of entries in the entry field.
         """
         entries = [entry.strip().strip("#") for entry in self.entry.get().split(",") if entry.strip()]
+        if entries == ['']:
+            return []
         return entries
 
     @list.setter

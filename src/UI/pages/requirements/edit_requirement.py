@@ -1,3 +1,4 @@
+import logging
 import tkinter as tk
 
 import src.UI.pages.paging_handle as PagingHandle
@@ -32,9 +33,10 @@ class EditRequirementPage(AddRequirementPage):
         if self.requirement is None:
             raise ValueError("Requirement is not set. Cannot show the page.")
         # Populate fields with data from the provided Requirement instance
-        self.title_entry.insert(0, self.requirement.title)  # Insert new text
-        self.section.variable.set(self.requirement.unique_id.section)
+        if self.requirement.title:
+            self.title_entry.insert(0, self.requirement.title)  # Insert new text
+        self.section.variable = self.requirement.unique_id.section
         self.update_combobox_b()  # Update subsection combobox based on section
-        self.subsection.variable.set(self.requirement.unique_id.sub)
+        self.subsection.variable = self.requirement.unique_id.sub
         self.requirement_text.insert("1.0", self.requirement.text)  # Insert new text
         self.tagging_text.list = self.requirement.tags

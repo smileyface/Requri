@@ -1,3 +1,5 @@
+import logging
+
 from src.structures.records.requirement import Requirement
 from src.structures.requirement_id import RequirementId
 
@@ -5,16 +7,18 @@ _req_map = {}
 
 
 def update(unique_id, section, sub, title, text, tags):
+    logging.info(f"Updating {unique_id}")
     # Update section and subsection
     if not unique_id.section == section or not unique_id.sub == sub:
+        remove(unique_id=unique_id)
         append(Requirement(section, sub, title, text, tags))
-        _req_map.pop((unique_id.section, unique_id.sub))
-    _req_map[(unique_id.section, unique_id.sub)][
-        unique_id.unique_id].title = title
-    _req_map[(unique_id.section, unique_id.sub)][
-        unique_id.unique_id].text = text
-    _req_map[(unique_id.section, unique_id.sub)][
-        unique_id.unique_id].tags = tags
+    else:
+        _req_map[(unique_id.section, unique_id.sub)][
+            unique_id.unique_id].title = title
+        _req_map[(unique_id.section, unique_id.sub)][
+            unique_id.unique_id].text = text
+        _req_map[(unique_id.section, unique_id.sub)][
+            unique_id.unique_id].tags = tags
 
 
 def append(requirement):
@@ -28,9 +32,14 @@ def map_is_empty():
     return _req_map == {}
 
 
-def remove(requirement):
-    del _req_map[(requirement.unique_id.section, requirement.unique_id.sub)][requirement.unique_id.unique_id]
+def remove(requirement=None, unique_id=None):
+    if requirement:
+        unique_id = requirement.unique_id
 
+    if unique_id:
+        del _req_map[(unique_id.section, unique_id.sub)][unique_id.unique_id]
+        if not _req_map[(unique_id.section, unique_id.sub)]:
+            del _req_map[(unique_id.section, unique_id.sub)]
 
 def get_section_lists():
     thing = set()

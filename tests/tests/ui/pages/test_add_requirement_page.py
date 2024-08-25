@@ -340,8 +340,8 @@ class TestAddRequirementPage:
         Test: Verify that a requirement is correctly added to the requirement list.
         """
         add_requirement_page.title_entry.insert(0, "Test Requirement")
-        add_requirement_page.section.variable.set("Test Section")
-        add_requirement_page.subsection.variable.set("Test Subsection")
+        add_requirement_page.section.variable = "Test Section"
+        add_requirement_page.subsection.variable = "Test Subsection"
         add_requirement_page.requirement_text.insert("1.0", "This is a test requirement.")
         add_requirement_page.tagging_text.list = ["tag1", "tag2"]
 
@@ -368,7 +368,7 @@ class TestAddRequirementPage:
         """
         Test: Verify that selecting a section updates the subsection combobox correctly.
         """
-        add_requirement_page.section.variable.set("Section 1")
+        add_requirement_page.section.variable = "Section 1"
         requirement_list.append(Requirement("Section 1", "Subsection 1.1", "", "", []))
         requirement_list.append(Requirement("Section 1", "Subsection 1.2", "", "", []))
         add_requirement_page.update_combobox_b()
@@ -483,8 +483,8 @@ class TestAddRequirementPage:
         Test: Verify that adding duplicate requirements is handled correctly.
         """
         add_requirement_page.title_entry.insert(0, "Test Requirement")
-        add_requirement_page.section.variable.set("Test Section")
-        add_requirement_page.subsection.variable.set("Test Subsection")
+        add_requirement_page.section.variable = "Test Section"
+        add_requirement_page.subsection.variable = "Test Subsection"
         add_requirement_page.requirement_text.insert("1.0", "This is a test requirement.")
         add_requirement_page.tagging_text.list = ["tag1", "tag2"]
 
@@ -500,8 +500,8 @@ class TestAddRequirementPage:
         """
         long_text = "a" * 1000
         add_requirement_page.title_entry.insert(0, long_text)
-        add_requirement_page.section.variable.set(long_text)
-        add_requirement_page.subsection.variable.set(long_text)
+        add_requirement_page.section.variable = long_text
+        add_requirement_page.subsection.variable = long_text
         add_requirement_page.requirement_text.insert("1.0", long_text)
         add_requirement_page.tagging_text.list = [long_text]
 
@@ -521,8 +521,8 @@ class TestAddRequirementPage:
         """
         special_text = "!@#$%^&*()_+"
         add_requirement_page.title_entry.insert(0, special_text)
-        add_requirement_page.section.variable.set(special_text)
-        add_requirement_page.subsection.variable.set(special_text)
+        add_requirement_page.section.variable = special_text
+        add_requirement_page.subsection.variable = special_text
         add_requirement_page.requirement_text.insert("1.0", special_text)
         add_requirement_page.tagging_text.list = [special_text]
 
@@ -551,8 +551,8 @@ class TestAddRequirementPage:
         Test: Verify state persistence when navigating between pages.
         """
         add_requirement_page.title_entry.insert(0, "Persistent Requirement")
-        add_requirement_page.section.variable.set("Persistent Section")
-        add_requirement_page.subsection.variable.set("Persistent Subsection")
+        add_requirement_page.section.variable = "Persistent Section"
+        add_requirement_page.subsection.variable = "Persistent Subsection"
         add_requirement_page.requirement_text.insert("1.0", "Persistent text")
         add_requirement_page.tagging_text.list = ["persistent_tag"]
 
@@ -562,8 +562,8 @@ class TestAddRequirementPage:
 
         # Verify state persistence
         assert add_requirement_page.title_entry.get() == "Persistent Requirement"
-        assert add_requirement_page.section.variable.get() == "Persistent Section"
-        assert add_requirement_page.subsection.variable.get() == "Persistent Subsection"
+        assert add_requirement_page.section.variable == "Persistent Section"
+        assert add_requirement_page.subsection.variable == "Persistent Subsection"
         assert add_requirement_page.requirement_text.get("1.0", "end-1c") == "Persistent text"
         assert add_requirement_page.tagging_text.list == ["persistent_tag"]
 
@@ -572,13 +572,13 @@ class TestAddRequirementPage:
         """
         Test: Verify the visibility of components based on certain inputs.
         """
-        add_requirement_page.section.variable.set("Some Section")
+        add_requirement_page.section.variable = "Some Section"
         requirement_list.append(Requirement("Some Section", "Subsection 1", "", "", []))
         add_requirement_page.update_combobox_b()
 
         # Verify that subsection is updated and visible
         # Subsection defaults to "", then selection happens by user.
-        assert add_requirement_page.subsection.variable.get() == ""
+        assert add_requirement_page.subsection.variable == ""
         assert add_requirement_page.subsection.winfo_ismapped()
 
     def test_event_triggered_actions(self, app: MockMainApplication, add_requirement_page: AddRequirementPage):
@@ -601,7 +601,7 @@ class TestAddRequirementPage:
         """
         section_options = ["Section 1", "Section 2"]
         add_requirement_page.section.set_options(section_options)
-        add_requirement_page.section.variable.set("Section 1")
+        add_requirement_page.section.variable = "Section 1"
 
         requirement_list.append(Requirement("Section 1", "Subsection 1.1", "", "", []))
         requirement_list.append(Requirement("Section 1", "Subsection 1.2", "", "", []))
@@ -614,7 +614,7 @@ class TestAddRequirementPage:
         """
         Test: Verify the behavior when an invalid section is selected.
         """
-        add_requirement_page.section.variable.set("Invalid Section")
+        add_requirement_page.section.variable = "Invalid Section"
         add_requirement_page.update_combobox_b()
         assert add_requirement_page.subsection.cget("values") == ('',)
 
@@ -623,8 +623,8 @@ class TestAddRequirementPage:
         Test: Verify that the UI components are reset correctly when the page is reloaded.
         """
         add_requirement_page.title_entry.insert(0, "Persistent Requirement")
-        add_requirement_page.section.variable.set("Persistent Section")
-        add_requirement_page.subsection.variable.set("Persistent Subsection")
+        add_requirement_page.section.variable = "Persistent Section"
+        add_requirement_page.subsection.variable = "Persistent Subsection"
         add_requirement_page.requirement_text.insert("1.0", "Persistent text")
         add_requirement_page.tagging_text.list = ["persistent_tag"]
 
@@ -634,8 +634,8 @@ class TestAddRequirementPage:
 
         # Verify state reset
         assert add_requirement_page.title_entry.get() == ""
-        assert add_requirement_page.section.variable.get() == ""
-        assert add_requirement_page.subsection.variable.get() == ""
+        assert add_requirement_page.section.variable == ""
+        assert add_requirement_page.subsection.variable == ""
         assert add_requirement_page.requirement_text.get("1.0", "end-1c") == ""
         assert add_requirement_page.tagging_text.list == []
 

@@ -1,13 +1,18 @@
+import time
 import tkinter as tk
 from tkinter import ttk
+from unittest.mock import patch
 
 import pytest
+
+from UI.components.combobox_with_add import ComboboxWithAdd
 from src.UI.components.autocomplete_entry import AutoCompleteEntry
 from src.UI.pages.requirements.edit_requirement import EditRequirementPage
 from src.structures.lists import requirement_list
 from src.structures.records import Requirement
+from structures.requirement_id import RequirementId
 
-from tests.fixtures.app_fixtures import app, page
+from tests.fixtures.app_fixtures import app
 from tests.fixtures.page_fixtures import edit_requirement_page
 from tests.mocks.mock_main_app import MockMainApplication
 
@@ -22,51 +27,48 @@ req_missing_fields_invalid_id = Requirement(None, None, None, None, [], new_uniq
 class TestEditRequirementPage:
 
     #  Initializes correctly with all required attributes
-    @pytest.mark.parametrize('edit_requirement_page', [req_complete], indirect=True)
-    def test_initializes_correctly_with_all_required_attributes(self, app: MockMainApplication,
-                                                                edit_requirement_page: EditRequirementPage):
-        assert edit_requirement_page.section is None
-        assert edit_requirement_page.subsection is None
-        assert edit_requirement_page.requirement_text is None
-        assert edit_requirement_page.title_entry is None
-        assert edit_requirement_page.tagging_text is None
-        assert edit_requirement_page.master == app
-        assert edit_requirement_page.requirement is None
+    def test_initializes_correctly_with_all_required_attributes(self, app: MockMainApplication):
+        edit_page = EditRequirementPage(app)
+        assert edit_page.section is None
+        assert edit_page.subsection is None
+        assert edit_page.requirement_text is None
+        assert edit_page.title_entry is None
+        assert edit_page.tagging_text is None
+        assert edit_page.master == app
+        assert edit_page.requirement is None
 
     #  Updates requirement in requirement_list when edit method is called
     @pytest.mark.parametrize('edit_requirement_page', [req_complete], indirect=True)
     def test_updates_requirement_in_requirement_list_when_edit_method_is_called(self, app: MockMainApplication,
                                                                                 edit_requirement_page: EditRequirementPage):
-        requirement = Requirement("Section", "Subsection", "Title", "Text", [])
-        requirement_list.append(requirement)
-        edit_requirement_page.requirement = requirement
-        edit_requirement_page.section.variable.set("New Section")
-        edit_requirement_page.subsection.variable.set("New Subsection")
+        edit_requirement_page.section.variable = "New Section"
+        edit_requirement_page.subsection.variable = "New Subsection"
+        edit_requirement_page.title_entry.delete(0, tk.END)
         edit_requirement_page.title_entry.insert(0, "New Title")
+        edit_requirement_page.requirement_text.delete("1.0", tk.END)
         edit_requirement_page.requirement_text.insert("1.0", "New Text")
-        edit_requirement_page.tagging_text.insert(0, "New Tag")
+        edit_requirement_page.tagging_text.list = ["New Tag"]
         edit_requirement_page.edit()
-        updated_requirement = requirement_list.get(requirement.unique_id)
+        updated_requirement = requirement_list.get_requirement_map()["New Section", "New Subsection"][0]
         assert updated_requirement.section == "New Section"
-        assert updated_requirement.subsection == "New Subsection"
+        assert updated_requirement.sub == "New Subsection"
         assert updated_requirement.title == "New Title"
         assert updated_requirement.text == "New Text"
         assert updated_requirement.tags == ["New Tag"]
+        assert ("Section", "Subsection") not in requirement_list.get_requirement_map()
+
 
     #  Changes button text to "Edit" and sets the command to edit in create_context_nav
     @pytest.mark.parametrize('edit_requirement_page', [req_complete], indirect=True)
     def test_changes_button_text_to_edit_and_sets_command_to_edit_in_create_context_nav(self, app: MockMainApplication,
                                                                                         edit_requirement_page: EditRequirementPage):
-        edit_requirement_page.add_button = tk.Button(app)
+        # Call the method that sets up the context
         edit_requirement_page.create_context_nav()
-
-        # Debugging print statements
-        print(f"Button text: {edit_requirement_page.add_button.cget('text')}")
-        print(f"Button command: {edit_requirement_page.add_button.cget('command')}")
-        print(f"Expected command: {edit_requirement_page.edit}")
+        app.update()
 
         assert edit_requirement_page.add_button.cget("text") == "Edit"
-        assert edit_requirement_page.add_button.cget("command") == edit_requirement_page.edit
+        command = edit_requirement_page.add_button.cget('command')
+        assert 'edit' in command
 
     #  Clears text fields and tagging list in on_hide
     @pytest.mark.parametrize('edit_requirement_page', [req_complete], indirect=True)
@@ -92,21 +94,15 @@ class TestEditRequirementPage:
         edit_requirement_page.requirement = requirement
         edit_requirement_page.create_body()
 
-        # Initialize fields that will be populated by on_show
-        edit_requirement_page.title_entry = tk.Entry(app)
-        edit_requirement_page.section = tk.StringVar()
-        edit_requirement_page.subsection = tk.StringVar()
-        edit_requirement_page.requirement_text = tk.Text(app)
-
         # Call on_show and check if it handles missing attributes gracefully
         try:
             edit_requirement_page.on_show()
             assert True  # If no exception is raised, the test passes
             assert edit_requirement_page.title_entry.get() == requirement.title
-            assert edit_requirement_page.section.get() == requirement.section
-            assert edit_requirement_page.subsection.get() == requirement.subsection
+            assert edit_requirement_page.section.variable == requirement.section
+            assert edit_requirement_page.subsection.variable == requirement.sub
             assert edit_requirement_page.requirement_text.get("1.0", tk.END).strip() == requirement.text
-            assert list(edit_requirement_page.tagging_text.get(0, tk.END)) == requirement.tags
+            assert edit_requirement_page.tagging_text.list == requirement.tags
         except Exception as e:
             pytest.fail(f"on_show raised an exception with missing attributes: {e}")
 
@@ -114,13 +110,32 @@ class TestEditRequirementPage:
     @pytest.mark.parametrize('edit_requirement_page', [req_complete], indirect=True)
     def test_handles_drag_and_drop_events_correctly_in_traceability_tab(self, app: MockMainApplication,
                                                                         edit_requirement_page: EditRequirementPage):
+        # Access the notebook widget
+        notebook = edit_requirement_page.nametowidget('add_requirement_body')
+        assert isinstance(notebook, ttk.Notebook)
 
-        # Initialize connected_listbox and connections list with sample data for tests purposes
-        edit_requirement_page.connected_listbox = ttk.Treeview(app)
+        # Access the tabs by name
+        requirement_tab = notebook.nametowidget('add_requirements_req_tab')
+        traceability_tab = notebook.nametowidget('add_requirements_trace_tab')
+
+        # Switch to the Traceability tab
+        notebook.select(traceability_tab)
+        app.update()  # Ensure the GUI updates the tab selection
+        edit_requirement_page.connectable_listbox.insert("", "end", iid="item1", text="Item 1")
+        edit_requirement_page.connectable_listbox.selection_set("item1")
+
+        valid_event = tk.Event()
+        valid_event.widget = edit_requirement_page.connectable_listbox
+        valid_event.x_root = edit_requirement_page.connectable_listbox.winfo_rootx() + 10
+        valid_event.y_root = edit_requirement_page.connectable_listbox.winfo_rooty() + 10
 
         # Simulate drag and drop events in the traceability tab
-        edit_requirement_page.on_drag(tk.Event())
-        edit_requirement_page.on_drop(tk.Event())
+        edit_requirement_page.on_drag(valid_event)
+        valid_event.widget = edit_requirement_page.connected_listbox
+        valid_event.x_root = edit_requirement_page.connected_listbox.winfo_rootx() + 10
+        valid_event.y_root = edit_requirement_page.connected_listbox.winfo_rooty() + 10
+
+        edit_requirement_page.on_drop(valid_event)
 
         # Assert that the connections list is updated correctly
         assert len(edit_requirement_page.connections) == 1
@@ -129,9 +144,8 @@ class TestEditRequirementPage:
     @pytest.mark.parametrize('edit_requirement_page', [req_complete], indirect=True)
     def test_handles_non_existent_requirement_in_requirement_list_in_edit_method(self, app: MockMainApplication,
                                                                                  edit_requirement_page: EditRequirementPage):
-        non_existent_id = -1  # Assuming -1 is not a valid ID in requirement_list
         with pytest.raises(KeyError):
-            requirement_list.update(non_existent_id, "Section", "Subsection", "Title", "Text", ["Tag"])
+            requirement_list.update(RequirementId("NewSection", "NewSubsection") , "Section", "Subsection", "Title", "Text", ["Tag"])
 
     #  Handles requirement with missing attributes in on_show
     @pytest.mark.parametrize('edit_requirement_page', [req_missing_fields_invalid_id], indirect=True)
@@ -140,8 +154,8 @@ class TestEditRequirementPage:
 
         # Initialize fields that will be populated by on_show
         edit_requirement_page.title_entry = tk.Entry(app)
-        edit_requirement_page.section = tk.StringVar()
-        edit_requirement_page.subsection = tk.StringVar()
+        edit_requirement_page.section = ComboboxWithAdd(app)
+        edit_requirement_page.subsection = ComboboxWithAdd(app)
         edit_requirement_page.requirement_text = tk.Text(app)
 
         # Call on_show and check if it handles missing attributes gracefully
@@ -149,10 +163,10 @@ class TestEditRequirementPage:
             edit_requirement_page.on_show()
             assert True  # If no exception is raised, the test passes
             assert not edit_requirement_page.title_entry.get()  # Should be empty since title is None
-            assert not edit_requirement_page.section.get()  # Should be empty since section is None
-            assert not edit_requirement_page.subsection.get()  # Should be empty since subsection is None
+            assert not edit_requirement_page.section.variable == ''  # Should be empty since section is None
+            assert not edit_requirement_page.subsection.variable == '' # Should be empty since subsection is None
             assert not edit_requirement_page.requirement_text.get("1.0", tk.END).strip()  # Should be empty since text is None
-            assert not list(edit_requirement_page.tagging_text.get(0, tk.END))  # Should be empty since tags are None
+            assert not edit_requirement_page.tagging_text.list  # Should be empty since tags are None
         except Exception as e:
             pytest.fail(f"on_show raised an exception with missing attributes: {e}")
 

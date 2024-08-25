@@ -2,7 +2,7 @@ from UI.menubars.main import MainMenuBar
 
 class MockMenuBar(MainMenuBar):
     def __init__(self):
-        super().__init__()
+        super().__init__(self.master)
         self.called = []
 
     def new_file(self):

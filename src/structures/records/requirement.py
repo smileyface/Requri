@@ -36,6 +36,9 @@ class Requirement(Record):
         """Property that returns the unique identifier of the requirement."""
         return self._unique_id
 
+    def __str__(self) -> str:
+        return f"{self.unique_id}: {self.title}"
+
     def __repr__(self) -> str:
         """Return a string representation of the Requirement object."""
         connection_str = ""

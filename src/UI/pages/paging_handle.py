@@ -33,6 +33,7 @@ def get_enum_from_page(page: ViewPage) -> PagesEnum:
 
     Raises:
         ValueError: If the frame is not found in the _frame_map.
+        :param page:
 
     """
     for enum_key, enum_page in _page_map.items():

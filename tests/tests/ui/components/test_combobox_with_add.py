@@ -42,7 +42,7 @@ class TestComboboxWithAdd:
         assert combobox.combobox['values'] == ('', 'Option1', 'Option2')
         combobox.clear()
         assert combobox.combobox['values'] == ('', )
-        assert combobox.variable.get() == ''
+        assert combobox.variable == ''
 
     @tkinter_test
     def test_selected_callback_triggered(self, root):
@@ -106,7 +106,7 @@ class TestComboboxWithAdd:
         combobox = ComboboxWithAdd(root)
         combobox.clear()
         assert combobox.combobox['values'] == ('',)
-        assert combobox.variable.get() == ''
+        assert combobox.variable == ''
 
     @tkinter_test
     def test_selected_callback_none(self, root):

@@ -2,20 +2,29 @@ import tkinter as tk
 from tkinter import ttk
 from typing import List, Callable, Optional
 
+
 class ComboboxWithAdd(tk.Frame):
     def __init__(self, master, options: Optional[List[str]] = None, selected_callback: Optional[Callable] = None):
         super().__init__(master)
         self.options = [''] + options if options else ['']
         self.selected_callback = selected_callback
 
-        self.variable = tk.StringVar(self)
-        self.variable.set('')
+        self._variable = tk.StringVar(self)
+        self._variable.set('')
 
-        self.combobox = ttk.Combobox(self, textvariable=self.variable, values=self.options)
+        self.combobox = ttk.Combobox(self, textvariable=self._variable, values=self.options)
         self.combobox.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         if self.selected_callback:
             self.combobox.bind("<<ComboboxSelected>>", self.selected_callback)
+
+    @property
+    def variable(self):
+        return self._variable.get()  # Accessing the internal StringVar
+
+    @variable.setter
+    def variable(self,  new_variable):
+        self._variable.set(new_variable)
 
     def set_values(self, values: List[str]):
         """
@@ -35,7 +44,7 @@ class ComboboxWithAdd(tk.Frame):
         """
         values_with_blank = [''] + self.options
         self.set_values(values_with_blank)
-        self.variable.set(values_with_blank[0])
+        self.variable = values_with_blank[0]
 
     def clear(self):
         """
@@ -47,9 +56,11 @@ class ComboboxWithAdd(tk.Frame):
     def set_options(self, options: List[str]):
         """
         Set new options for the combobox.
+        If an object in the options list has the str() method, it will be called before adding to the options.
+
         """
         if options is not None:
-            self.options = options
+            self.options = [str(option) for option in options]
         else:
             self.options = []
         self.update()

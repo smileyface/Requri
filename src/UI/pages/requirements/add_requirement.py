@@ -15,7 +15,7 @@ from src.structures.records.record import Record
 
 def get_variable(var):
     if var is not None and var.variable is not None:
-        return re.sub(r"'", '', var.variable.get())
+        return re.sub(r"'", '', var.variable)
     return None
 
 

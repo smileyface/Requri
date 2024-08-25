@@ -5,6 +5,7 @@ from tests.mocks.mock_main_app import MockMainApplication
 import src.UI.pages.paging_handle as PagingHandle
 from src.UI.pages.paging_handle import PagesEnum
 
+
 @pytest.fixture
 def app():
     app = MockMainApplication()
@@ -18,6 +19,7 @@ def app():
     yield app
     app.destroy()
     app_thread.join()
+
 
 @pytest.fixture
 def page(app, request):

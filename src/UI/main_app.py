@@ -74,7 +74,7 @@ class MainApplication(tk.Tk):
 
     def on_resize(self, event):
         if event.width != self.width or event.height != self.height:
-            logging.info(f"Resizing from {self.width}x{self.height} to {event.width}x{event.height}")
+            logging.debug(f"Resizing from {self.width}x{self.height} to {event.width}x{event.height}")
             self.width = event.width
             self.height = event.height
             self.update_idletasks()  # Force update of geometry

@@ -27,6 +27,8 @@ class Record:
             raise TypeError("The `connect` parameter must be an instance of `Record`.")
         self.connections[type(connect)].append(connect)
 
+        logging.info(f"{self} connected to {connect}")
+
     def remove_tags(self, tags):
         for tag in tags:
             if tag in self.tags:
