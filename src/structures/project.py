@@ -2,7 +2,7 @@ import os.path
 
 from src.structures.lists import requirement_list
 from src.structures.records import code
-from src.structures.lists import code_manager
+from src.structures.lists import code_list
 
 _name = ""
 _save_file = ""
@@ -43,7 +43,7 @@ def generate_save_file():
         for requirement in req_map[map_key].values():
             req.append(requirement.to_json())
     code = []
-    for code_key in code_manager.get_code_list():
+    for code_key in code_list.get_code_list():
         code.append(code_key.to_json())
     save_file["req"] = req
     save_file["code"] = code

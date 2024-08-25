@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict
 
-from src.structures.lists import code_manager
+from src.structures.lists import code_list
 from src.structures.records.code_location import Code_Location
 from src.structures.records.record import Record
 
@@ -117,9 +117,9 @@ class Code(Record):
 
 def expand_from_json(param):
     for x in param:
-        code_manager.get_code_list()[x["id"]] = Code(x["declaration"], x["access"], x["class"], x["name"],
+        code_list.get_code_list()[x["id"]] = Code(x["declaration"], x["access"], x["class"], x["name"],
                                                      x["arguments"], x["begin"],
                                                      x["end"], x["id"], False)
-        code_manager.get_code_list()[x["id"]].definition = x["definition"]
-        code_manager.signature_to_id_map[code_manager.get_code_list()[x["id"]].signature] = \
-        code_manager.get_code_list()[x["id"]].unique_id
+        code_list.get_code_list()[x["id"]].definition = x["definition"]
+        code_list.signature_to_id_map[code_list.get_code_list()[x["id"]].signature] = \
+        code_list.get_code_list()[x["id"]].unique_id

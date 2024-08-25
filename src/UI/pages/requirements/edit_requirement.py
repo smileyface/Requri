@@ -1,4 +1,3 @@
-import logging
 import tkinter as tk
 
 import src.UI.pages.paging_handle as PagingHandle

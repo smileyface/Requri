@@ -5,18 +5,16 @@ from unittest.mock import patch
 
 import pytest
 
+import src.UI.pages.paging_handle as PagingHandle
 from src.UI.pages import requirements
 from src.UI.pages.paging_handle import PagesEnum
-import src.UI.pages.paging_handle as PagingHandle
 from src.UI.pages.requirements import AddRequirementPage
 from src.structures.lists import requirement_list
 from src.structures.records import Code, Requirement
 from src.structures.records.record import Record
-
 from tests.fixtures.app_fixtures import app
 from tests.fixtures.page_fixtures import add_requirement_page
 from tests.mocks.mock_main_app import MockMainApplication
-from tests.utils.decorators import main_app_test
 
 # Set up logging to output to the console
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
