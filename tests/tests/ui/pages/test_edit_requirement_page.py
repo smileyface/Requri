@@ -5,12 +5,12 @@ from unittest.mock import patch
 
 import pytest
 
-from UI.components.combobox_with_add import ComboboxWithAdd
+from src.UI.components.combobox_with_add import ComboboxWithAdd
 from src.UI.components.autocomplete_entry import AutoCompleteEntry
 from src.UI.pages.requirements.edit_requirement import EditRequirementPage
 from src.structures.lists import requirement_list
 from src.structures.records import Requirement
-from structures.requirement_id import RequirementId
+from src.structures.requirement_id import RequirementId
 
 from tests.fixtures.app_fixtures import app
 from tests.fixtures.page_fixtures import edit_requirement_page
